@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Student Enrollment — Al-Haqq Nur &amp; Pry School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F6F1E7; --paper: #FBF8F2; --gold: #B98B2A; --ink: #1E1A16;
+  --muted: #6b5f52; --border: #E3DACB; --error: #B3261E; --success: #1b6b3a;
+}
+body { font-family: 'Inter', Arial, sans-serif; color: var(--ink); background: var(--cream); line-height: 1.6; padding-bottom: 60px; }
+h1, h2, .display { font-family: 'Fraunces', Georgia, serif; }
+a { color: var(--maroon); }
+
+header { background: var(--navy); color: var(--paper); padding: 30px 24px; text-align: center; }
+header img { width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 12px; }
+header h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+header p { font-size: 13.5px; color: #cdd4e6; }
+
+.wrap { max-width: 720px; margin: 32px auto 0; padding: 0 20px; }
+.message { padding: 14px 16px; border-radius: 10px; font-size: 14px; margin-bottom: 20px; display: none; }
+.message.error { background: #fbeaea; color: var(--error); display: block; }
+.message.success { background: #eaf3ec; color: var(--success); display: block; }
+
+.card { background: var(--paper); border: 1px solid var(--border); border-radius: 18px; padding: 30px 26px; margin-bottom: 22px; }
+.card h2 { font-size: 18px; color: var(--navy); margin-bottom: 4px; }
+.card .sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field { margin-bottom: 16px; }
+label { display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
+input, select, textarea {
+  width: 100%; padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 9px;
+  font: inherit; font-size: 14.5px; background: #fff; color: var(--ink);
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--navy); }
+textarea { resize: vertical; min-height: 70px; }
+
+.radio-group { display: flex; gap: 18px; flex-wrap: wrap; }
+.radio-option { display: flex; align-items: center; gap: 7px; font-size: 14px; }
+.radio-option input { width: auto; }
+
+.photo-upload {
+  display: flex; align-items: center; gap: 16px; padding: 16px; border: 1.5px dashed var(--border);
+  border-radius: 12px; background: var(--cream);
+}
+.photo-preview {
+  width: 64px; height: 64px; border-radius: 10px; background: #fff; border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; font-size: 11px; color: var(--muted); text-align: center;
+}
+.photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+.pickup-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: end; margin-bottom: 12px; }
+.remove-pickup { font-size: 13px; color: var(--error); cursor: pointer; align-self: center; padding-bottom: 12px; }
+.add-pickup { font-size: 13.5px; font-weight: 600; color: var(--maroon); cursor: pointer; }
+
+.confirm-box { display: flex; align-items: flex-start; gap: 10px; margin-top: 4px; }
+.confirm-box input { width: auto; margin-top: 3px; }
+.confirm-box label { font-weight: 500; font-size: 13.5px; }
+
+.btn-submit {
+  width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--maroon);
+  color: var(--paper); font-weight: 700; font-size: 15px; cursor: pointer; transition: background 0.18s ease;
+}
+.btn-submit:hover { background: var(--maroon-dark); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+@media (max-width: 560px) { .row, .pickup-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="/assets/images/logo.png" alt="School logo">
+  <h1 class="js-school-name-display">Al-Haqq Nur &amp; Pry School</h1>
+  <p>Registration Form</p>
+</header>
+
+<div class="wrap">
+  <div id="message" class="message"></div>
+
+  <form id="enrollForm">
+
+    <div class="card">
+      <h2>Child / Ward</h2>
+      <p class="sub">Bio-data of the child being enrolled.</p>
+
+      <div class="row">
+        <div class="field"><label for="surname">Surname</label><input type="text" id="surname" required></div>
+        <div class="field"><label for="otherNames">Other name(s)</label><input type="text" id="otherNames" required></div>
+      </div>
+      <div class="field">
+        <label>Sex</label>
+        <div class="radio-group">
+          <div class="radio-option"><input type="radio" name="gender" id="genderMale" value="male" required><label for="genderMale">Male</label></div>
+          <div class="radio-option"><input type="radio" name="gender" id="genderFemale" value="female"><label for="genderFemale">Female</label></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="dob">Date of birth</label><input type="date" id="dob" required></div>
+        <div class="field"><label for="nationality">Nationality</label><input type="text" id="nationality" value="Nigerian"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="stateOfOrigin">State of origin</label><input type="text" id="stateOfOrigin"></div>
+        <div class="field"><label for="religion">Religion</label><input type="text" id="religion" value="Islam"></div>
+      </div>
+      <div class="field"><label for="address">Address</label><textarea id="address" required></textarea></div>
+      <div class="row">
+        <div class="field"><label for="formerSchoolName">Former school (if any)</label><input type="text" id="formerSchoolName"></div>
+        <div class="field"><label for="formerSchoolClass">Former class</label><input type="text" id="formerSchoolClass"></div>
+      </div>
+
+      <div class="field">
+        <label>Passport photograph</label>
+        <div class="photo-upload">
+          <div class="photo-preview" id="photoPreview">No photo</div>
+          <input type="file" id="photoFile" accept="image/*" style="width:auto;">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Parent / Guardian</h2>
+      <p class="sub">Primary contact for this child.</p>
+
+      <div class="field"><label for="parentName">Full name</label><input type="text" id="parentName" required></div>
+      <div class="row">
+        <div class="field"><label for="parentPhone">Phone number</label><input type="tel" id="parentPhone" required></div>
+        <div class="field"><label for="parentOccupation">Occupation</label><input type="text" id="parentOccupation"></div>
+      </div>
+      <div class="field"><label for="parentOfficeAddress">Office address</label><textarea id="parentOfficeAddress"></textarea></div>
+      <div class="field"><label for="parentHomeAddress">Home address</label><textarea id="parentHomeAddress" required></textarea></div>
+    </div>
+
+    <div class="card">
+      <h2>Authorized for Pickup</h2>
+      <p class="sub">Anyone besides the parent/guardian who may collect the child.</p>
+      <div id="pickupList"></div>
+      <div class="add-pickup" id="addPickup">+ Add another person</div>
+    </div>
+
+    <div class="card">
+      <h2>Medical</h2>
+      <p class="sub">Health information for the school's records.</p>
+
+      <div class="field">
+        <label>General health condition</label>
+        <div class="radio-group">
+          <div class="radio-option"><input type="radio" name="health" value="very_good" id="hVeryGood"><label for="hVeryGood">Very good</label></div>
+          <div class="radio-option"><input type="radio" name="health" value="good" id="hGood"><label for="hGood">Good</label></div>
+          <div class="radio-option"><input type="radio" name="health" value="fair" id="hFair"><label for="hFair">Fair</label></div>
+          <div class="radio-option"><input type="radio" name="health" value="poor" id="hPoor"><label for="hPoor">Poor</label></div>
+        </div>
+      </div>
+      <div class="field"><label for="constantIllness">Nature of any constant illness</label><input type="text" id="constantIllness"></div>
+
+      <div class="row">
+        <div class="field">
+          <label>Immunized against polio?</label>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="polio" value="yes" id="polioYes"><label for="polioYes">Yes</label></div>
+            <div class="radio-option"><input type="radio" name="polio" value="no" id="polioNo"><label for="polioNo">No</label></div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Whooping cough?</label>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="whooping" value="yes" id="whoopYes"><label for="whoopYes">Yes</label></div>
+            <div class="radio-option"><input type="radio" name="whooping" value="no" id="whoopNo"><label for="whoopNo">No</label></div>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Tuberculosis?</label>
+        <div class="radio-group">
+          <div class="radio-option"><input type="radio" name="tb" value="yes" id="tbYes"><label for="tbYes">Yes</label></div>
+          <div class="radio-option"><input type="radio" name="tb" value="no" id="tbNo"><label for="tbNo">No</label></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="confirm-box">
+        <input type="checkbox" id="confirmAccuracy" required>
+        <label for="confirmAccuracy">I confirm that the information provided in this form is accurate to the best of my knowledge, and I understand this application will be reviewed by the school before admission is confirmed.</label>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-submit" id="submitBtn">Submit Enrollment Application</button>
+  </form>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'YOUR_ANON_KEY')
+
+  const messageEl = document.getElementById('message')
+  const submitBtn = document.getElementById('submitBtn')
+  const pickupList = document.getElementById('pickupList')
+  const photoInput = document.getElementById('photoFile')
+  const photoPreview = document.getElementById('photoPreview')
+
+  function showMessage(text, type) {
+    messageEl.textContent = text
+    messageEl.className = `message ${type}`
+    messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
+
+  photoInput.addEventListener('change', () => {
+    const file = photoInput.files[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = e => { photoPreview.innerHTML = `<img src="${e.target.result}" alt="Preview">` }
+    reader.readAsDataURL(file)
+  })
+
+  function addPickupRow() {
+    const row = document.createElement('div')
+    row.className = 'pickup-row'
+    row.innerHTML = `
+      <div class="field"><label>Name</label><input type="text" class="pickup-name"></div>
+      <div class="field"><label>Address</label><input type="text" class="pickup-address"></div>
+    `
+    pickupList.appendChild(row)
+  }
+  addPickupRow()
+  document.getElementById('addPickup').addEventListener('click', addPickupRow)
+
+  document.getElementById('enrollForm').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    messageEl.className = 'message'
+    submitBtn.disabled = true
+    submitBtn.textContent = 'Submitting…'
+
+    try {
+      // Resolve the single school this portal belongs to
+      const { data: school, error: schoolError } = await supabase
+        .from('schools').select('id').order('created_at', { ascending: true }).limit(1).single()
+      if (schoolError) throw new Error('Could not find school record.')
+
+      const gender = document.querySelector('input[name="gender"]:checked')?.value
+      const health = document.querySelector('input[name="health"]:checked')?.value || null
+      const polio = document.querySelector('input[name="polio"]:checked')?.value
+      const whooping = document.querySelector('input[name="whooping"]:checked')?.value
+      const tb = document.querySelector('input[name="tb"]:checked')?.value
+
+      // 1. Insert student
+      const { data: student, error: studentError } = await supabase
+        .from('students')
+        .insert({
+          school_id: school.id,
+          surname: document.getElementById('surname').value.trim(),
+          other_names: document.getElementById('otherNames').value.trim(),
+          gender,
+          date_of_birth: document.getElementById('dob').value,
+          nationality: document.getElementById('nationality').value.trim(),
+          state_of_origin: document.getElementById('stateOfOrigin').value.trim(),
+          religion: document.getElementById('religion').value.trim(),
+          address: document.getElementById('address').value.trim(),
+          former_school_name: document.getElementById('formerSchoolName').value.trim(),
+          former_school_class: document.getElementById('formerSchoolClass').value.trim(),
+          admission_status: 'pending',
+          parent_confirmed: true,
+          parent_confirmed_at: new Date().toISOString()
+        })
+        .select().single()
+      if (studentError) throw studentError
+
+      // 2. Upload photo, if provided
+      const photoFile = photoInput.files[0]
+      if (photoFile) {
+        const path = `${school.id}/${student.id}.${photoFile.name.split('.').pop()}`
+        const { error: uploadError } = await supabase.storage
+          .from('student-photos').upload(path, photoFile, { upsert: true })
+        if (!uploadError) {
+          await supabase.from('students').update({ photo_url: path }).eq('id', student.id)
+        }
+      }
+
+      // 3. Insert parent/guardian
+      const { error: parentError } = await supabase
+        .from('parents')
+        .insert({
+          school_id: school.id,
+          full_name: document.getElementById('parentName').value.trim(),
+          phone: document.getElementById('parentPhone').value.trim(),
+          occupation: document.getElementById('parentOccupation').value.trim(),
+          office_address: document.getElementById('parentOfficeAddress').value.trim(),
+          home_address: document.getElementById('parentHomeAddress').value.trim()
+        })
+      if (parentError) throw parentError
+
+      // 4. Insert pickup authorizations
+      const pickupRows = [...document.querySelectorAll('.pickup-row')]
+        .map(row => ({
+          student_id: student.id,
+          name: row.querySelector('.pickup-name').value.trim(),
+          address: row.querySelector('.pickup-address').value.trim()
+        }))
+        .filter(r => r.name)
+      if (pickupRows.length) {
+        const { error: pickupError } = await supabase.from('pickup_authorizations').insert(pickupRows)
+        if (pickupError) throw pickupError
+      }
+
+      // 5. Insert medical record
+      const { error: medicalError } = await supabase
+        .from('medical_records')
+        .insert({
+          student_id: student.id,
+          health_condition: health,
+          constant_illness: document.getElementById('constantIllness').value.trim(),
+          immunized_polio: polio ? polio === 'yes' : null,
+          immunized_whooping_cough: whooping ? whooping === 'yes' : null,
+          immunized_tuberculosis: tb ? tb === 'yes' : null
+        })
+      if (medicalError) throw medicalError
+
+      showMessage('Application submitted! The school will review it and confirm admission.', 'success')
+      document.getElementById('enrollForm').reset()
+      photoPreview.innerHTML = 'No photo'
+      pickupList.innerHTML = ''
+      addPickupRow()
+
+    } catch (err) {
+      showMessage(err.message || 'Something went wrong. Please try again.', 'error')
+    } finally {
+      submitBtn.disabled = false
+      submitBtn.textContent = 'Submit Enrollment Application'
+    }
+  })
+</script>
+
+</body>
+</html>

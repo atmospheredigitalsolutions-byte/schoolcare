@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Login — Al-Haqq Nur &amp; Pry School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F6F1E7; --paper: #FBF8F2; --gold: #B98B2A; --ink: #1E1A16;
+  --muted: #6b5f52; --border: #E3DACB; --error: #B3261E;
+}
+body { font-family: 'Inter', Arial, sans-serif; color: var(--ink); background: var(--navy); line-height: 1.6; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+h1, .display { font-family: 'Fraunces', Georgia, serif; }
+a { color: var(--gold); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.card { width: 100%; max-width: 400px; background: var(--paper); border: 1px solid var(--border); border-radius: 18px; padding: 38px 32px; box-shadow: 0 22px 50px rgba(0,0,0,0.3); }
+.brand { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+.brand img { width: 42px; height: 42px; border-radius: 50%; }
+.brand span { font-family: 'Fraunces', serif; font-weight: 600; font-size: 17px; color: var(--navy); }
+h1 { font-size: 24px; color: var(--navy); font-weight: 600; margin-bottom: 6px; }
+.card > p { color: var(--muted); font-size: 14px; margin-bottom: 26px; }
+label { display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
+.field { margin-bottom: 18px; }
+input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; font: inherit; font-size: 14.5px; background: #fff; color: var(--ink); }
+input:focus { outline: none; border-color: var(--navy); }
+.btn-submit { width: 100%; padding: 13px; border: none; border-radius: 10px; background: var(--navy); color: var(--paper); font-weight: 700; font-size: 15px; cursor: pointer; transition: background 0.18s ease; }
+.btn-submit:hover { background: var(--navy-deep); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.message { padding: 12px 14px; border-radius: 10px; font-size: 13.5px; margin-bottom: 18px; display: none; }
+.message.error { background: #fbeaea; color: var(--error); display: block; }
+.back-link { text-align: center; margin-top: 20px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">
+    <img src="/assets/images/logo.png" alt="School logo">
+    <span class="js-school-name">Al-Haqq Nur &amp; Pry School</span>
+  </div>
+  <h1>Admin Portal</h1>
+  <p>Restricted to school administrators.</p>
+  <div id="message" class="message"></div>
+  <form id="loginForm">
+    <div class="field">
+      <label for="email">Email address</label>
+      <input type="email" id="email" required>
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" required>
+    </div>
+    <button type="submit" class="btn-submit" id="submitBtn">Sign In</button>
+  </form>
+  <div class="back-link"><a href="/login.html">← Back to parent/staff login</a></div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'YOUR_ANON_KEY')
+
+  const messageEl = document.getElementById('message')
+  const submitBtn = document.getElementById('submitBtn')
+
+  function showMessage(text) {
+    messageEl.textContent = text
+    messageEl.className = 'message error'
+  }
+
+  async function loadSchoolName() {
+    const { data, error } = await supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    if (!error && data) {
+      document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name })
+    }
+  }
+  loadSchoolName()
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    messageEl.className = 'message'
+    submitBtn.disabled = true
+    submitBtn.textContent = 'Signing in…'
+
+    try {
+      const email = document.getElementById('email').value.trim()
+      const password = document.getElementById('password').value
+
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+      if (signInError) throw signInError
+
+      const { data: membership, error: memberError } = await supabase
+        .from('school_members')
+        .select('role')
+        .eq('user_id', signInData.user.id)
+        .single()
+
+      if (memberError || !membership) {
+        await supabase.auth.signOut()
+        throw new Error('Your account is not linked to any role at this school yet.')
+      }
+
+      const redirects = {
+        super_admin: '/admin/dashboard.html',
+        school_admin: '/admin/dashboard.html'
+      }
+
+      const destination = redirects[membership.role]
+      if (!destination) {
+        await supabase.auth.signOut()
+        throw new Error('This login is for school administrators only.')
+      }
+
+      window.location.href = destination
+
+    } catch (err) {
+      showMessage(err.message || 'Login failed. Please check your details and try again.')
+      submitBtn.disabled = false
+      submitBtn.textContent = 'Sign In'
+    }
+  })
+</script>
+
+</body>
+</html>

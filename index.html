@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Al-Haqq Nur &amp; Pry School</title>
+<meta name="description" content="Al-Haqq Nur & Pry School — a leading Muslim school dedicated to quality education, spiritual growth and moral integrity, from crèche through Primary 6." />
+<meta name="theme-color" content="#101B3D" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F6F1E7; --paper: #FBF8F2; --gold: #B98B2A; --ink: #1E1A16;
+  --muted: #6b5f52; --border: #E3DACB;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', Arial, sans-serif; color: var(--ink); background: var(--paper); line-height: 1.6; }
+a { text-decoration: none; color: inherit; }
+button { font: inherit; cursor: pointer; background: none; border: none; }
+h1, h2, h3, .display { font-family: 'Fraunces', Georgia, serif; }
+img, svg { display: block; }
+
+.navbar { position: sticky; top: 0; z-index: 1000; background: rgba(251,248,242,0.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+.nav-container { position: relative; max-width: 1180px; margin: auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-mark { width: 42px; height: 42px; border-radius: 50%; background: var(--navy); display: grid; place-items: center; overflow: hidden; flex-shrink: 0; }
+.logo-mark img { width: 100%; height: 100%; object-fit: cover; }
+.logo-text { font-family: 'Fraunces', serif; font-weight: 600; font-size: 19px; color: var(--navy); line-height: 1.2; }
+.logo-text small { display: block; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 11px; color: var(--maroon); letter-spacing: 0.04em; }
+
+.nav-links { display: flex; align-items: center; gap: 28px; font-size: 14px; font-weight: 500; color: var(--ink); }
+.nav-links a:hover { color: var(--maroon); }
+.nav-buttons { display: flex; align-items: center; gap: 10px; }
+.btn { border-radius: 999px; padding: 11px 22px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: 0.18s ease; }
+.btn-primary { background: var(--maroon); color: var(--paper); }
+.btn-primary:hover { background: var(--maroon-dark); }
+.btn-outline { border: 1.5px solid var(--navy); color: var(--navy); }
+.btn-outline:hover { background: var(--navy); color: var(--paper); }
+.mobile-menu { display: none; font-size: 22px; color: var(--navy); }
+
+@media (max-width: 960px) {
+  .nav-links {
+    display: none; flex-direction: column; align-items: flex-start;
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: var(--paper); padding: 22px 24px; border-bottom: 1px solid var(--border); gap: 18px;
+  }
+  .nav-links.nav-open { display: flex; }
+  .mobile-menu { display: block; }
+}
+
+.hero-wrap { padding: 32px 20px 0; }
+.hero {
+  max-width: 1180px; margin: auto;
+  background: radial-gradient(circle at 15% 0%, #1a2a5c 0%, var(--navy) 45%, var(--navy-deep) 100%);
+  border-radius: 140px 140px 28px 28px;
+  padding: 76px 48px 64px;
+  position: relative; overflow: hidden; text-align: center; color: var(--paper);
+}
+.hero::before {
+  content: ""; position: absolute; inset: 0;
+  background: repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 26px);
+  pointer-events: none;
+}
+.crest-icon { width: 56px; height: 56px; margin: 0 auto 22px; opacity: 0.92; }
+.hero h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 600; line-height: 1.15; max-width: 700px; margin: 0 auto 18px; }
+.hero p { font-size: 17px; color: #cdd4e6; max-width: 520px; margin: 0 auto 34px; }
+.hero-buttons { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+.hero .btn-primary { background: var(--gold); color: var(--navy-deep); }
+.hero .btn-primary:hover { background: #a97c22; }
+.hero .btn-ghost { border: 1.5px solid rgba(255,255,255,0.35); color: var(--paper); border-radius: 999px; padding: 11px 22px; font-weight: 600; font-size: 14px; }
+.hero .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,0.08); }
+
+.ribbon-wrap { max-width: 1180px; margin: -26px auto 0; padding: 0 20px; position: relative; z-index: 2; }
+.ribbon {
+  background: var(--maroon); color: var(--paper);
+  clip-path: polygon(0 0, 100% 0, 97% 50%, 100% 100%, 0 100%, 3% 50%);
+  padding: 18px 60px; display: flex; justify-content: center; gap: 0; flex-wrap: wrap;
+}
+.ribbon span { font-size: 13.5px; font-weight: 600; letter-spacing: 0.02em; padding: 0 22px; border-left: 1px solid rgba(255,255,255,0.3); }
+.ribbon span:first-child { border-left: none; }
+
+section { padding: 96px 24px; }
+.section-container { max-width: 1180px; margin: auto; }
+.section-head { max-width: 620px; margin-bottom: 48px; }
+.section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+.section-head h2 { font-size: clamp(26px, 3.4vw, 36px); font-weight: 600; color: var(--navy); line-height: 1.2; margin-bottom: 12px; }
+.section-head p { color: var(--muted); font-size: 16px; }
+
+.vm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.vm-card { background: var(--navy); color: var(--paper); border-radius: 20px; padding: 38px 34px; position: relative; }
+.vm-card-maroon { background: var(--maroon); }
+.vm-label { font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; color: var(--gold); display: block; margin-bottom: 14px; }
+.vm-card p { font-size: 16px; line-height: 1.65; color: #e7e2d6; }
+
+.programmes { background: var(--cream); }
+.programme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.programme-card { background: var(--paper); border: 1px solid var(--border); border-radius: 20px; padding: 34px; border-top: 4px solid var(--maroon); }
+.programme-card:nth-child(2) { border-top-color: var(--navy); }
+.programme-card h3 { font-size: 21px; color: var(--navy); margin-bottom: 10px; font-weight: 600; }
+.programme-card p { color: var(--muted); font-size: 14.5px; margin-bottom: 16px; }
+.programme-card ul { list-style: none; display: grid; gap: 9px; }
+.programme-card li { font-size: 14px; color: var(--ink); display: flex; gap: 9px; }
+.programme-card li::before { content: "—"; color: var(--maroon); flex-shrink: 0; }
+
+.why { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.why h2 { font-size: 32px; color: var(--navy); font-weight: 600; margin-bottom: 16px; line-height: 1.2; }
+.why > div > p { color: var(--muted); margin-bottom: 24px; }
+.check-list { list-style: none; display: grid; gap: 14px; }
+.check-list li { display: flex; gap: 12px; align-items: flex-start; font-size: 15px; }
+.check-list li::before { content: "✓"; color: var(--maroon); font-weight: 700; flex-shrink: 0; }
+.why-visual { background: var(--navy); border-radius: 24px; padding: 32px; color: var(--paper); position: relative; overflow: hidden; }
+.why-visual h4 { font-size: 15px; font-weight: 600; margin-bottom: 18px; color: #cdd4e6; }
+.stat-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.14); }
+.stat-row:last-child { border-bottom: none; }
+.stat-row span { font-size: 13.5px; color: #b9c2d6; }
+.stat-row strong { font-size: 15px; color: var(--gold); }
+
+.report-section { background: var(--cream); }
+.report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.report-card-preview { background: var(--paper); border: 1px solid var(--border); border-radius: 18px; padding: 26px; box-shadow: 0 22px 50px rgba(16,27,61,0.1); }
+.report-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--navy); padding-bottom: 14px; margin-bottom: 16px; }
+.report-header strong { color: var(--navy); font-family: 'Fraunces', serif; font-size: 15px; letter-spacing: 0.01em; }
+.report-header span { font-size: 12.5px; color: var(--muted); }
+.report-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.report-table th, .report-table td { padding: 10px 6px; border-bottom: 1px solid var(--border); text-align: left; }
+.report-table th { color: var(--navy); font-weight: 600; }
+
+.cta { background: var(--maroon); color: var(--paper); text-align: center; }
+.cta h2 { font-size: clamp(28px, 3.6vw, 42px); font-weight: 600; margin-bottom: 14px; }
+.cta p { color: #ecd9dc; max-width: 520px; margin: 0 auto 30px; }
+.cta .btn-primary { background: var(--gold); color: var(--navy-deep); }
+.cta .btn-primary:hover { background: #a97c22; }
+
+footer { background: var(--navy-deep); color: #93a0ba; padding: 50px 24px 24px; }
+.footer-grid { max-width: 1180px; margin: auto; display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 40px; padding-bottom: 36px; }
+footer h3 { font-family: 'Fraunces', serif; color: var(--paper); margin-bottom: 12px; font-size: 19px; }
+footer h4 { color: var(--paper); margin-bottom: 14px; font-size: 14px; font-weight: 600; }
+footer p, footer a { font-size: 13.5px; }
+.footer-links { display: grid; gap: 9px; }
+.footer-links a:hover { color: var(--paper); }
+.copyright { max-width: 1180px; margin: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 18px; font-size: 12.5px; text-align: center; }
+
+@media (max-width: 900px) {
+  .vm-grid, .programme-grid, .why, .report-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .hero { border-radius: 60px 60px 20px 20px; padding: 56px 24px 48px; }
+  .ribbon { padding: 16px 24px; clip-path: none; }
+  .ribbon span { padding: 4px 16px; border-left: none; }
+}
+@media (max-width: 560px) { section { padding: 64px 18px; } }
+</style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="logo">
+      <span class="logo-mark"><img src="assets/images/logo.png" alt="School logo"></span>
+      <span class="logo-text js-school-name">Al-Haqq Nur &amp; Pry School<small>Qualitative &amp; Distinctive</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#vision-mission">Vision &amp; Mission</a>
+      <a href="#programmes">Programmes</a>
+      <a href="#why">Why Us</a>
+      <a href="#report-card">Report Cards</a>
+    </nav>
+    <div class="nav-buttons">
+      <a href="/login.html" class="btn btn-outline">School Portal</a>
+      <a href="/enroll.html" class="btn btn-primary">Enroll Now</a>
+    </div>
+    <button class="mobile-menu" aria-label="Open menu">☰</button>
+  </div>
+</header>
+
+<div class="hero-wrap">
+  <div class="hero">
+    <svg class="crest-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 12a18 18 0 100 32 14 14 0 110-32z" fill="#B98B2A"/>
+      <path d="M47 24l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7z" fill="#B98B2A"/>
+    </svg>
+    <h1 class="js-school-name-display">Al-Haqq Nur &amp; Pry School</h1>
+    <p>A leading Muslim school dedicated to providing quality education, fostering spiritual growth and promoting moral integrity — from crèche through Primary 6.</p>
+    <div class="hero-buttons">
+      <a href="/enroll.html" class="btn btn-primary">Enroll Your Child</a>
+      <a href="#programmes" class="btn-ghost">See our programmes</a>
+    </div>
+  </div>
+</div>
+
+<div class="ribbon-wrap">
+  <div class="ribbon">
+    <span>Crèche &amp; Nursery</span>
+    <span>Primary 1 – 6</span>
+    <span>Qur'anic &amp; National Curriculum</span>
+    <span>Qualitative &amp; Distinctive</span>
+  </div>
+</div>
+
+<section id="vision-mission">
+  <div class="section-container">
+    <div class="section-head center">
+      <h2>What guides us</h2>
+      <p>Al-Haqq Nur &amp; Pry School is the institution where smartness, discipline, and diligence converge.</p>
+    </div>
+    <div class="vm-grid">
+      <div class="vm-card">
+        <span class="vm-label">Vision</span>
+        <p>Empowering young minds with knowledge, skills and character to become compassionate and responsible leaders in a rapidly changing world.</p>
+      </div>
+      <div class="vm-card vm-card-maroon">
+        <span class="vm-label">Mission</span>
+        <p>To provide a nurturing environment that fosters academic excellence, spiritual growth, and promotes moral integrity.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="programmes" class="programmes">
+  <div class="section-container">
+    <div class="section-head">
+      <h2>Two stages, one foundation</h2>
+      <p>Every child moves through a settled, faith-rooted path from their earliest years through primary school.</p>
+    </div>
+    <div class="programme-grid">
+      <div class="programme-card">
+        <h3>Early Years</h3>
+        <p>Crèche and Nursery classes build early literacy, numeracy and Islamic values through guided play and observation.</p>
+        <ul>
+          <li>Qaida and early Qur'an recitation</li>
+          <li>Phonics, numeracy and motor skills</li>
+          <li>Daily developmental observation records</li>
+        </ul>
+      </div>
+      <div class="programme-card">
+        <h3>Primary School</h3>
+        <p>Primary 1 through 6 follow the National curriculum alongside structured Islamic studies and Arabic.</p>
+        <ul>
+          <li>Continuous assessment and termly examinations</li>
+          <li>Qur'an, Hadith, Arabic and Islamic studies</li>
+          <li>Digital report cards shared with parents each term</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="why">
+  <div class="section-container why">
+    <div>
+      <h2>Why families choose Al-Haqq</h2>
+      <p>Every part of school life — attendance, results, safeguarding, fees — is tracked carefully and shared with parents in one place.</p>
+      <ul class="check-list">
+        <li>Qualified teachers across both Islamic and National curricula</li>
+        <li>Small class sizes with individual attention</li>
+        <li>Safeguarding and wellbeing records with controlled access</li>
+        <li>Parents can view results, attendance and fees online</li>
+      </ul>
+    </div>
+    <div class="why-visual">
+      <h4>What parents see on the portal</h4>
+      <div class="stat-row"><span>Termly report cards</span><strong>Ready</strong></div>
+      <div class="stat-row"><span>Attendance record</span><strong>Up to date</strong></div>
+      <div class="stat-row"><span>School fees</span><strong>Invoiced</strong></div>
+      <div class="stat-row"><span>Announcements</span><strong>Live</strong></div>
+    </div>
+  </div>
+</section>
+
+<section id="report-card" class="report-section">
+  <div class="section-container report-grid">
+    <div>
+      <div class="section-head">
+        <h2>A report card parents can trust</h2>
+        <p>Teachers enter scores once — the platform handles totals, averages, grading and printable report cards automatically.</p>
+      </div>
+    </div>
+    <div class="report-card-preview">
+      <div class="report-header">
+        <strong class="js-school-name-upper">AL-HAQQ NUR &amp; PRY SCHOOL</strong>
+        <span id="reportTermLabel">Loading term…</span>
+      </div>
+      <p style="margin-bottom:14px; font-size:14px;"><strong>Student:</strong> Sample Student</p>
+      <table class="report-table">
+        <thead><tr><th>Subject</th><th>CA</th><th>Exam</th><th>Total</th><th>Grade</th></tr></thead>
+        <tbody id="reportCardBody">
+          <tr><td colspan="5">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="section-container">
+    <h2>Smartness, discipline, diligence</h2>
+    <p>Admissions are open for Crèche through Primary 6 at Al-Haqq — where every child is nurtured toward excellence and character.</p>
+    <a href="/enroll.html" class="btn btn-primary">Enroll Your Child</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h3 class="js-school-name">Al-Haqq Nur &amp; Pry School</h3>
+      <p>A leading Muslim school dedicated to providing quality education, fostering spiritual growth and promoting moral integrity.</p>
+    </div>
+    <div>
+      <h4>Explore</h4>
+      <div class="footer-links">
+        <a href="#vision-mission">Vision &amp; Mission</a>
+        <a href="#programmes">Programmes</a>
+        <a href="#why">Why Us</a>
+        <a href="#report-card">Report Cards</a>
+      </div>
+    </div>
+    <div>
+      <h4>Account</h4>
+      <div class="footer-links">
+        <a href="/login.html">School Portal</a>
+        <a href="/enroll.html">Enroll a Child</a>
+      </div>
+    </div>
+  </div>
+  <div class="copyright"><span class="js-school-name">Al-Haqq Nur &amp; Pry School</span> &copy; 2026. All rights reserved.</div>
+</footer>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'YOUR_ANON_KEY')
+
+  async function loadSchool() {
+    const { data, error } = await supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    const schoolName = (!error && data) ? data.name : 'Al-Haqq Nur & Pry School'
+    document.title = schoolName
+    document.querySelectorAll('.js-school-name').forEach(el => { el.childNodes[0].textContent = schoolName })
+    document.querySelectorAll('.js-school-name-display').forEach(el => { el.textContent = schoolName })
+    document.querySelectorAll('.js-school-name-upper').forEach(el => { el.textContent = schoolName.toUpperCase() })
+  }
+
+  function gradeFor(total) {
+    if (total >= 85) return 'A'
+    if (total >= 70) return 'B'
+    if (total >= 55) return 'C'
+    if (total >= 40) return 'D'
+    return 'F'
+  }
+
+  async function loadReportCardSample() {
+    const sampleScores = [
+      { subject: 'Qur\'an & Tajweed', ca: 27, exam: 58 },
+      { subject: 'Mathematics', ca: 28, exam: 60 },
+      { subject: 'English Studies', ca: 25, exam: 55 },
+      { subject: 'Basic Science', ca: 26, exam: 51 }
+    ]
+    const tbody = document.getElementById('reportCardBody')
+    tbody.innerHTML = sampleScores.map(row => {
+      const total = row.ca + row.exam
+      return `<tr><td>${row.subject}</td><td>${row.ca}</td><td>${row.exam}</td><td>${total}</td><td>${gradeFor(total)}</td></tr>`
+    }).join('')
+    document.getElementById('reportTermLabel').textContent = '2026/2027 — First Term'
+  }
+
+  loadSchool()
+  loadReportCardSample()
+
+  const menuBtn = document.querySelector('.mobile-menu')
+  const navLinks = document.querySelector('.nav-links')
+  menuBtn.addEventListener('click', () => navLinks.classList.toggle('nav-open'))
+</script>
+
+</body>
+</html>
