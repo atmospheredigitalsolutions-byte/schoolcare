@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Staff — Admin Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F6F1E7; --paper: #FBF8F2; --gold: #B98B2A; --ink: #1E1A16;
+  --muted: #6b5f52; --border: #E3DACB; --green: #2E7D32; --red: #B3261E;
+}
+body { font-family: 'Inter', Arial, sans-serif; color: var(--ink); background: var(--cream); line-height: 1.6; min-height: 100vh; }
+h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; }
+a { color: inherit; text-decoration: none; }
+button, select, input { font: inherit; }
+
+.topbar { background: var(--paper); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+.topbar .brand { display: flex; align-items: center; gap: 10px; }
+.topbar .brand img { width: 32px; height: 32px; border-radius: 50%; }
+.topbar .brand strong { font-family: 'Fraunces', serif; color: var(--navy); font-size: 15px; }
+.topbar .brand span { display: block; font-size: 11px; color: var(--muted); }
+.signout { font-size: 13px; font-weight: 600; color: var(--maroon); border: 1px solid var(--border); border-radius: 999px; padding: 8px 16px; cursor: pointer; background: var(--paper); }
+
+.wrap { max-width: 920px; margin: 0 auto; padding: 28px 18px 90px; }
+.welcome h1 { font-size: 24px; color: var(--navy); margin-bottom: 4px; }
+.welcome p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+
+.steps-note { background: var(--navy); color: var(--paper); border-radius: 14px; padding: 16px 18px; font-size: 13.5px; margin-bottom: 20px; }
+.steps-note strong { color: var(--gold); }
+.steps-note a { color: var(--gold); text-decoration: underline; }
+
+.card { background: var(--paper); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+.card h2 { font-size: 16px; color: var(--navy); margin-bottom: 14px; }
+.field-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.field-row label { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+input, select { padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: #fff; color: var(--ink); width: 100%; }
+input:focus, select:focus { outline: none; border-color: var(--navy); }
+.search-row { display: flex; gap: 8px; }
+.search-row input { flex: 1; }
+.btn-find { padding: 0 18px; border: none; border-radius: 10px; background: var(--navy); color: var(--paper); font-weight: 600; cursor: pointer; }
+
+.found-box { background: var(--cream); border-radius: 12px; padding: 14px 16px; margin-top: 14px; display: none; }
+.found-box.show { display: block; }
+.found-box .fname { font-weight: 700; color: var(--navy); font-size: 15px; }
+.found-box .femail { font-size: 12.5px; color: var(--muted); margin-bottom: 12px; }
+
+.btn-save { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--maroon); color: var(--paper); font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 6px; }
+.btn-save:disabled { opacity: 0.6; }
+.btn-save:hover:not(:disabled) { background: var(--maroon-dark); }
+
+.staff-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--border); }
+.staff-row:last-child { border-bottom: none; }
+.staff-row .name { font-size: 14.5px; font-weight: 600; }
+.staff-row .email { font-size: 12px; color: var(--muted); }
+.role-pill { font-size: 11px; font-weight: 700; padding: 5px 11px; border-radius: 999px; background: var(--cream); color: var(--navy); text-transform: capitalize; }
+
+.msg { padding: 12px 14px; border-radius: 10px; font-size: 13.5px; margin-bottom: 16px; display: none; }
+.msg.success { background: #e9f5ea; color: var(--green); display: block; }
+.msg.error { background: #fbeaea; color: var(--red); display: block; }
+.empty-note { color: var(--muted); font-size: 14px; text-align: center; padding: 20px 0; }
+.loading { color: var(--muted); font-size: 14px; text-align: center; padding: 40px 0; }
+
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--paper); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 8px 4px calc(8px + env(safe-area-inset-bottom, 0px)); z-index: 50; }
+.bn-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 6px; border-radius: 10px; color: var(--muted); font-size: 9.5px; font-weight: 600; flex: 1; text-align: center; }
+.bn-item svg { width: 19px; height: 19px; }
+.bn-item.active { color: var(--maroon); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <img src="/assets/images/logo.png" alt="logo">
+    <div><strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong><span>Admin Portal</span></div>
+  </div>
+  <button class="signout" id="signOutBtn">Sign Out</button>
+</div>
+
+<div class="wrap" id="appWrap" style="display:none;">
+  <div class="welcome">
+    <h1>Staff</h1>
+    <p>Add new staff and manage existing accounts.</p>
+  </div>
+
+  <div class="steps-note">
+    <strong>Step 1:</strong> Create the login in <a href="https://supabase.com/dashboard" target="_blank">Supabase Dashboard</a> → Authentication → Add user, with their email and a temporary password.<br><br>
+    <strong>Step 2:</strong> Come back here, search their email, and assign their role below.
+  </div>
+
+  <div class="card">
+    <h2>Add Staff Member</h2>
+    <div id="msgBox" class="msg"></div>
+    <div class="field-row">
+      <label for="searchEmail">Find by email</label>
+      <div class="search-row">
+        <input type="email" id="searchEmail" placeholder="their@email.com">
+        <button class="btn-find" id="findBtn">Find</button>
+      </div>
+    </div>
+
+    <div class="found-box" id="foundBox">
+      <div class="fname" id="foundName"></div>
+      <div class="femail" id="foundEmail"></div>
+      <div class="field-row">
+        <label for="fullNameInput">Full name</label>
+        <input type="text" id="fullNameInput" placeholder="Full name">
+      </div>
+      <div class="field-row">
+        <label for="roleSelect">Role</label>
+        <select id="roleSelect">
+          <option value="teacher">Teacher</option>
+          <option value="school_admin">School Admin</option>
+        </select>
+      </div>
+      <button class="btn-save" id="assignBtn">Assign Role</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Current Staff</h2>
+    <div id="staffList"></div>
+  </div>
+</div>
+
+<div id="loadingState" class="loading">Loading…</div>
+
+<nav class="bottom-nav">
+  <a href="/admin/dashboard.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>Dashboard</span></a>
+  <a href="/admin/enrollments.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg><span>Enrollments</span></a>
+  <a href="/admin/staff.html" class="bn-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span>Staff</span></a>
+  <a href="/admin/students.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
+  <a href="/admin/profile.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
+</nav>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
+
+  let schoolId = null
+  let foundUser = null
+
+  function showMessage(text, type) {
+    const box = document.getElementById('msgBox')
+    box.textContent = text
+    box.className = 'msg ' + type
+    setTimeout(() => { box.className = 'msg' }, 5000)
+  }
+
+  async function loadSchoolName() {
+    const { data } = await supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name })
+  }
+
+  async function init() {
+    loadSchoolName()
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/admin/login.html'; return }
+
+    const { data: membership } = await supabase.from('school_members').select('role, school_id').eq('user_id', session.user.id).single()
+    if (!membership || !['school_admin', 'super_admin'].includes(membership.role)) { window.location.href = '/admin/login.html'; return }
+    schoolId = membership.school_id
+
+    await loadStaffList()
+
+    document.getElementById('loadingState').style.display = 'none'
+    document.getElementById('appWrap').style.display = 'block'
+  }
+
+  async function loadStaffList() {
+    const container = document.getElementById('staffList')
+    const { data, error } = await supabase
+      .from('school_members')
+      .select('role, user_id, users(full_name, email)')
+      .eq('school_id', schoolId)
+
+    if (error || !data || data.length === 0) {
+      container.innerHTML = '<p class="empty-note">No staff records yet.</p>'
+      return
+    }
+
+    container.innerHTML = data.map(m => `
+      <div class="staff-row">
+        <div>
+          <div class="name">${m.users?.full_name || 'Unnamed'}</div>
+          <div class="email">${m.users?.email || ''}</div>
+        </div>
+        <div class="role-pill">${(m.role || '').replace('_', ' ')}</div>
+      </div>
+    `).join('')
+  }
+
+  document.getElementById('findBtn').addEventListener('click', async () => {
+    const email = document.getElementById('searchEmail').value.trim()
+    if (!email) { showMessage('Enter an email to search.', 'error'); return }
+
+    const { data, error } = await supabase.from('users').select('id, full_name, email').eq('email', email).maybeSingle()
+
+    if (error || !data) {
+      showMessage('No account found with that email. Create the login in Supabase Dashboard first.', 'error')
+      document.getElementById('foundBox').classList.remove('show')
+      return
+    }
+
+    foundUser = data
+    document.getElementById('foundName').textContent = data.full_name || 'Unnamed account'
+    document.getElementById('foundEmail').textContent = data.email
+    document.getElementById('fullNameInput').value = data.full_name || ''
+    document.getElementById('foundBox').classList.add('show')
+  })
+
+  document.getElementById('assignBtn').addEventListener('click', async () => {
+    if (!foundUser) { showMessage('Search for a user first.', 'error'); return }
+    const btn = document.getElementById('assignBtn')
+    const fullName = document.getElementById('fullNameInput').value.trim()
+    const role = document.getElementById('roleSelect').value
+
+    btn.disabled = true
+    btn.textContent = 'Saving…'
+
+    if (fullName) {
+      await supabase.from('users').update({ full_name: fullName, role: role }).eq('id', foundUser.id)
+    } else {
+      await supabase.from('users').update({ role: role }).eq('id', foundUser.id)
+    }
+
+    const { data: existingMembership } = await supabase.from('school_members').select('id').eq('user_id', foundUser.id).eq('school_id', schoolId).maybeSingle()
+
+    let error
+    if (existingMembership) {
+      const res = await supabase.from('school_members').update({ role }).eq('id', existingMembership.id)
+      error = res.error
+    } else {
+      const res = await supabase.from('school_members').insert({ school_id: schoolId, user_id: foundUser.id, role })
+      error = res.error
+    }
+
+    if (!error && role === 'teacher') {
+      const { data: existingTeacher } = await supabase.from('teachers').select('id').eq('user_id', foundUser.id).eq('school_id', schoolId).maybeSingle()
+      if (!existingTeacher) {
+        const res = await supabase.from('teachers').insert({ user_id: foundUser.id, school_id: schoolId })
+        if (res.error) error = res.error
+      }
+    }
+
+    btn.disabled = false
+    btn.textContent = 'Assign Role'
+
+    if (error) { showMessage('Could not assign role: ' + error.message, 'error') }
+    else {
+      showMessage('Role assigned successfully.', 'success')
+      document.getElementById('foundBox').classList.remove('show')
+      document.getElementById('searchEmail').value = ''
+      foundUser = null
+      await loadStaffList()
+    }
+  })
+
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut()
+    window.location.href = '/admin/login.html'
+  })
+
+  init()
+</script>
+
+</body>
+</html>

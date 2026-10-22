@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Teacher Dashboard — Al-Haqq Nur &amp; Pry School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F6F1E7; --paper: #FBF8F2; --gold: #B98B2A; --ink: #1E1A16;
+  --muted: #6b5f52; --border: #E3DACB; --green: #2E7D32; --red: #B3261E;
+}
+body { font-family: 'Inter', Arial, sans-serif; color: var(--ink); background: var(--cream); line-height: 1.6; min-height: 100vh; }
+h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; }
+a { color: inherit; text-decoration: none; }
+button, select, input { font: inherit; }
+
+.topbar { background: var(--paper); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+.topbar .brand { display: flex; align-items: center; gap: 10px; }
+.topbar .brand img { width: 32px; height: 32px; border-radius: 50%; }
+.topbar .brand strong { font-family: 'Fraunces', serif; color: var(--navy); font-size: 15px; }
+.topbar .brand span { display: block; font-size: 11px; color: var(--muted); }
+.signout { font-size: 13px; font-weight: 600; color: var(--maroon); border: 1px solid var(--border); border-radius: 999px; padding: 8px 16px; cursor: pointer; background: var(--paper); }
+
+.wrap { max-width: 920px; margin: 0 auto; padding: 28px 18px 60px; }
+.welcome { margin-bottom: 20px; }
+.welcome h1 { font-size: 24px; color: var(--navy); margin-bottom: 4px; }
+.welcome p { color: var(--muted); font-size: 14px; }
+
+.card { background: var(--paper); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+.card h2 { font-size: 16px; color: var(--navy); margin-bottom: 14px; }
+
+.field-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.field-row label { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+select, input[type="date"] { padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: #fff; color: var(--ink); width: 100%; }
+select:focus, input:focus { outline: none; border-color: var(--navy); }
+
+.tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+.tab-btn { flex: 1; padding: 11px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--paper); color: var(--muted); font-weight: 600; font-size: 13.5px; cursor: pointer; text-align: center; }
+.tab-btn.active { background: var(--navy); color: var(--paper); border-color: var(--navy); }
+
+.roster-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.roster-row:last-child { border-bottom: none; }
+.roster-row .name { font-size: 14.5px; font-weight: 600; color: var(--ink); }
+.roster-row .adm { font-size: 11.5px; color: var(--muted); }
+.status-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.status-pill { padding: 7px 12px; border-radius: 999px; border: 1.5px solid var(--border); font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: var(--muted); }
+.status-pill.selected.present { background: var(--green); border-color: var(--green); color: #fff; }
+.status-pill.selected.absent { background: var(--red); border-color: var(--red); color: #fff; }
+.status-pill.selected.late { background: var(--gold); border-color: var(--gold); color: var(--navy-deep); }
+.score-input { width: 72px; padding: 9px 10px; border: 1.5px solid var(--border); border-radius: 8px; text-align: center; }
+
+.btn-save { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--maroon); color: var(--paper); font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 16px; }
+.btn-save:disabled { opacity: 0.6; }
+.btn-save:hover:not(:disabled) { background: var(--maroon-dark); }
+
+.msg { padding: 12px 14px; border-radius: 10px; font-size: 13.5px; margin-bottom: 16px; display: none; }
+.msg.success { background: #e9f5ea; color: var(--green); display: block; }
+.msg.error { background: #fbeaea; color: var(--red); display: block; }
+.empty-note { color: var(--muted); font-size: 14px; text-align: center; padding: 20px 0; }
+.loading { color: var(--muted); font-size: 14px; text-align: center; padding: 40px 0; }
+
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--paper); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px)); z-index: 50; }
+.bn-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 10px; border-radius: 10px; color: var(--muted); font-size: 10.5px; font-weight: 600; flex: 1; text-align: center; }
+.bn-item svg { width: 21px; height: 21px; }
+.bn-item.active { color: var(--maroon); }
+.wrap { padding-bottom: 90px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <img src="/assets/images/logo.png" alt="logo">
+    <div><strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong><span>Teacher Portal</span></div>
+  </div>
+  <button class="signout" id="signOutBtn">Sign Out</button>
+</div>
+
+<div class="wrap" id="appWrap" style="display:none;">
+  <div class="welcome">
+    <h1 id="welcomeName">Welcome</h1>
+    <p>Mark attendance and enter scores for your assigned classes.</p>
+  </div>
+
+  <div class="card">
+    <h2>Your Class &amp; Subject</h2>
+    <div class="field-row">
+      <label for="assignmentSelect">Choose an assignment</label>
+      <select id="assignmentSelect"></select>
+    </div>
+  </div>
+
+  <div id="workArea" style="display:none;">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="attendance">Attendance</button>
+      <button class="tab-btn" data-tab="scores">Scores</button>
+    </div>
+
+    <div id="msgBox" class="msg"></div>
+
+    <div id="attendancePanel" class="card">
+      <h2>Mark Attendance</h2>
+      <div class="field-row">
+        <label for="attendanceDate">Date</label>
+        <input type="date" id="attendanceDate">
+      </div>
+      <div id="attendanceRoster"></div>
+      <button class="btn-save" id="saveAttendanceBtn">Save Attendance</button>
+    </div>
+
+    <div id="scoresPanel" class="card" style="display:none;">
+      <h2>Enter Scores</h2>
+      <div class="field-row">
+        <label for="assessmentSelect">Assessment type</label>
+        <select id="assessmentSelect"></select>
+      </div>
+      <div id="scoresRoster"></div>
+      <button class="btn-save" id="saveScoresBtn">Save Scores</button>
+    </div>
+  </div>
+</div>
+
+<div id="loadingState" class="loading">Loading your dashboard…</div>
+
+<nav class="bottom-nav">
+  <a href="/teacher/dashboard.html" class="bn-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>Dashboard</span></a>
+  <a href="/teacher/students.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
+  <a href="/teacher/report-cards.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Reports</span></a>
+  <a href="/teacher/profile.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
+</nav>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
+
+  let currentUser = null
+  let teacherRecord = null
+  let assignments = []
+  let currentAssignment = null
+  let roster = []
+  let assessmentTypes = []
+
+  function showMessage(text, type) {
+    const box = document.getElementById('msgBox')
+    box.textContent = text
+    box.className = 'msg ' + type
+    setTimeout(() => { box.className = 'msg' }, 4000)
+  }
+
+  async function loadSchoolName() {
+    const { data } = await supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name })
+  }
+
+  async function init() {
+    loadSchoolName()
+
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/login.html'; return }
+    currentUser = session.user
+
+    const { data: membership } = await supabase
+      .from('school_members')
+      .select('role')
+      .eq('user_id', currentUser.id)
+      .single()
+
+    if (!membership || membership.role !== 'teacher') {
+      window.location.href = '/login.html'
+      return
+    }
+
+    const { data: userRow } = await supabase.from('users').select('full_name').eq('id', currentUser.id).single()
+    document.getElementById('welcomeName').textContent = 'Welcome, ' + (userRow?.full_name || 'Teacher')
+
+    const { data: teacher } = await supabase.from('teachers').select('id').eq('user_id', currentUser.id).single()
+    if (!teacher) {
+      document.getElementById('loadingState').textContent = 'No teacher record found for your account. Contact your administrator.'
+      return
+    }
+    teacherRecord = teacher
+
+    const { data: assignmentData, error: assignmentError } = await supabase
+      .from('teacher_assignments')
+      .select('id, class_id, subject_id, term_id, classes(name), subjects(name), terms(name)')
+      .eq('teacher_id', teacherRecord.id)
+
+    if (assignmentError || !assignmentData || assignmentData.length === 0) {
+      document.getElementById('loadingState').style.display = 'none'
+      document.getElementById('appWrap').style.display = 'block'
+      document.getElementById('assignmentSelect').innerHTML = '<option>No assignments yet</option>'
+      return
+    }
+
+    assignments = assignmentData
+    const select = document.getElementById('assignmentSelect')
+    select.innerHTML = assignments.map(a =>
+      `<option value="${a.id}">${a.classes?.name || '—'} · ${a.subjects?.name || '—'} · ${a.terms?.name || '—'}</option>`
+    ).join('')
+
+    document.getElementById('attendanceDate').valueAsDate = new Date()
+
+    select.addEventListener('change', () => loadAssignment(select.value))
+    await loadAssignment(assignments[0].id)
+
+    const { data: types } = await supabase.from('assessment_types').select('id, name, max_score').order('name')
+    assessmentTypes = types || []
+    const aSelect = document.getElementById('assessmentSelect')
+    aSelect.innerHTML = assessmentTypes.map(t => `<option value="${t.id}">${t.name}${t.max_score ? ' (max ' + t.max_score + ')' : ''}</option>`).join('')
+    aSelect.addEventListener('change', renderScoresRoster)
+    if (assessmentTypes.length) renderScoresRoster()
+
+    document.getElementById('loadingState').style.display = 'none'
+    document.getElementById('appWrap').style.display = 'block'
+    document.getElementById('workArea').style.display = 'block'
+  }
+
+  async function loadAssignment(assignmentId) {
+    currentAssignment = assignments.find(a => a.id === assignmentId)
+    if (!currentAssignment) return
+
+    const { data: enrolled, error } = await supabase
+      .from('enrollments')
+      .select('student_id, students(id, surname, other_names, admission_number)')
+      .eq('class_id', currentAssignment.class_id)
+      .eq('term_id', currentAssignment.term_id)
+
+    if (error || !enrolled) { roster = []; }
+    else {
+      roster = enrolled
+        .filter(e => e.students)
+        .map(e => e.students)
+        .sort((a, b) => (a.surname || '').localeCompare(b.surname || ''))
+    }
+
+    renderAttendanceRoster()
+    renderScoresRoster()
+  }
+
+  function studentName(s) {
+    return [s.surname, s.other_names].filter(Boolean).join(' ') || 'Unnamed Student'
+  }
+
+  function renderAttendanceRoster() {
+    const container = document.getElementById('attendanceRoster')
+    if (roster.length === 0) {
+      container.innerHTML = '<p class="empty-note">No students enrolled in this class for this term yet.</p>'
+      return
+    }
+    container.innerHTML = roster.map(s => `
+      <div class="roster-row" data-student="${s.id}">
+        <div><div class="name">${studentName(s)}</div><div class="adm">${s.admission_number || ''}</div></div>
+        <div class="status-pills">
+          <button type="button" class="status-pill present" data-status="present">Present</button>
+          <button type="button" class="status-pill absent" data-status="absent">Absent</button>
+          <button type="button" class="status-pill late" data-status="late">Late</button>
+        </div>
+      </div>
+    `).join('')
+
+    container.querySelectorAll('.status-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const row = btn.closest('.roster-row')
+        row.querySelectorAll('.status-pill').forEach(b => b.classList.remove('selected'))
+        btn.classList.add('selected')
+      })
+    })
+  }
+
+  function renderScoresRoster() {
+    const container = document.getElementById('scoresRoster')
+    if (roster.length === 0) {
+      container.innerHTML = '<p class="empty-note">No students enrolled in this class for this term yet.</p>'
+      return
+    }
+    container.innerHTML = roster.map(s => `
+      <div class="roster-row" data-student="${s.id}">
+        <div><div class="name">${studentName(s)}</div><div class="adm">${s.admission_number || ''}</div></div>
+        <input type="number" class="score-input" min="0" step="0.5" placeholder="—">
+      </div>
+    `).join('')
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+      const tab = btn.dataset.tab
+      document.getElementById('attendancePanel').style.display = tab === 'attendance' ? 'block' : 'none'
+      document.getElementById('scoresPanel').style.display = tab === 'scores' ? 'block' : 'none'
+    })
+  })
+
+  document.getElementById('saveAttendanceBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('saveAttendanceBtn')
+    const date = document.getElementById('attendanceDate').value
+    if (!date) { showMessage('Please choose a date.', 'error'); return }
+
+    const rows = []
+    document.querySelectorAll('#attendanceRoster .roster-row').forEach(row => {
+      const selected = row.querySelector('.status-pill.selected')
+      if (selected) {
+        rows.push({
+          student_id: row.dataset.student,
+          class_id: currentAssignment.class_id,
+          date: date,
+          status: selected.dataset.status,
+          recorded_by: currentUser.id
+        })
+      }
+    })
+
+    if (rows.length === 0) { showMessage('Mark at least one student before saving.', 'error'); return }
+
+    btn.disabled = true
+    btn.textContent = 'Saving…'
+
+    const studentIds = rows.map(r => r.student_id)
+    await supabase.from('attendance').delete().eq('class_id', currentAssignment.class_id).eq('date', date).in('student_id', studentIds)
+    const { error } = await supabase.from('attendance').insert(rows)
+
+    btn.disabled = false
+    btn.textContent = 'Save Attendance'
+
+    if (error) { showMessage('Could not save attendance: ' + error.message, 'error') }
+    else { showMessage('Attendance saved for ' + rows.length + ' student(s).', 'success') }
+  })
+
+  document.getElementById('saveScoresBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('saveScoresBtn')
+    const assessmentTypeId = document.getElementById('assessmentSelect').value
+    if (!assessmentTypeId) { showMessage('Please choose an assessment type.', 'error'); return }
+
+    const rows = []
+    document.querySelectorAll('#scoresRoster .roster-row').forEach(row => {
+      const input = row.querySelector('.score-input')
+      if (input.value !== '') {
+        rows.push({
+          student_id: row.dataset.student,
+          subject_id: currentAssignment.subject_id,
+          term_id: currentAssignment.term_id,
+          assessment_type_id: assessmentTypeId,
+          score: parseFloat(input.value),
+          recorded_by: currentUser.id
+        })
+      }
+    })
+
+    if (rows.length === 0) { showMessage('Enter at least one score before saving.', 'error'); return }
+
+    btn.disabled = true
+    btn.textContent = 'Saving…'
+
+    const studentIds = rows.map(r => r.student_id)
+    await supabase.from('scores').delete()
+      .eq('subject_id', currentAssignment.subject_id)
+      .eq('term_id', currentAssignment.term_id)
+      .eq('assessment_type_id', assessmentTypeId)
+      .in('student_id', studentIds)
+    const { error } = await supabase.from('scores').insert(rows)
+
+    btn.disabled = false
+    btn.textContent = 'Save Scores'
+
+    if (error) { showMessage('Could not save scores: ' + error.message, 'error') }
+    else { showMessage('Scores saved for ' + rows.length + ' student(s).', 'success') }
+  })
+
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut()
+    window.location.href = '/login.html'
+  })
+
+  init()
+</script>
+
+</body>
+</html>

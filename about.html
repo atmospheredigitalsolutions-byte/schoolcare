@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About Us — Al-Haqq Nur &amp; Pry School</title>
+<meta name="description" content="Learn about Al-Haqq Nur & Pry School's story, vision, mission, core values and leadership team." />
+<meta name="theme-color" content="#101B3D" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F6F1E7; --paper: #FBF8F2; --gold: #B98B2A; --gold-soft: #D9B873; --ink: #1E1A16;
+  --muted: #6b5f52; --border: #E3DACB;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', Arial, sans-serif; color: var(--ink); background: var(--paper); line-height: 1.6; }
+a { text-decoration: none; color: inherit; }
+button { font: inherit; cursor: pointer; background: none; border: none; }
+h1, h2, h3, .display { font-family: 'Fraunces', Georgia, serif; }
+img, svg { display: block; max-width: 100%; }
+
+.navbar { position: sticky; top: 0; z-index: 1000; background: var(--paper); border-bottom: 1px solid var(--border); }
+.nav-container { position: relative; max-width: 1180px; margin: auto; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-mark { width: 36px; height: 36px; border-radius: 50%; background: var(--navy); display: grid; place-items: center; overflow: hidden; flex-shrink: 0; }
+.logo-mark img { width: 100%; height: 100%; object-fit: cover; }
+.logo-text { display: flex; flex-direction: column; line-height: 1.25; }
+.logo-text strong { font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px; letter-spacing: 0.02em; color: var(--navy); }
+.logo-text small { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 10px; color: var(--maroon); letter-spacing: 0.1em; }
+
+.nav-icons { display: flex; align-items: center; gap: 10px; }
+.icon-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--cream); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy); transition: 0.18s ease; flex-shrink: 0; }
+.icon-btn:hover { background: var(--navy); color: var(--paper); border-color: var(--navy); }
+.icon-btn svg { width: 17px; height: 17px; }
+
+.search-bar { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; background: var(--cream); border-bottom: 1px solid var(--border); }
+.search-bar.open { max-height: 70px; }
+.search-bar input { width: 100%; max-width: 1180px; margin: 0 auto; display: block; padding: 14px 24px; border: none; background: transparent; font: inherit; font-size: 15px; color: var(--ink); }
+.search-bar input:focus { outline: none; }
+
+.btn { border-radius: 999px; padding: 11px 22px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.18s ease; }
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: var(--maroon); color: var(--paper); }
+.btn-primary:hover { background: var(--maroon-dark); }
+.btn-outline { border: 1.5px solid var(--navy); color: var(--navy); }
+.btn-outline:hover { background: var(--navy); color: var(--paper); }
+
+.nav-drawer { position: fixed; inset: 0; background: var(--navy-deep); z-index: 2000; display: flex; flex-direction: column; padding: 22px 28px 36px; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); overflow-y: auto; }
+.nav-drawer.open { transform: translateX(0); }
+.nav-drawer-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
+.nav-drawer-links { display: flex; flex-direction: column; gap: 6px; margin-bottom: 40px; }
+.nav-drawer-links a { font-family: 'Fraunces', serif; font-size: clamp(26px, 7vw, 36px); font-weight: 600; color: var(--paper); padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); transition: color 0.18s ease, padding-left 0.18s ease; }
+.nav-drawer-links a:hover { color: var(--gold-soft); padding-left: 8px; }
+.nav-drawer-buttons { display: flex; flex-direction: column; gap: 14px; margin-top: auto; }
+.nav-drawer-buttons .btn { padding: 15px 22px; font-size: 15.5px; }
+
+.page-hero { background: radial-gradient(circle at 15% 0%, #1a2a5c 0%, var(--navy) 45%, var(--navy-deep) 100%); color: var(--paper); text-align: center; padding: 90px 24px 76px; position: relative; overflow: hidden; }
+.page-hero::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 26px); pointer-events: none; }
+.page-hero .eyebrow { font-family: 'Fraunces', serif; font-style: italic; color: var(--gold-soft); font-size: 14.5px; margin-bottom: 14px; position: relative; }
+.page-hero h1 { font-size: clamp(32px, 5vw, 48px); font-weight: 600; max-width: 680px; margin: 0 auto 18px; position: relative; }
+.page-hero p { color: #cdd4e6; max-width: 540px; margin: 0 auto; font-size: 16.5px; position: relative; }
+
+section { padding: 88px 24px; scroll-margin-top: 72px; }
+.section-container { max-width: 1180px; margin: auto; }
+.section-head { max-width: 640px; margin-bottom: 44px; }
+.section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+.section-head h2 { font-size: clamp(26px, 3.2vw, 34px); font-weight: 600; color: var(--navy); line-height: 1.2; margin-bottom: 12px; }
+.section-head p { color: var(--muted); font-size: 16px; }
+
+.story-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; }
+.story-grid p { color: var(--muted); font-size: 15.5px; margin-bottom: 16px; }
+.story-visual { background: var(--cream); border: 1px solid var(--border); border-radius: 24px; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 13px; text-align: center; padding: 24px; }
+
+.vm-grid { background: var(--cream); }
+.vm-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.vm-card { background: var(--navy); color: var(--paper); border-radius: 20px; padding: 38px 34px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.vm-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(16,27,61,0.25); }
+.vm-card-maroon { background: var(--maroon); }
+.vm-label { font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; color: var(--gold); display: block; margin-bottom: 14px; }
+.vm-card p { font-size: 16px; line-height: 1.65; color: #e7e2d6; }
+
+.values-list { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); }
+.value-row { padding: 28px 0; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 54px 1fr; gap: 16px; }
+.value-row:nth-child(odd) { padding-right: 28px; border-right: 1px solid var(--border); }
+.value-row:nth-child(even) { padding-left: 28px; }
+.value-row .mark { font-family: 'Fraunces', serif; font-size: 26px; color: var(--gold); font-weight: 500; }
+.value-row h3 { font-size: 16.5px; color: var(--navy); font-weight: 600; margin-bottom: 6px; }
+.value-row p { font-size: 13.5px; color: var(--muted); }
+
+.leadership { background: var(--cream); }
+.staff-list { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); }
+.staff-row { display: flex; align-items: center; gap: 18px; padding: 24px 28px 24px 0; border-bottom: 1px solid var(--border); }
+.staff-row:nth-child(odd) { border-right: 1px solid var(--border); }
+.staff-row:nth-child(even) { padding-left: 28px; }
+.staff-photo { width: 58px; height: 58px; border-radius: 50%; background: #fff; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 10.5px; overflow: hidden; }
+.staff-row h3 { font-size: 15.5px; color: var(--navy); font-weight: 600; margin-bottom: 3px; }
+.staff-row .role { font-size: 12.5px; color: var(--maroon); font-weight: 500; }
+
+.cta { background: var(--maroon); color: var(--paper); text-align: center; }
+.cta h2 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 600; margin-bottom: 14px; }
+.cta p { color: #ecd9dc; max-width: 500px; margin: 0 auto 28px; }
+.cta-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.cta .btn-primary { background: var(--gold); color: var(--navy-deep); }
+.cta .btn-primary:hover { background: #a97c22; }
+.cta .btn-outline-light { border: 1.5px solid rgba(255,255,255,0.4); color: var(--paper); border-radius: 999px; padding: 11px 22px; font-weight: 600; font-size: 14px; }
+.cta .btn-outline-light:hover { background: rgba(255,255,255,0.1); }
+
+footer { background: var(--navy-deep); color: #93a0ba; padding: 50px 24px 24px; }
+.footer-grid { max-width: 1180px; margin: auto; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 36px; }
+footer h3 { font-family: 'Fraunces', serif; color: var(--paper); margin-bottom: 12px; font-size: 19px; }
+footer h4 { color: var(--paper); margin-bottom: 14px; font-size: 14px; font-weight: 600; }
+footer p, footer a { font-size: 13.5px; }
+.footer-links { display: grid; gap: 9px; }
+.footer-links a:hover { color: var(--paper); }
+.copyright { max-width: 1180px; margin: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 18px; font-size: 12.5px; text-align: center; }
+
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-stagger > * { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal-stagger.visible > * { opacity: 1; transform: translateY(0); }
+.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0.05s; }
+.reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.12s; }
+.reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.19s; }
+.reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.26s; }
+
+@media (max-width: 900px) {
+  .story-grid, .vm-inner { grid-template-columns: 1fr; }
+  .values-list, .staff-list { grid-template-columns: 1fr; }
+  .value-row:nth-child(odd), .staff-row:nth-child(odd) { border-right: none; padding-right: 0; }
+  .value-row:nth-child(even), .staff-row:nth-child(even) { padding-left: 0; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) { section { padding: 60px 18px; } }
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-stagger > * { opacity: 1; transform: none; transition: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="nav-container">
+    <a href="/index.html" class="logo">
+      <span class="logo-mark"><img src="assets/images/logo.png" alt="School logo"></span>
+      <span class="logo-text">
+        <strong class="js-school-name-bold">AL-HAQQ</strong>
+        <small>Qualitative &amp; Distinctive</small>
+      </span>
+    </a>
+    <div class="nav-icons">
+      <button class="icon-btn" id="searchToggle" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="icon-btn" id="menuToggle" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="search-bar" id="searchBar">
+    <input type="text" id="searchInput" placeholder="Search — try 'fees', 'admissions', 'home'…">
+  </div>
+</header>
+
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-top">
+    <span class="logo-text" style="color: var(--paper);">
+      <strong class="js-school-name-bold">AL-HAQQ</strong>
+      <small style="color: var(--gold-soft);">Qualitative &amp; Distinctive</small>
+    </span>
+    <button class="icon-btn" id="drawerClose" aria-label="Close menu" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: var(--paper);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+  <nav class="nav-drawer-links">
+    <a href="/index.html">Home</a>
+    <a href="/about.html">About Us</a>
+    <a href="/admission.html">Admissions</a>
+    <a href="/index.html#programmes">Programmes</a>
+    <a href="/index.html#facilities">Facilities</a>
+    <a href="/fees.html">Fees</a>
+    <a href="/index.html#faq">FAQ</a>
+  </nav>
+  <div class="nav-drawer-buttons">
+    <a href="/login.html" class="btn btn-outline" style="border-color: rgba(255,255,255,0.4); color: var(--paper);">School Portal</a>
+    <a href="/enroll.html" class="btn btn-primary">Enroll Now</a>
+  </div>
+</div>
+
+<div class="page-hero">
+  <p class="eyebrow">About Al-Haqq Nur &amp; Pry School</p>
+  <h1 class="js-school-name-display">Al-Haqq Nur &amp; Pry School</h1>
+  <p>A leading Muslim school dedicated to providing quality education, fostering spiritual growth and promoting moral integrity — from crèche through Primary 6.</p>
+</div>
+
+<section>
+  <div class="section-container story-grid">
+    <div class="reveal">
+      <div class="section-head" style="margin-bottom:22px;">
+        <h2>Our Story</h2>
+      </div>
+      <p>[Replace with your school's founding story — when it was established, by whom, and the need it set out to meet in the community.]</p>
+      <p>[Add a paragraph on how the school has grown since then — milestones, expansions, or notable achievements.]</p>
+      <p>Today, Al-Haqq Nur &amp; Pry School is the institution where smartness, discipline, and diligence converge — carrying that founding purpose into every classroom.</p>
+    </div>
+    <div class="story-visual reveal">Add a photograph of your school building or founder here (replace this block with an &lt;img&gt; tag).</div>
+  </div>
+</section>
+
+<section class="vm-grid">
+  <div class="section-container">
+    <div class="section-head center reveal">
+      <h2>What guides us</h2>
+      <p>Our vision and mission shape every decision we make, from the classroom to the boardroom.</p>
+    </div>
+    <div class="vm-inner reveal-stagger">
+      <div class="vm-card">
+        <span class="vm-label">Vision</span>
+        <p>Empowering young minds with knowledge, skills and character to become compassionate and responsible leaders in a rapidly changing world.</p>
+      </div>
+      <div class="vm-card vm-card-maroon">
+        <span class="vm-label">Mission</span>
+        <p>To provide a nurturing environment that fosters academic excellence, spiritual growth, and promotes moral integrity.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-container">
+    <div class="section-head reveal">
+      <h2>Our core values</h2>
+      <p>The principles every pupil, teacher, and parent can expect from life at Al-Haqq.</p>
+    </div>
+    <div class="values-list reveal-stagger">
+      <div class="value-row">
+        <div class="mark">01</div>
+        <div><h3>Taqwa</h3><p>God-consciousness woven into daily conduct, not just classroom instruction.</p></div>
+      </div>
+      <div class="value-row">
+        <div class="mark">02</div>
+        <div><h3>Excellence</h3><p>High academic standards pursued with patience, structure, and care.</p></div>
+      </div>
+      <div class="value-row">
+        <div class="mark">03</div>
+        <div><h3>Integrity</h3><p>Honesty and accountability modeled by staff and expected of pupils.</p></div>
+      </div>
+      <div class="value-row">
+        <div class="mark">04</div>
+        <div><h3>Community</h3><p>A genuine partnership between school and home in raising every child.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="leadership">
+  <div class="section-container">
+    <div class="section-head center reveal">
+      <h2>Guided by experienced, caring hands</h2>
+      <p>A faculty chosen for both their qualifications and their commitment to raising children with character.</p>
+    </div>
+    <div class="staff-list reveal-stagger" id="staffGrid">
+      <div class="staff-row"><div class="staff-photo">Photo</div><div><h3>[Name]</h3><div class="role">Proprietor / Head of School</div></div></div>
+      <div class="staff-row"><div class="staff-photo">Photo</div><div><h3>[Name]</h3><div class="role">Head of Islamic Studies</div></div></div>
+      <div class="staff-row"><div class="staff-photo">Photo</div><div><h3>[Name]</h3><div class="role">Head of Primary</div></div></div>
+      <div class="staff-row"><div class="staff-photo">Photo</div><div><h3>[Name]</h3><div class="role">Head of Early Years</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="section-container">
+    <h2>Come see Al-Haqq for yourself</h2>
+    <p>Admissions are open for Crèche through Primary 6 — schedule a visit or begin your child's application today.</p>
+    <div class="cta-buttons">
+      <a href="/enroll.html" class="btn btn-primary">Enroll Your Child</a>
+      <a href="/login.html" class="btn-outline-light">School Portal</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h3 class="js-school-name">Al-Haqq Nur &amp; Pry School</h3>
+      <p>A leading Muslim school dedicated to providing quality education, fostering spiritual growth and promoting moral integrity.</p>
+    </div>
+    <div>
+      <h4>Explore</h4>
+      <div class="footer-links">
+        <a href="/index.html#vision-mission">Vision &amp; Mission</a>
+        <a href="/admission.html">Admissions</a>
+        <a href="/index.html#programmes">Programmes</a>
+        <a href="/fees.html">Fees</a>
+        <a href="/index.html#faq">FAQ</a>
+      </div>
+    </div>
+    <div>
+      <h4>Account</h4>
+      <div class="footer-links">
+        <a href="/login.html">School Portal</a>
+        <a href="/enroll.html">Enroll a Child</a>
+        <a href="/admin/login.html">Admin Login</a>
+      </div>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <div class="footer-links">
+        <span>[Street address, Lagos]</span>
+        <span>[Phone number]</span>
+        <span>[Email address]</span>
+      </div>
+    </div>
+  </div>
+  <div class="copyright"><span class="js-school-name">Al-Haqq Nur &amp; Pry School</span> &copy; 2026. All rights reserved.</div>
+</footer>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
+
+  async function loadSchool() {
+    const { data, error } = await supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    const schoolName = (!error && data) ? data.name : 'Al-Haqq Nur & Pry School'
+    document.title = 'About Us — ' + schoolName
+    document.querySelectorAll('.js-school-name').forEach(el => { el.childNodes[0].textContent = schoolName })
+    document.querySelectorAll('.js-school-name-display').forEach(el => { el.textContent = schoolName })
+    document.querySelectorAll('.js-school-name-bold').forEach(el => { el.textContent = schoolName.toUpperCase() })
+  }
+
+  async function loadStaff() {
+    const container = document.getElementById('staffGrid')
+    const { data, error } = await supabase
+      .from('leadership_team')
+      .select('full_name, role_title, photo_url')
+      .order('display_order', { ascending: true })
+
+    if (error || !data || data.length === 0) return
+
+    container.innerHTML = data.map(member => {
+      const photo = member.photo_url
+        ? `<img src="${member.photo_url}" alt="${member.full_name}" style="width:100%;height:100%;object-fit:cover;">`
+        : 'Photo'
+      return `<div class="staff-row">
+        <div class="staff-photo">${photo}</div>
+        <div><h3>${member.full_name}</h3><div class="role">${member.role_title}</div></div>
+      </div>`
+    }).join('')
+  }
+
+  loadSchool()
+  loadStaff()
+
+  const navDrawer = document.getElementById('navDrawer')
+  document.getElementById('menuToggle').addEventListener('click', () => navDrawer.classList.add('open'))
+  document.getElementById('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
+  navDrawer.querySelectorAll('a').forEach(link => link.addEventListener('click', () => navDrawer.classList.remove('open')))
+
+  const searchBar = document.getElementById('searchBar')
+  const searchInput = document.getElementById('searchInput')
+  document.getElementById('searchToggle').addEventListener('click', () => {
+    searchBar.classList.toggle('open')
+    if (searchBar.classList.contains('open')) searchInput.focus()
+  })
+  const searchMap = {
+    home: '/index.html',
+    admission: '/index.html#admissions', admissions: '/index.html#admissions', apply: '/index.html#admissions', enroll: '/enroll.html',
+    programme: '/index.html#programmes', programmes: '/index.html#programmes',
+    facilit: '/index.html#facilities',
+    fee: '/index.html#fees', fees: '/index.html#fees',
+    faq: '/index.html#faq',
+    login: '/login.html', portal: '/login.html'
+  }
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return
+    const query = searchInput.value.trim().toLowerCase()
+    const match = Object.keys(searchMap).find(key => query.includes(key))
+    if (match) window.location.href = searchMap[match]
+  })
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible')
+        revealObserver.unobserve(entry.target)
+      }
+    })
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' })
+
+  document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => revealObserver.observe(el))
+</script>
+
+</body>
+</html>

@@ -13,7 +13,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
   --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
-  --cream: #F6F1E7; --paper: #FBF8F2; --gold: #B98B2A; --ink: #1E1A16;
+  --cream: #F6F1E7; --paper: #FBF8F2; --gold: #B98B2A; --gold-soft: #D9B873; --ink: #1E1A16;
   --muted: #6b5f52; --border: #E3DACB;
 }
 html { scroll-behavior: smooth; }
@@ -21,89 +21,117 @@ body { font-family: 'Inter', Arial, sans-serif; color: var(--ink); background: v
 a { text-decoration: none; color: inherit; }
 button { font: inherit; cursor: pointer; background: none; border: none; }
 h1, h2, h3, .display { font-family: 'Fraunces', Georgia, serif; }
-img, svg { display: block; }
+img, svg { display: block; max-width: 100%; }
 
-.navbar { position: sticky; top: 0; z-index: 1000; background: rgba(251,248,242,0.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
-.nav-container { position: relative; max-width: 1180px; margin: auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.navbar { position: sticky; top: 0; z-index: 1000; background: var(--paper); border-bottom: 1px solid var(--border); }
+.nav-container { position: relative; max-width: 1180px; margin: auto; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .logo { display: flex; align-items: center; gap: 12px; }
-.logo-mark { width: 42px; height: 42px; border-radius: 50%; background: var(--navy); display: grid; place-items: center; overflow: hidden; flex-shrink: 0; }
+.logo-mark { width: 34px; height: 34px; border-radius: 50%; background: var(--navy); display: grid; place-items: center; overflow: hidden; flex-shrink: 0; }
 .logo-mark img { width: 100%; height: 100%; object-fit: cover; }
-.logo-text { font-family: 'Fraunces', serif; font-weight: 600; font-size: 19px; color: var(--navy); line-height: 1.2; }
-.logo-text small { display: block; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 11px; color: var(--maroon); letter-spacing: 0.04em; }
+.logo-text { display: flex; flex-direction: column; line-height: 1.25; }
+.logo-text strong { font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px; letter-spacing: 0.02em; color: var(--navy); }
+.logo-text small { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 10px; color: var(--maroon); letter-spacing: 0.1em; }
 
-.nav-links { display: flex; align-items: center; gap: 28px; font-size: 14px; font-weight: 500; color: var(--ink); }
-.nav-links a:hover { color: var(--maroon); }
-.nav-buttons { display: flex; align-items: center; gap: 10px; }
-.btn { border-radius: 999px; padding: 11px 22px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: 0.18s ease; }
+.nav-icons { display: flex; align-items: center; gap: 10px; }
+.icon-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--cream); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy); transition: 0.18s ease; flex-shrink: 0; }
+.icon-btn:hover { background: var(--navy); color: var(--paper); border-color: var(--navy); }
+.icon-btn svg { width: 17px; height: 17px; }
+
+.search-bar { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; background: var(--cream); border-bottom: 1px solid var(--border); }
+.search-bar.open { max-height: 70px; }
+.search-bar input { width: 100%; max-width: 1180px; margin: 0 auto; display: block; padding: 14px 24px; border: none; background: transparent; font: inherit; font-size: 15px; color: var(--ink); }
+.search-bar input:focus { outline: none; }
+
+.btn { border-radius: 999px; padding: 11px 22px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.18s ease; }
 .btn-primary { background: var(--maroon); color: var(--paper); }
 .btn-primary:hover { background: var(--maroon-dark); }
 .btn-outline { border: 1.5px solid var(--navy); color: var(--navy); }
 .btn-outline:hover { background: var(--navy); color: var(--paper); }
-.mobile-menu { display: none; font-size: 22px; color: var(--navy); }
 
-@media (max-width: 960px) {
-  .nav-links {
-    display: none; flex-direction: column; align-items: flex-start;
-    position: absolute; top: 100%; left: 0; right: 0;
-    background: var(--paper); padding: 22px 24px; border-bottom: 1px solid var(--border); gap: 18px;
-  }
-  .nav-links.nav-open { display: flex; }
-  .mobile-menu { display: block; }
-}
+.nav-drawer { position: fixed; inset: 0; background: var(--navy-deep); z-index: 2000; display: flex; flex-direction: column; padding: 22px 28px 36px; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); overflow-y: auto; }
+.nav-drawer.open { transform: translateX(0); }
+.nav-drawer-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
+.nav-drawer-links { display: flex; flex-direction: column; gap: 6px; margin-bottom: 40px; }
+.nav-drawer-links a { font-family: 'Fraunces', serif; font-size: clamp(26px, 7vw, 36px); font-weight: 600; color: var(--paper); padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); transition: color 0.18s ease, padding-left 0.18s ease; }
+.nav-drawer-links a:hover { color: var(--gold-soft); padding-left: 8px; }
+.nav-drawer-buttons { display: flex; flex-direction: column; gap: 14px; margin-top: auto; }
+.nav-drawer-buttons .btn { padding: 15px 22px; font-size: 15.5px; }
 
-.hero-wrap { padding: 32px 20px 0; }
 .hero {
-  max-width: 1180px; margin: auto;
-  background: radial-gradient(circle at 15% 0%, #1a2a5c 0%, var(--navy) 45%, var(--navy-deep) 100%);
-  border-radius: 140px 140px 28px 28px;
-  padding: 76px 48px 64px;
-  position: relative; overflow: hidden; text-align: center; color: var(--paper);
+  position: relative; width: 100%; min-height: 86vh;
+  display: flex; align-items: flex-end;
+  color: var(--paper); overflow: hidden;
+  /* Replace the gradient below with: background-image: url('/assets/images/hero.jpg'); background-size: cover; background-position: center; */
+  background: linear-gradient(155deg, #1a2a5c 0%, var(--navy) 45%, var(--navy-deep) 100%);
 }
 .hero::before {
   content: ""; position: absolute; inset: 0;
-  background: repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 26px);
+  background: linear-gradient(0deg, rgba(11,19,41,0.88) 0%, rgba(11,19,41,0.55) 45%, rgba(11,19,41,0.15) 100%);
   pointer-events: none;
 }
-.crest-icon { width: 56px; height: 56px; margin: 0 auto 22px; opacity: 0.92; }
-.hero h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 600; line-height: 1.15; max-width: 700px; margin: 0 auto 18px; }
-.hero p { font-size: 17px; color: #cdd4e6; max-width: 520px; margin: 0 auto 34px; }
-.hero-buttons { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+.hero-inner { position: relative; max-width: 1180px; margin: 0 auto; padding: 60px 24px 72px; width: 100%; }
+.hero-eyebrow { font-family: 'Fraunces', serif; font-style: italic; font-weight: 500; font-size: 14.5px; color: var(--gold-soft); letter-spacing: 0.03em; margin-bottom: 16px; opacity: 0; animation: heroFadeUp 0.9s ease 0.1s forwards; }
+.hero h1 { font-size: clamp(34px, 6vw, 60px); font-weight: 600; line-height: 1.1; max-width: 680px; margin: 0 0 18px; opacity: 0; animation: heroFadeUp 0.9s ease 0.3s forwards; }
+.hero-rule { width: 64px; height: 2px; background: var(--gold); margin: 0 0 24px; opacity: 0; animation: heroFadeUp 0.9s ease 0.45s forwards; }
+.hero p { font-size: 17px; color: #d8dfee; max-width: 480px; margin: 0 0 32px; opacity: 0; animation: heroFadeUp 0.9s ease 0.6s forwards; }
+@keyframes heroFadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.hero-buttons { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 40px; opacity: 0; animation: heroFadeUp 0.9s ease 0.75s forwards; }
 .hero .btn-primary { background: var(--gold); color: var(--navy-deep); }
-.hero .btn-primary:hover { background: #a97c22; }
-.hero .btn-ghost { border: 1.5px solid rgba(255,255,255,0.35); color: var(--paper); border-radius: 999px; padding: 11px 22px; font-weight: 600; font-size: 14px; }
-.hero .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,0.08); }
+.hero .btn-primary:hover { background: #a97c22; transform: translateY(-2px); box-shadow: 0 10px 26px rgba(185,139,42,0.35); }
+.hero .btn-ghost { border: 1.5px solid rgba(255,255,255,0.4); color: var(--paper); border-radius: 999px; padding: 11px 22px; font-weight: 600; font-size: 14px; transition: 0.18s ease; }
+.hero .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+.btn { transition: 0.18s ease; }
+.btn:hover { transform: translateY(-2px); }
+.hero-stats { display: flex; gap: 40px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.22); max-width: 560px; flex-wrap: wrap; opacity: 0; animation: heroFadeUp 0.9s ease 0.9s forwards; }
+.hero-stats div strong { display: block; font-family: 'Fraunces', serif; font-size: 22px; color: var(--gold-soft); }
+.hero-stats div span { font-size: 12.5px; color: #b9c2d6; }
 
-.ribbon-wrap { max-width: 1180px; margin: -26px auto 0; padding: 0 20px; position: relative; z-index: 2; }
 .ribbon {
   background: var(--maroon); color: var(--paper);
-  clip-path: polygon(0 0, 100% 0, 97% 50%, 100% 100%, 0 100%, 3% 50%);
-  padding: 18px 60px; display: flex; justify-content: center; gap: 0; flex-wrap: wrap;
+  padding: 16px 24px; display: flex; justify-content: center; gap: 0; flex-wrap: wrap;
 }
 .ribbon span { font-size: 13.5px; font-weight: 600; letter-spacing: 0.02em; padding: 0 22px; border-left: 1px solid rgba(255,255,255,0.3); }
 .ribbon span:first-child { border-left: none; }
 
-section { padding: 96px 24px; }
+@media (max-width: 900px) {
+  .ribbon span { padding: 4px 16px; border-left: none; }
+}
+
+section { padding: 96px 24px; scroll-margin-top: 72px; }
 .section-container { max-width: 1180px; margin: auto; }
 .section-head { max-width: 620px; margin-bottom: 48px; }
 .section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
 .section-head h2 { font-size: clamp(26px, 3.4vw, 36px); font-weight: 600; color: var(--navy); line-height: 1.2; margin-bottom: 12px; }
 .section-head p { color: var(--muted); font-size: 16px; }
+.section-head.on-dark h2 { color: var(--paper); }
+.section-head.on-dark p { color: #b9c2d6; }
 
 .vm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-.vm-card { background: var(--navy); color: var(--paper); border-radius: 20px; padding: 38px 34px; position: relative; }
+.vm-card { background: var(--navy); color: var(--paper); border-radius: 20px; padding: 38px 34px; position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.vm-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(16,27,61,0.25); }
 .vm-card-maroon { background: var(--maroon); }
 .vm-label { font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; color: var(--gold); display: block; margin-bottom: 14px; }
 .vm-card p { font-size: 16px; line-height: 1.65; color: #e7e2d6; }
 
+.admissions { background: var(--navy); color: var(--paper); }
+.steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; margin-bottom: 44px; }
+.step { padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.18); }
+.step .step-num { font-family: 'Fraunces', serif; font-size: 32px; color: var(--gold-soft); margin-bottom: 12px; }
+.step h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+.step p { font-size: 13.5px; color: #b9c2d6; }
+.admissions-cta { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.18); }
+.admissions-cta p { font-family: 'Fraunces', serif; font-style: italic; font-size: 18px; color: #e7e2d6; max-width: 440px; }
+.admissions-cta .btn-primary { background: var(--gold); color: var(--navy-deep); }
+.admissions-cta .btn-primary:hover { background: #a97c22; }
+
 .programmes { background: var(--cream); }
-.programme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-.programme-card { background: var(--paper); border: 1px solid var(--border); border-radius: 20px; padding: 34px; border-top: 4px solid var(--maroon); }
-.programme-card:nth-child(2) { border-top-color: var(--navy); }
-.programme-card h3 { font-size: 21px; color: var(--navy); margin-bottom: 10px; font-weight: 600; }
-.programme-card p { color: var(--muted); font-size: 14.5px; margin-bottom: 16px; }
-.programme-card ul { list-style: none; display: grid; gap: 9px; }
-.programme-card li { font-size: 14px; color: var(--ink); display: flex; gap: 9px; }
-.programme-card li::before { content: "—"; color: var(--maroon); flex-shrink: 0; }
+.programme-list { border-top: 1px solid var(--border); }
+.programme-row { display: grid; grid-template-columns: 70px 1fr; gap: 24px; padding: 40px 0; border-bottom: 1px solid var(--border); }
+.programme-num { font-family: 'Fraunces', serif; font-size: 36px; color: var(--gold); font-weight: 500; }
+.programme-body h3 { font-size: 22px; color: var(--navy); margin-bottom: 8px; font-weight: 600; }
+.programme-body > p { color: var(--muted); font-size: 15px; margin-bottom: 16px; max-width: 560px; }
+.programme-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+.programme-tags span { font-size: 13px; color: var(--maroon); font-weight: 600; padding: 7px 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--paper); }
 
 .why { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
 .why h2 { font-size: 32px; color: var(--navy); font-weight: 600; margin-bottom: 16px; line-height: 1.2; }
@@ -118,6 +146,45 @@ section { padding: 96px 24px; }
 .stat-row span { font-size: 13.5px; color: #b9c2d6; }
 .stat-row strong { font-size: 15px; color: var(--gold); }
 
+.staff-list { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); }
+.staff-row { display: flex; align-items: center; gap: 18px; padding: 24px 28px 24px 0; border-bottom: 1px solid var(--border); }
+.staff-row:nth-child(odd) { border-right: 1px solid var(--border); }
+.staff-row:nth-child(even) { padding-left: 28px; }
+.staff-photo { width: 58px; height: 58px; border-radius: 50%; background: var(--cream); flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 10.5px; overflow: hidden; }
+.staff-row h3 { font-size: 15.5px; color: var(--navy); font-weight: 600; margin-bottom: 3px; }
+.staff-row .role { font-size: 12.5px; color: var(--maroon); font-weight: 500; }
+
+.facilities { background: var(--cream); }
+.gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 190px); gap: 14px; }
+.gallery-item { border-radius: 16px; background: linear-gradient(150deg, var(--navy), var(--maroon)); display: flex; align-items: center; justify-content: center; color: rgba(246,241,231,0.7); font-size: 12.5px; text-align: center; padding: 14px; overflow: hidden; transition: transform 0.4s ease; }
+.gallery-item:hover { transform: scale(1.03); }
+.gallery-item.big { grid-column: span 2; grid-row: span 2; }
+
+.testimonial-list { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border-top: 1px solid var(--border); }
+.testimonial-row { padding: 32px 28px 0 0; }
+.testimonial-row:not(:first-child) { padding-left: 28px; border-left: 1px solid var(--border); }
+.testimonial-row .quote-mark { font-family: 'Fraunces', serif; font-size: 38px; color: var(--gold); line-height: 1; margin-bottom: 8px; }
+.testimonial-row p.quote { font-size: 15px; font-style: italic; font-family: 'Fraunces', serif; color: var(--ink); line-height: 1.55; margin-bottom: 16px; }
+.testimonial-row .by { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+.fees-table-wrap { background: var(--paper); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
+.fees-table { width: 100%; border-collapse: collapse; }
+.fees-table th, .fees-table td { padding: 16px 22px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
+.fees-table th { font-family: 'Fraunces', serif; font-weight: 600; color: var(--navy); background: var(--cream); font-size: 13.5px; }
+.fees-table tr:last-child td { border-bottom: none; }
+.fees-table td.amount { font-weight: 600; color: var(--maroon); font-family: 'Fraunces', serif; }
+.fees-note { margin-top: 18px; font-size: 13px; color: var(--muted); }
+
+.events-list { display: flex; flex-direction: column; }
+.event-row { display: grid; grid-template-columns: 94px 1fr auto; gap: 22px; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--border); }
+.event-row:last-child { border-bottom: none; }
+.event-row .date { font-family: 'Fraunces', serif; color: var(--maroon); text-align: center; }
+.event-row .date strong { display: block; font-size: 24px; }
+.event-row .date span { font-size: 12px; color: var(--muted); }
+.event-row h3 { font-size: 15.5px; color: var(--navy); font-weight: 600; margin-bottom: 4px; }
+.event-row p { font-size: 13px; color: var(--muted); }
+.event-row .tag { font-size: 11.5px; font-weight: 600; color: var(--gold); border: 1px solid var(--gold-soft); padding: 6px 13px; border-radius: 999px; white-space: nowrap; }
+
 .report-section { background: var(--cream); }
 .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
 .report-card-preview { background: var(--paper); border: 1px solid var(--border); border-radius: 18px; padding: 26px; box-shadow: 0 22px 50px rgba(16,27,61,0.1); }
@@ -128,14 +195,26 @@ section { padding: 96px 24px; }
 .report-table th, .report-table td { padding: 10px 6px; border-bottom: 1px solid var(--border); text-align: left; }
 .report-table th { color: var(--navy); font-weight: 600; }
 
+.faq-list { border-top: 1px solid var(--border); max-width: 760px; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q { width: 100%; text-align: left; padding: 22px 0; display: flex; justify-content: space-between; align-items: center; font-family: 'Fraunces', serif; font-size: 16.5px; color: var(--navy); font-weight: 500; }
+.faq-q .plus { font-size: 20px; color: var(--gold); transition: transform 0.2s ease; flex-shrink: 0; margin-left: 16px; }
+.faq-item.open .faq-q .plus { transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+.faq-item.open .faq-a { max-height: 220px; }
+.faq-a p { padding-bottom: 22px; color: var(--muted); font-size: 14.5px; max-width: 620px; }
+
 .cta { background: var(--maroon); color: var(--paper); text-align: center; }
 .cta h2 { font-size: clamp(28px, 3.6vw, 42px); font-weight: 600; margin-bottom: 14px; }
 .cta p { color: #ecd9dc; max-width: 520px; margin: 0 auto 30px; }
 .cta .btn-primary { background: var(--gold); color: var(--navy-deep); }
 .cta .btn-primary:hover { background: #a97c22; }
+.cta-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.cta .btn-outline-light { border: 1.5px solid rgba(255,255,255,0.4); color: var(--paper); border-radius: 999px; padding: 11px 22px; font-weight: 600; font-size: 14px; }
+.cta .btn-outline-light:hover { background: rgba(255,255,255,0.1); }
 
 footer { background: var(--navy-deep); color: #93a0ba; padding: 50px 24px 24px; }
-.footer-grid { max-width: 1180px; margin: auto; display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 40px; padding-bottom: 36px; }
+.footer-grid { max-width: 1180px; margin: auto; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 36px; }
 footer h3 { font-family: 'Fraunces', serif; color: var(--paper); margin-bottom: 12px; font-size: 19px; }
 footer h4 { color: var(--paper); margin-bottom: 14px; font-size: 14px; font-weight: 600; }
 footer p, footer a { font-size: 13.5px; }
@@ -144,68 +223,123 @@ footer p, footer a { font-size: 13.5px; }
 .copyright { max-width: 1180px; margin: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 18px; font-size: 12.5px; text-align: center; }
 
 @media (max-width: 900px) {
-  .vm-grid, .programme-grid, .why, .report-grid { grid-template-columns: 1fr; }
-  .footer-grid { grid-template-columns: 1fr; }
-  .hero { border-radius: 60px 60px 20px 20px; padding: 56px 24px 48px; }
-  .ribbon { padding: 16px 24px; clip-path: none; }
-  .ribbon span { padding: 4px 16px; border-left: none; }
+  .vm-grid, .vm-inner, .why, .report-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .hero { min-height: 70vh; }
+  .hero-inner { padding: 48px 20px 56px; }
+  .steps-grid { grid-template-columns: 1fr 1fr; }
+  .staff-list { grid-template-columns: 1fr; }
+  .staff-row:nth-child(odd) { border-right: none; padding-right: 0; }
+  .staff-row:nth-child(even) { padding-left: 0; }
+  .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 150px); }
+  .gallery-item.big { grid-column: span 2; grid-row: span 1; }
+  .testimonial-list { grid-template-columns: 1fr; }
+  .testimonial-row:not(:first-child) { padding-left: 0; border-left: none; border-top: 1px solid var(--border); padding-top: 28px; }
+  .programme-row { grid-template-columns: 1fr; gap: 12px; }
+  .event-row { grid-template-columns: 60px 1fr; }
+  .event-row .tag { grid-column: span 2; justify-self: start; }
 }
 @media (max-width: 560px) { section { padding: 64px 18px; } }
+
+/* ===== SCROLL REVEAL ===== */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-stagger > * { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal-stagger.visible > * { opacity: 1; transform: translateY(0); }
+.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0.05s; }
+.reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.12s; }
+.reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.19s; }
+.reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.26s; }
+.reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.33s; }
+.reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.4s; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-stagger > *, .hero-eyebrow, .crest-icon, .hero h1, .hero-rule, .hero p, .hero-buttons, .hero-stats { opacity: 1; transform: none; animation: none; transition: none; }
+}
 </style>
 </head>
 <body>
 
 <header class="navbar">
   <div class="nav-container">
-    <a href="index.html" class="logo">
+    <a href="/index.html" class="logo">
       <span class="logo-mark"><img src="assets/images/logo.png" alt="School logo"></span>
-      <span class="logo-text js-school-name">Al-Haqq Nur &amp; Pry School<small>Qualitative &amp; Distinctive</small></span>
+      <span class="logo-text">
+        <strong class="js-school-name-bold">AL-HAQQ</strong>
+        <small>Qualitative &amp; Distinctive</small>
+      </span>
     </a>
-    <nav class="nav-links">
-      <a href="#vision-mission">Vision &amp; Mission</a>
-      <a href="#programmes">Programmes</a>
-      <a href="#why">Why Us</a>
-      <a href="#report-card">Report Cards</a>
-    </nav>
-    <div class="nav-buttons">
-      <a href="/login.html" class="btn btn-outline">School Portal</a>
-      <a href="/enroll.html" class="btn btn-primary">Enroll Now</a>
+    <div class="nav-icons">
+      <button class="icon-btn" id="searchToggle" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="icon-btn" id="menuToggle" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      </button>
     </div>
-    <button class="mobile-menu" aria-label="Open menu">☰</button>
+  </div>
+  <div class="search-bar" id="searchBar">
+    <input type="text" id="searchInput" placeholder="Search — try 'fees', 'admissions', 'about'…">
   </div>
 </header>
 
-<div class="hero-wrap">
-  <div class="hero">
-    <svg class="crest-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M40 12a18 18 0 100 32 14 14 0 110-32z" fill="#B98B2A"/>
-      <path d="M47 24l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7z" fill="#B98B2A"/>
-    </svg>
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-top">
+    <span class="logo-text" style="color: var(--paper);">
+      <strong class="js-school-name-bold">AL-HAQQ</strong>
+      <small style="color: var(--gold-soft);">Qualitative &amp; Distinctive</small>
+    </span>
+    <button class="icon-btn" id="drawerClose" aria-label="Close menu" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: var(--paper);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+  <nav class="nav-drawer-links">
+    <a href="/about.html">About Us</a>
+    <a href="#vision-mission">Vision &amp; Mission</a>
+    <a href="/admission.html">Admissions</a>
+    <a href="#programmes">Programmes</a>
+    <a href="#why">Why Us</a>
+    <a href="#facilities">Facilities</a>
+    <a href="/fees.html">Fees</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <div class="nav-drawer-buttons">
+    <a href="/login.html" class="btn btn-outline" style="border-color: rgba(255,255,255,0.4); color: var(--paper);">School Portal</a>
+    <a href="/enroll.html" class="btn btn-primary">Enroll Now</a>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">An Islamic Nursery &amp; Primary School</p>
     <h1 class="js-school-name-display">Al-Haqq Nur &amp; Pry School</h1>
+    <div class="hero-rule"></div>
     <p>A leading Muslim school dedicated to providing quality education, fostering spiritual growth and promoting moral integrity — from crèche through Primary 6.</p>
     <div class="hero-buttons">
       <a href="/enroll.html" class="btn btn-primary">Enroll Your Child</a>
       <a href="#programmes" class="btn-ghost">See our programmes</a>
     </div>
+    <div class="hero-stats">
+      <div><strong>Crèche – Primary 6</strong><span>Full Learning Journey</span></div>
+      <div><strong>Qualified</strong><span>Islamic &amp; National Faculty</span></div>
+      <div><strong>Year-Round</strong><span>Admissions Open</span></div>
+    </div>
   </div>
 </div>
 
-<div class="ribbon-wrap">
-  <div class="ribbon">
-    <span>Crèche &amp; Nursery</span>
-    <span>Primary 1 – 6</span>
-    <span>Qur'anic &amp; National Curriculum</span>
-    <span>Qualitative &amp; Distinctive</span>
-  </div>
+<div class="ribbon">
+  <span>Crèche &amp; Nursery</span>
+  <span>Primary 1 – 6</span>
+  <span>Qur'anic &amp; National Curriculum</span>
+  <span>Qualitative &amp; Distinctive</span>
 </div>
 
 <section id="vision-mission">
   <div class="section-container">
-    <div class="section-head center">
+    <div class="section-head center reveal">
       <h2>What guides us</h2>
       <p>Al-Haqq Nur &amp; Pry School is the institution where smartness, discipline, and diligence converge.</p>
     </div>
-    <div class="vm-grid">
+    <div class="vm-grid reveal-stagger">
       <div class="vm-card">
         <span class="vm-label">Vision</span>
         <p>Empowering young minds with knowledge, skills and character to become compassionate and responsible leaders in a rapidly changing world.</p>
@@ -218,30 +352,71 @@ footer p, footer a { font-size: 13.5px; }
   </div>
 </section>
 
+<section id="admissions" class="admissions">
+  <div class="section-container">
+    <div class="section-head on-dark reveal">
+      <h2>Four simple steps to enrolling your child</h2>
+      <p>From application to confirmation, admissions is handled carefully and communicated clearly at every stage.</p>
+    </div>
+    <div class="steps-grid reveal-stagger">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Submit Application</h3>
+        <p>Complete our enrollment form online with your child's bio-data and your contact details.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Document Review</h3>
+        <p>Our admissions team reviews the application and verifies the information submitted.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Meet &amp; Assess</h3>
+        <p>A short, friendly interaction with your child and a meeting with parents or guardians.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h3>Confirmation</h3>
+        <p>Receive your admission decision and complete registration to secure your child's place.</p>
+      </div>
+    </div>
+    <div class="admissions-cta">
+      <p>"Admissions are open year-round, with priority given to early applicants ahead of each new session."</p>
+      <a href="/enroll.html" class="btn btn-primary">Start Your Application</a>
+    </div>
+  </div>
+</section>
+
 <section id="programmes" class="programmes">
   <div class="section-container">
-    <div class="section-head">
+    <div class="section-head reveal">
       <h2>Two stages, one foundation</h2>
       <p>Every child moves through a settled, faith-rooted path from their earliest years through primary school.</p>
     </div>
-    <div class="programme-grid">
-      <div class="programme-card">
-        <h3>Early Years</h3>
-        <p>Crèche and Nursery classes build early literacy, numeracy and Islamic values through guided play and observation.</p>
-        <ul>
-          <li>Qaida and early Qur'an recitation</li>
-          <li>Phonics, numeracy and motor skills</li>
-          <li>Daily developmental observation records</li>
-        </ul>
+    <div class="programme-list reveal-stagger">
+      <div class="programme-row">
+        <div class="programme-num">01</div>
+        <div class="programme-body">
+          <h3>Early Years</h3>
+          <p>Crèche and Nursery classes build early literacy, numeracy and Islamic values through guided play and observation.</p>
+          <div class="programme-tags">
+            <span>Qaida &amp; early Qur'an recitation</span>
+            <span>Phonics, numeracy &amp; motor skills</span>
+            <span>Daily developmental observation</span>
+          </div>
+        </div>
       </div>
-      <div class="programme-card">
-        <h3>Primary School</h3>
-        <p>Primary 1 through 6 follow the National curriculum alongside structured Islamic studies and Arabic.</p>
-        <ul>
-          <li>Continuous assessment and termly examinations</li>
-          <li>Qur'an, Hadith, Arabic and Islamic studies</li>
-          <li>Digital report cards shared with parents each term</li>
-        </ul>
+      <div class="programme-row">
+        <div class="programme-num">02</div>
+        <div class="programme-body">
+          <h3>Primary School</h3>
+          <p>Primary 1 through 6 follow the National curriculum alongside structured Islamic studies and Arabic.</p>
+          <div class="programme-tags">
+            <span>Continuous assessment &amp; termly exams</span>
+            <span>Qur'an, Hadith, Arabic &amp; Islamic studies</span>
+            <span>Digital report cards each term</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -269,15 +444,117 @@ footer p, footer a { font-size: 13.5px; }
   </div>
 </section>
 
+<section>
+  <div class="section-container">
+    <div class="section-head center reveal">
+      <h2>Guided by experienced, caring hands</h2>
+      <p>A faculty chosen for both their qualifications and their commitment to raising children with character.</p>
+    </div>
+    <div class="staff-list reveal-stagger" id="staffGrid">
+      <div class="staff-row">
+        <div class="staff-photo">Photo</div>
+        <div><h3>[Name]</h3><div class="role">Proprietor / Head of School</div></div>
+      </div>
+      <div class="staff-row">
+        <div class="staff-photo">Photo</div>
+        <div><h3>[Name]</h3><div class="role">Head of Islamic Studies</div></div>
+      </div>
+      <div class="staff-row">
+        <div class="staff-photo">Photo</div>
+        <div><h3>[Name]</h3><div class="role">Head of Primary</div></div>
+      </div>
+      <div class="staff-row">
+        <div class="staff-photo">Photo</div>
+        <div><h3>[Name]</h3><div class="role">Head of Early Years</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="facilities" class="facilities">
+  <div class="section-container">
+    <div class="section-head reveal">
+      <h2>A warm, safe environment built for young learners</h2>
+      <p>Replace each block below with a real photograph of your campus.</p>
+    </div>
+    <div class="gallery-grid reveal-stagger" id="facilitiesGallery">
+      <div class="gallery-item big">Main building / exterior photo</div>
+      <div class="gallery-item">Classroom</div>
+      <div class="gallery-item">Prayer area</div>
+      <div class="gallery-item">Playground</div>
+      <div class="gallery-item">Library / reading corner</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-container">
+    <div class="section-head center reveal">
+      <h2>What our school community says</h2>
+      <p>Real feedback from the parents who trust us with their children every day.</p>
+    </div>
+    <div class="testimonial-list reveal-stagger" id="testimonialGrid">
+      <div class="testimonial-row">
+        <div class="quote-mark">"</div>
+        <p class="quote">[Replace with a real quote from a parent about their experience.]</p>
+        <div class="by">— Parent, [Class level]</div>
+      </div>
+      <div class="testimonial-row">
+        <div class="quote-mark">"</div>
+        <p class="quote">[Replace with a real quote from a parent about their experience.]</p>
+        <div class="by">— Parent, [Class level]</div>
+      </div>
+      <div class="testimonial-row">
+        <div class="quote-mark">"</div>
+        <p class="quote">[Replace with a real quote from a parent about their experience.]</p>
+        <div class="by">— Parent, [Class level]</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fees" class="programmes">
+  <div class="section-container">
+    <div class="section-head reveal">
+      <h2>Clear, upfront tuition — no hidden charges</h2>
+      <p>A straightforward fee schedule across every class level.</p>
+    </div>
+    <div class="fees-table-wrap reveal">
+      <table class="fees-table">
+        <thead>
+          <tr><th>Class</th><th>Fee</th><th>Amount</th></tr>
+        </thead>
+        <tbody id="feesTableBody">
+          <tr><td colspan="3">Loading fees…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fees-note">Fees are pulled live from the school's fee structure. Add or update entries in your <code>fee_structures</code> table and they'll appear here automatically.</p>
+  </div>
+</section>
+
+<section>
+  <div class="section-container">
+    <div class="section-head reveal">
+      <h2>Term events and key dates</h2>
+      <p>What's coming up this academic session.</p>
+    </div>
+    <div class="events-list" id="eventsListBody">
+      <p class="fees-note">Loading term dates…</p>
+    </div>
+    <p class="fees-note">Dates are pulled live from your <code>terms</code> table — add a term with its start and end date and it will appear here automatically.</p>
+  </div>
+</section>
+
 <section id="report-card" class="report-section">
   <div class="section-container report-grid">
     <div>
-      <div class="section-head">
+      <div class="section-head reveal">
         <h2>A report card parents can trust</h2>
         <p>Teachers enter scores once — the platform handles totals, averages, grading and printable report cards automatically.</p>
       </div>
     </div>
-    <div class="report-card-preview">
+    <div class="report-card-preview reveal">
       <div class="report-header">
         <strong class="js-school-name-upper">AL-HAQQ NUR &amp; PRY SCHOOL</strong>
         <span id="reportTermLabel">Loading term…</span>
@@ -293,11 +570,45 @@ footer p, footer a { font-size: 13.5px; }
   </div>
 </section>
 
+<section id="faq">
+  <div class="section-container">
+    <div class="section-head reveal">
+      <h2>Questions parents often ask</h2>
+      <p>If you don't see your question here, reach out directly.</p>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <button class="faq-q">What age can my child start? <span class="plus">+</span></button>
+        <div class="faq-a"><p>We admit children from crèche age into our programme, through to Primary 6. Reach out if you're unsure which class level suits your child.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is admission open all year round? <span class="plus">+</span></button>
+        <div class="faq-a"><p>Yes — applications are accepted year-round, though we recommend applying early ahead of each new session as places are limited.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Do you offer a bus/pickup service? <span class="plus">+</span></button>
+        <div class="faq-a"><p>[Replace with your actual transport policy, or remove this question if not applicable.]</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">How do I track my child's progress? <span class="plus">+</span></button>
+        <div class="faq-a"><p>Every registered parent receives login access to our School Portal, where attendance, assessment scores, and termly report cards are available at any time.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What is your school's approach to discipline? <span class="plus">+</span></button>
+        <div class="faq-a"><p>[Replace with a short statement on your discipline/behavior policy, rooted in Islamic adab.]</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="cta">
   <div class="section-container">
     <h2>Smartness, discipline, diligence</h2>
     <p>Admissions are open for Crèche through Primary 6 at Al-Haqq — where every child is nurtured toward excellence and character.</p>
-    <a href="/enroll.html" class="btn btn-primary">Enroll Your Child</a>
+    <div class="cta-buttons">
+      <a href="/enroll.html" class="btn btn-primary">Enroll Your Child</a>
+      <a href="/login.html" class="btn-outline-light">School Portal</a>
+    </div>
   </div>
 </section>
 
@@ -311,9 +622,11 @@ footer p, footer a { font-size: 13.5px; }
       <h4>Explore</h4>
       <div class="footer-links">
         <a href="#vision-mission">Vision &amp; Mission</a>
+        <a href="/admission.html">Admissions</a>
         <a href="#programmes">Programmes</a>
         <a href="#why">Why Us</a>
-        <a href="#report-card">Report Cards</a>
+        <a href="/fees.html">Fees</a>
+        <a href="#faq">FAQ</a>
       </div>
     </div>
     <div>
@@ -321,6 +634,15 @@ footer p, footer a { font-size: 13.5px; }
       <div class="footer-links">
         <a href="/login.html">School Portal</a>
         <a href="/enroll.html">Enroll a Child</a>
+        <a href="/admin/login.html">Admin Login</a>
+      </div>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <div class="footer-links">
+        <span>[Street address, Lagos]</span>
+        <span>[Phone number]</span>
+        <span>[Email address]</span>
       </div>
     </div>
   </div>
@@ -329,7 +651,7 @@ footer p, footer a { font-size: 13.5px; }
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
-  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'YOUR_ANON_KEY')
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
 
   async function loadSchool() {
     const { data, error } = await supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
@@ -338,6 +660,7 @@ footer p, footer a { font-size: 13.5px; }
     document.querySelectorAll('.js-school-name').forEach(el => { el.childNodes[0].textContent = schoolName })
     document.querySelectorAll('.js-school-name-display').forEach(el => { el.textContent = schoolName })
     document.querySelectorAll('.js-school-name-upper').forEach(el => { el.textContent = schoolName.toUpperCase() })
+    document.querySelectorAll('.js-school-name-bold').forEach(el => { el.textContent = schoolName.toUpperCase() })
   }
 
   function gradeFor(total) {
@@ -363,12 +686,159 @@ footer p, footer a { font-size: 13.5px; }
     document.getElementById('reportTermLabel').textContent = '2026/2027 — First Term'
   }
 
+  async function loadFees() {
+    const tbody = document.getElementById('feesTableBody')
+    const { data, error } = await supabase
+      .from('fee_structures')
+      .select('name, amount, classes(name)')
+      .order('amount', { ascending: true })
+
+    if (error || !data || data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3">Fee information coming soon.</td></tr>'
+      return
+    }
+
+    const formatter = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 })
+    tbody.innerHTML = data.map(row => {
+      const className = row.classes ? row.classes.name : '—'
+      return `<tr><td>${className}</td><td>${row.name}</td><td class="amount">${formatter.format(row.amount)}</td></tr>`
+    }).join('')
+  }
+
+  async function loadEvents() {
+    const container = document.getElementById('eventsListBody')
+    const { data, error } = await supabase
+      .from('terms')
+      .select('name, start_date, end_date')
+      .order('start_date', { ascending: true })
+
+    if (error || !data || data.length === 0) {
+      container.innerHTML = '<p class="fees-note">Term dates coming soon.</p>'
+      return
+    }
+
+    container.innerHTML = data.map(term => {
+      const start = new Date(term.start_date)
+      const day = start.getDate()
+      const month = start.toLocaleString('en-US', { month: 'short' })
+      const endLabel = new Date(term.end_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+      return `<div class="event-row">
+        <div class="date"><strong>${day}</strong><span>${month}</span></div>
+        <div><h3>${term.name}</h3><p>Runs through ${endLabel}</p></div>
+        <div class="tag">Term</div>
+      </div>`
+    }).join('')
+  }
+
+  async function loadStaff() {
+    const container = document.getElementById('staffGrid')
+    const { data, error } = await supabase
+      .from('leadership_team')
+      .select('full_name, role_title, photo_url')
+      .order('display_order', { ascending: true })
+
+    if (error || !data || data.length === 0) return // keep placeholder rows until real staff are added
+
+    container.innerHTML = data.map(member => {
+      const photo = member.photo_url
+        ? `<img src="${member.photo_url}" alt="${member.full_name}" style="width:100%;height:100%;object-fit:cover;">`
+        : 'Photo'
+      return `<div class="staff-row">
+        <div class="staff-photo">${photo}</div>
+        <div><h3>${member.full_name}</h3><div class="role">${member.role_title}</div></div>
+      </div>`
+    }).join('')
+  }
+
+  async function loadTestimonials() {
+    const container = document.getElementById('testimonialGrid')
+    const { data, error } = await supabase
+      .from('testimonials')
+      .select('quote, author_name, author_role')
+      .eq('is_published', true)
+      .order('display_order', { ascending: true })
+      .limit(3)
+
+    if (error || !data || data.length === 0) return // keep placeholder rows until real testimonials are added
+
+    container.innerHTML = data.map(t => `
+      <div class="testimonial-row">
+        <div class="quote-mark">"</div>
+        <p class="quote">${t.quote}</p>
+        <div class="by">— ${t.author_name}${t.author_role ? ', ' + t.author_role : ''}</div>
+      </div>
+    `).join('')
+  }
+
+  async function loadFacilitiesGallery() {
+    const container = document.getElementById('facilitiesGallery')
+    const { data, error } = await supabase
+      .from('facility_photos')
+      .select('image_url, caption, is_featured')
+      .order('display_order', { ascending: true })
+      .limit(5)
+
+    if (error || !data || data.length === 0) return // keep placeholder tiles until real photos are added
+
+    container.innerHTML = data.map(photo => `
+      <div class="gallery-item ${photo.is_featured ? 'big' : ''}" style="background-image:url('${photo.image_url}'); background-size:cover; background-position:center;" title="${photo.caption || ''}"></div>
+    `).join('')
+  }
+
   loadSchool()
   loadReportCardSample()
+  loadFees()
+  loadEvents()
+  loadStaff()
+  loadTestimonials()
+  loadFacilitiesGallery()
 
-  const menuBtn = document.querySelector('.mobile-menu')
-  const navLinks = document.querySelector('.nav-links')
-  menuBtn.addEventListener('click', () => navLinks.classList.toggle('nav-open'))
+  const navDrawer = document.getElementById('navDrawer')
+  document.getElementById('menuToggle').addEventListener('click', () => navDrawer.classList.add('open'))
+  document.getElementById('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
+  navDrawer.querySelectorAll('a').forEach(link => link.addEventListener('click', () => navDrawer.classList.remove('open')))
+
+  const searchBar = document.getElementById('searchBar')
+  const searchInput = document.getElementById('searchInput')
+  document.getElementById('searchToggle').addEventListener('click', () => {
+    searchBar.classList.toggle('open')
+    if (searchBar.classList.contains('open')) searchInput.focus()
+  })
+  const searchMap = {
+    about: '/about.html', us: '/about.html',
+    vision: '#vision-mission', mission: '#vision-mission',
+    admission: '#admissions', admissions: '#admissions', apply: '#admissions', enroll: '/enroll.html',
+    programme: '#programmes', programmes: '#programmes', curriculum: '#programmes',
+    why: '#why',
+    facilit: '#facilities', facilities: '#facilities', gallery: '#facilities',
+    fee: '#fees', fees: '#fees', tuition: '#fees',
+    event: '#report-card', report: '#report-card',
+    faq: '#faq', question: '#faq',
+    login: '/login.html', portal: '/login.html'
+  }
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return
+    const query = searchInput.value.trim().toLowerCase()
+    const match = Object.keys(searchMap).find(key => query.includes(key))
+    if (match) window.location.href = searchMap[match]
+  })
+
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.parentElement.classList.toggle('open')
+    })
+  })
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible')
+        revealObserver.unobserve(entry.target)
+      }
+    })
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' })
+
+  document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => revealObserver.observe(el))
 </script>
 
 </body>
