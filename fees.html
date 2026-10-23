@@ -3,24 +3,26 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#101B3D" />
 <title>Fees — Al-Haqq Nur &amp; Pry School</title>
 <meta name="description" content="Tuition and fee schedule for Al-Haqq Nur & Pry School." />
 <meta name="theme-color" content="#101B3D" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,500..700;1,7..72,500..700&display=swap" rel="stylesheet">
 <style>
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
   --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
-  --cream: #F6F1E7; --paper: #FBF8F2; --gold: #B98B2A; --gold-soft: #D9B873; --ink: #1E1A16;
-  --muted: #6b5f52; --border: #E3DACB;
+  --cream: #EFF1F6; --paper: #FFFFFF; --gold: #B98B2A; --gold-soft: #E2BE6A; --ink: #161A27;
+  --muted: #5B6275; --serif: 'Literata', Georgia, serif; --sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; --navy-tint: #E8EBF5; --amber-text: #7A5A12; --border: #DDE0E8;
 }
 html { scroll-behavior: smooth; }
-body { font-family: 'Inter', Arial, sans-serif; color: var(--ink); background: var(--paper); line-height: 1.6; }
+body { font-family: var(--sans); color: var(--ink); background: var(--paper); line-height: 1.6; }
 a { text-decoration: none; color: inherit; }
 button { font: inherit; cursor: pointer; background: none; border: none; }
-h1, h2, h3, .display { font-family: 'Fraunces', Georgia, serif; }
+h1, h2, h3, .display { font-family: var(--serif); }
 img, svg { display: block; max-width: 100%; }
 
 .navbar { position: sticky; top: 0; z-index: 1000; background: var(--paper); border-bottom: 1px solid var(--border); }
@@ -29,8 +31,8 @@ img, svg { display: block; max-width: 100%; }
 .logo-mark { width: 34px; height: 34px; border-radius: 50%; background: var(--navy); display: grid; place-items: center; overflow: hidden; flex-shrink: 0; }
 .logo-mark img { width: 100%; height: 100%; object-fit: cover; }
 .logo-text { display: flex; flex-direction: column; line-height: 1.25; }
-.logo-text strong { font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px; letter-spacing: 0.02em; color: var(--navy); }
-.logo-text small { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 10px; color: var(--maroon); letter-spacing: 0.1em; }
+.logo-text strong { font-family: var(--serif); font-weight: 700; font-size: 18px; letter-spacing: 0.02em; color: var(--navy); }
+.logo-text small { font-family: var(--sans); font-weight: 600; font-size: 10px; color: var(--maroon); letter-spacing: 0.1em; }
 .nav-icons { display: flex; align-items: center; gap: 10px; }
 .icon-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--cream); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy); transition: 0.18s ease; flex-shrink: 0; }
 .icon-btn:hover { background: var(--navy); color: var(--paper); border-color: var(--navy); }
@@ -51,14 +53,14 @@ img, svg { display: block; max-width: 100%; }
 .nav-drawer.open { transform: translateX(0); }
 .nav-drawer-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
 .nav-drawer-links { display: flex; flex-direction: column; gap: 6px; margin-bottom: 40px; }
-.nav-drawer-links a { font-family: 'Fraunces', serif; font-size: clamp(26px, 7vw, 36px); font-weight: 600; color: var(--paper); padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); transition: color 0.18s ease, padding-left 0.18s ease; }
+.nav-drawer-links a { font-family: var(--serif); font-size: clamp(26px, 7vw, 36px); font-weight: 600; color: var(--paper); padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); transition: color 0.18s ease, padding-left 0.18s ease; }
 .nav-drawer-links a:hover { color: var(--gold-soft); padding-left: 8px; }
 .nav-drawer-buttons { display: flex; flex-direction: column; gap: 14px; margin-top: auto; }
 .nav-drawer-buttons .btn { padding: 15px 22px; font-size: 15.5px; }
 
 .page-hero { background: radial-gradient(circle at 15% 0%, #1a2a5c 0%, var(--navy) 45%, var(--navy-deep) 100%); color: var(--paper); text-align: center; padding: 90px 24px 76px; position: relative; overflow: hidden; }
 .page-hero::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 26px); pointer-events: none; }
-.page-hero .eyebrow { font-family: 'Fraunces', serif; font-style: italic; color: var(--gold-soft); font-size: 14.5px; margin-bottom: 14px; position: relative; }
+.page-hero .eyebrow { font-family: var(--serif); font-style: italic; color: var(--gold-soft); font-size: 14.5px; margin-bottom: 14px; position: relative; }
 .page-hero h1 { font-size: clamp(32px, 5vw, 48px); font-weight: 600; max-width: 680px; margin: 0 auto 18px; position: relative; }
 .page-hero p { color: #cdd4e6; max-width: 540px; margin: 0 auto; font-size: 16.5px; position: relative; }
 
@@ -72,21 +74,21 @@ section { padding: 88px 24px; scroll-margin-top: 72px; }
 .fees-table-wrap { background: var(--paper); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
 .fees-table { width: 100%; border-collapse: collapse; }
 .fees-table th, .fees-table td { padding: 18px 22px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14.5px; }
-.fees-table th { font-family: 'Fraunces', serif; font-weight: 600; color: var(--navy); background: var(--cream); font-size: 13.5px; }
+.fees-table th { font-family: var(--serif); font-weight: 600; color: var(--navy); background: var(--cream); font-size: 13.5px; }
 .fees-table tr:last-child td { border-bottom: none; }
-.fees-table td.amount { font-weight: 600; color: var(--maroon); font-family: 'Fraunces', serif; }
+.fees-table td.amount { font-weight: 600; color: var(--maroon); font-family: var(--serif); }
 .fees-note { margin-top: 18px; font-size: 13px; color: var(--muted); }
 
 .policy { background: var(--cream); }
 .policy-list { border-top: 1px solid var(--border); }
 .policy-row { display: grid; grid-template-columns: 70px 1fr; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--border); }
-.policy-num { font-family: 'Fraunces', serif; font-size: 30px; color: var(--gold); font-weight: 500; }
+.policy-num { font-family: var(--serif); font-size: 30px; color: var(--gold); font-weight: 500; }
 .policy-row h3 { font-size: 16.5px; color: var(--navy); font-weight: 600; margin-bottom: 6px; }
 .policy-row p { font-size: 14px; color: var(--muted); max-width: 580px; }
 
 .faq-list { border-top: 1px solid var(--border); max-width: 760px; }
 .faq-item { border-bottom: 1px solid var(--border); }
-.faq-q { width: 100%; text-align: left; padding: 22px 0; display: flex; justify-content: space-between; align-items: center; font-family: 'Fraunces', serif; font-size: 16.5px; color: var(--navy); font-weight: 500; }
+.faq-q { width: 100%; text-align: left; padding: 22px 0; display: flex; justify-content: space-between; align-items: center; font-family: var(--serif); font-size: 16.5px; color: var(--navy); font-weight: 500; }
 .faq-q .plus { font-size: 20px; color: var(--gold); transition: transform 0.2s ease; flex-shrink: 0; margin-left: 16px; }
 .faq-item.open .faq-q .plus { transform: rotate(45deg); }
 .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
@@ -104,7 +106,7 @@ section { padding: 88px 24px; scroll-margin-top: 72px; }
 
 footer { background: var(--navy-deep); color: #93a0ba; padding: 50px 24px 24px; }
 .footer-grid { max-width: 1180px; margin: auto; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 36px; }
-footer h3 { font-family: 'Fraunces', serif; color: var(--paper); margin-bottom: 12px; font-size: 19px; }
+footer h3 { font-family: var(--serif); color: var(--paper); margin-bottom: 12px; font-size: 19px; }
 footer h4 { color: var(--paper); margin-bottom: 14px; font-size: 14px; font-weight: 600; }
 footer p, footer a { font-size: 13.5px; }
 .footer-links { display: grid; gap: 9px; }
@@ -122,9 +124,272 @@ footer p, footer a { font-size: 13.5px; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
 }
+
+/* ===== redesign layer ===== */
+body { font-size: 16px; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { letter-spacing: -0.015em; }
+:focus-visible { outline: 3px solid rgba(185,139,42,0.7); outline-offset: 2px; }
+
+/* blazer-trim stripe */
+.navbar::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 6px; background: linear-gradient(var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); pointer-events: none; }
+footer { position: relative; }
+footer::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); }
+.nav-container { padding-top: 12px; padding-bottom: 12px; }
+.logo-mark { width: 40px; height: 40px; background: #fff; border: 1px solid var(--border); }
+.logo-text strong { font-family: var(--serif); font-size: 18px; letter-spacing: 0.01em; }
+.icon-btn { background: var(--navy-tint); border-color: transparent; }
+.search-bar { background: var(--navy-tint); }
+
+/* buttons */
+.btn, .hero .btn-ghost, .cta .btn-outline-light { border-radius: 8px; padding: 12px 24px; font-size: 15px; min-height: 46px; }
+.btn:hover, .hero .btn-primary:hover, .hero .btn-ghost:hover { transform: none; box-shadow: none; }
+
+/* navigation overlay */
+.nav-drawer { visibility: hidden; transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), visibility 0s 0.4s; padding-left: max(28px, calc((100vw - 1180px) / 2 + 24px)); padding-right: max(28px, calc((100vw - 1180px) / 2 + 24px)); }
+.nav-drawer.open { visibility: visible; transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), visibility 0s 0s; }
+.nav-drawer-links a { font-weight: 600; }
+.nav-drawer-links a:hover { padding-left: 0; }
+.nav-drawer-links a:hover::after { content: "\2192"; color: var(--gold-soft); float: right; }
+.nav-drawer-buttons { flex-direction: row; flex-wrap: wrap; }
+.nav-drawer-buttons .btn { flex: 1 1 200px; }
+
+/* hero: exercise-book ruling with a gold margin rule */
+.hero { --m: max(12px, calc((100vw - 1180px) / 2 + 6px)); }
+.hero::after, .page-hero::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent var(--m), rgba(226,190,106,0.5) var(--m) calc(var(--m) + 1px), transparent calc(var(--m) + 1px) calc(var(--m) + 4px), rgba(226,190,106,0.5) calc(var(--m) + 4px) calc(var(--m) + 5px), transparent calc(var(--m) + 5px)),
+    repeating-linear-gradient(to bottom, transparent 0 35px, rgba(255,255,255,0.045) 35px 36px); }
+.hero-inner { z-index: 1; }
+.page-hero { --m: max(12px, calc((100vw - 1180px) / 2 + 6px)); background: linear-gradient(160deg, #18265a 0%, var(--navy) 50%, var(--navy-deep) 100%); }
+.page-hero::before { display: none; }
+.page-hero > * { position: relative; z-index: 1; }
+.hero-eyebrow, .page-hero .eyebrow { font-style: normal; font-weight: 500; font-size: 15px; letter-spacing: 0; }
+.hero h1 { font-weight: 700; letter-spacing: -0.02em; }
+.page-hero h1 { font-weight: 700; }
+.hero-stats div strong { font-size: 19px; color: #fff; }
+.hero-rule { height: 3px; }
+
+.ribbon { border-bottom: 3px solid var(--gold); }
+.ribbon span { font-size: 14px; }
+
+/* sections and type */
+.section-head h2 { font-weight: 700; }
+.section-head p, .why > div > p, .story-grid p, .philosophy-grid p { line-height: 1.7; }
+.vm-card, .report-card-preview, .fees-table-wrap, .fees-note-box, .why-visual, .story-visual { border-radius: 14px; }
+.vm-card:hover { transform: none; box-shadow: none; }
+.vm-card { padding: 40px 36px; }
+.vm-card-maroon .vm-label { color: var(--gold-soft); }
+.vm-label { font-size: 15px; }
+.gallery-item { border-radius: 10px; }
+.gallery-item:hover { transform: none; }
+.report-card-preview { box-shadow: none; border: 1.5px solid var(--navy); }
+.programme-num, .policy-num, .value-row .mark { color: var(--maroon); }
+.programme-tags span { border-radius: 6px; background: var(--navy-tint); border-color: transparent; color: var(--navy); }
+.age-card { border-radius: 10px; }
+.age-card span { color: var(--amber-text); background: #FBF1DC; border-radius: 6px; }
+.event-row .tag { color: var(--amber-text); border-color: #e5cf9f; border-radius: 6px; }
+.step .step-num { color: var(--maroon); }
+.admissions .step .step-num { color: var(--gold-soft); }
+.requirements .req-item .check { background: var(--gold-soft); }
+.check-list li::before { color: var(--maroon); }
+.staff-photo { border: 2px solid #fff; box-shadow: 0 0 0 2px var(--maroon); }
+.testimonial-row .quote-mark { color: var(--maroon); }
+
+/* fees table */
+.fees-table th { background: var(--navy); color: #fff; font-size: 14px; border-bottom: none; }
+.fees-table td { font-variant-numeric: tabular-nums; }
+.fees-table td.amount { color: var(--maroon); font-weight: 700; }
+.fees-table tbody tr:hover td { background: var(--navy-tint); }
+
+/* faq */
+.faq-q { font-weight: 600; transition: color .15s; }
+.faq-q:hover { color: var(--maroon); }
+.faq-q .plus { color: var(--maroon); }
+
+.cta { border-top: 3px solid var(--gold); }
+footer h3 { font-weight: 600; }
+.footer-links a { transition: color .15s; }
+
+/* calmer scroll reveal */
+.reveal { transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+.reveal-stagger > * { transform: translateY(10px); transition: opacity .45s ease, transform .45s ease; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .reveal, .reveal-stagger > *, .hero-eyebrow, .hero h1, .hero-rule, .hero p, .hero-buttons, .hero-stats { opacity: 1 !important; transform: none !important; } }
+
+/* ===== fees page ===== */
+:root { --img-classroom: url("https://images.unsplash.com/photo-1473649085228-583485e6e4d7?auto=format&fit=crop&w=1800&q=70"); --nav-h: 65px; }
+html { scroll-padding-top: 130px; }
+section { scroll-margin-top: 130px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes kenburns { from { transform: scale(1) translate3d(0,0,0); } to { transform: scale(1.09) translate3d(-1.2%, -1%, 0); } }
+@keyframes rowIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+
+.scroll-progress { position: fixed; top: 0; left: 0; height: 3px; width: 100%; transform: scaleX(0); transform-origin: 0 50%; background: linear-gradient(90deg, var(--maroon), var(--gold-soft)); z-index: 3000; pointer-events: none; }
+
+/* hero with photo */
+.fees-hero { text-align: left; padding: 104px 24px 92px; isolation: isolate; }
+.fees-hero::before { content: ""; display: block; position: absolute; inset: -5%; z-index: -2; background: var(--img-classroom) center 35% / cover no-repeat, var(--navy); animation: kenburns 28s ease-in-out infinite alternate; }
+.fees-hero::after { background:
+  linear-gradient(90deg, transparent var(--m), rgba(226,190,106,0.55) var(--m) calc(var(--m) + 1px), transparent calc(var(--m) + 1px) calc(var(--m) + 4px), rgba(226,190,106,0.55) calc(var(--m) + 4px) calc(var(--m) + 5px), transparent calc(var(--m) + 5px)),
+  repeating-linear-gradient(to bottom, transparent 0 35px, rgba(255,255,255,0.05) 35px 36px),
+  linear-gradient(100deg, rgba(11,19,41,0.95) 0%, rgba(11,19,41,0.8) 50%, rgba(11,19,41,0.5) 100%); }
+.fees-hero-inner { max-width: 1180px; margin: 0 auto; }
+.fees-hero .eyebrow { margin: 0 0 14px; animation: fadeUp .8s ease .1s both; }
+.fees-hero h1 { margin: 0 0 18px; max-width: 720px; font-size: clamp(34px, 5.4vw, 56px); line-height: 1.1; animation: fadeUp .8s ease .25s both; }
+.fees-hero .lead { margin: 0 0 30px; max-width: 560px; font-size: 17.5px; color: #d6dcec; animation: fadeUp .8s ease .4s both; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 40px; animation: fadeUp .8s ease .55s both; }
+.fees-hero .btn-primary { background: var(--gold); color: var(--navy-deep); }
+.fees-hero .btn-primary:hover { background: #a97c22; }
+.fees-hero .btn-ghost { display: inline-flex; align-items: center; min-height: 46px; border: 1.5px solid rgba(255,255,255,0.45); color: #fff; border-radius: 8px; padding: 12px 24px; font-weight: 600; font-size: 15px; transition: background .2s, border-color .2s; }
+.fees-hero .btn-ghost:hover { background: rgba(255,255,255,0.12); border-color: #fff; }
+.hero-chips { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; animation: fadeUp .8s ease .7s both; }
+.hero-chips li { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 8px; background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.22); backdrop-filter: blur(6px); font-size: 14px; font-weight: 500; color: #eef1f9; }
+.hero-chips svg { width: 17px; height: 17px; color: var(--gold-soft); }
+
+/* sticky in-page nav */
+.subnav { position: sticky; top: var(--nav-h); z-index: 900; background: rgba(255,255,255,0.92); backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid var(--border); }
+.subnav-inner { max-width: 1180px; margin: 0 auto; padding: 0 20px; display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
+.subnav-inner::-webkit-scrollbar { display: none; }
+.subnav a { position: relative; padding: 15px 14px; font-weight: 600; font-size: 14.5px; color: var(--muted); white-space: nowrap; transition: color .2s; }
+.subnav a::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 0; height: 3px; border-radius: 3px 3px 0 0; background: var(--maroon); transform: scaleX(0); transform-origin: left; transition: transform .35s cubic-bezier(.22,1,.36,1); }
+.subnav a:hover, .subnav a.active { color: var(--navy); }
+.subnav a.active::after { transform: scaleX(1); }
+
+section { padding: 80px 24px; }
+.glance-sec { padding-top: 56px; padding-bottom: 24px; }
+.glance { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.g-card, .p-card, .struct-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 26px 24px; transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s, border-color .3s; }
+.g-card:hover, .p-card:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(16,27,61,0.1); border-color: #c9cfe0; }
+.g-ic, .p-ic, .pay-ic { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--navy-tint); color: var(--navy); margin-bottom: 16px; transition: background .3s, color .3s, transform .4s cubic-bezier(.22,1,.36,1); }
+.g-ic svg, .p-ic svg, .pay-ic svg { width: 22px; height: 22px; }
+.g-card:hover .g-ic, .p-card:hover .p-ic { background: var(--navy); color: var(--gold-soft); transform: rotate(-6deg) scale(1.06); }
+.g-card h3, .p-card h3 { font-size: 17px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+.g-card p, .p-card p { font-size: 14.5px; color: var(--muted); line-height: 1.65; }
+
+/* schedule */
+.fee-tools { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 8px 16px; border-radius: 999px; border: 1.5px solid var(--border); background: #fff; color: var(--navy); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .2s, color .2s, border-color .2s, transform .2s; }
+.chip:hover { border-color: var(--navy); }
+.chip.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+.chip:active { transform: scale(.96); }
+.tool-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.tool-actions input { width: 240px; max-width: 100%; min-height: 46px; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; font: inherit; font-size: 15px; background: #fff; transition: border-color .2s, box-shadow .2s; }
+.tool-actions input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,27,61,0.14); }
+.tool-actions .btn { background: #fff; }
+.tool-actions .btn:hover { background: var(--navy); }
+.fees-table-wrap { overflow-x: auto; }
+.fees-table { min-width: 460px; }
+.fees-table tbody tr { animation: rowIn .5s cubic-bezier(.22,1,.36,1) both; }
+.fees-table tbody tr:nth-child(1) { animation-delay: .02s; } .fees-table tbody tr:nth-child(2) { animation-delay: .06s; }
+.fees-table tbody tr:nth-child(3) { animation-delay: .10s; } .fees-table tbody tr:nth-child(4) { animation-delay: .14s; }
+.fees-table tbody tr:nth-child(5) { animation-delay: .18s; } .fees-table tbody tr:nth-child(6) { animation-delay: .22s; }
+.fees-table tbody tr:nth-child(n+7) { animation-delay: .26s; }
+.fees-table tbody tr[hidden] { display: none; }
+.fees-table td, .fees-table th { transition: background .2s; }
+.fee-empty { padding: 28px; text-align: center; color: var(--muted); }
+.fee-meta { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
+.fee-meta .fees-note { margin: 0; max-width: 640px; }
+.fee-count { font-size: 13px; font-weight: 600; color: var(--navy); }
+
+/* structure */
+.structure-sec { background: var(--cream); }
+.struct-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.struct-card { position: relative; padding-top: 30px; overflow: hidden; }
+.struct-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--navy); }
+.struct-card.once::before { background: var(--gold); }
+.struct-card.extra::before { background: var(--maroon); }
+.s-tag { display: inline-block; font-size: 12.5px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
+.struct-card h3 { font-size: 21px; color: var(--navy); margin-bottom: 14px; font-weight: 700; }
+.struct-card ul { list-style: none; display: grid; gap: 11px; }
+.struct-card li { position: relative; padding-left: 26px; font-size: 14.8px; color: var(--ink); line-height: 1.55; }
+.struct-card li::before { content: ""; position: absolute; left: 0; top: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--navy-tint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23101B3D' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 9px no-repeat; }
+
+/* timeline */
+.timeline { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; list-style: none; padding-top: 6px; }
+.t-line { position: absolute; top: 25px; left: 6%; right: 6%; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--maroon), var(--gold)); transform: scaleX(0); transform-origin: left; transition: transform 1.3s cubic-bezier(.22,1,.36,1) .25s; }
+.timeline.visible .t-line { transform: scaleX(1); }
+.timeline li { position: relative; opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+.timeline.visible li { opacity: 1; transform: none; }
+.timeline.visible li:nth-of-type(1) { transition-delay: .2s; } .timeline.visible li:nth-of-type(2) { transition-delay: .45s; }
+.timeline.visible li:nth-of-type(3) { transition-delay: .7s; } .timeline.visible li:nth-of-type(4) { transition-delay: .95s; }
+.t-dot { position: relative; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--navy); color: #fff; font-family: var(--serif); font-weight: 700; font-size: 17px; box-shadow: 0 0 0 6px var(--paper); margin-bottom: 18px; }
+.timeline h3 { font-size: 17px; color: var(--navy); font-weight: 600; margin-bottom: 6px; }
+.timeline p { font-size: 14.5px; color: var(--muted); max-width: 250px; }
+
+/* policy */
+.policy { background: var(--cream); }
+.pay-card { display: grid; grid-template-columns: 1fr 1.1fr; gap: 32px; align-items: center; background: var(--navy); color: #fff; border-radius: 14px; padding: 36px; margin-bottom: 20px; position: relative; overflow: hidden; isolation: isolate; border-bottom: 5px solid var(--gold); }
+.pay-card::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(100deg, rgba(11,19,41,0.97) 30%, rgba(11,19,41,0.82)), url("https://images.unsplash.com/photo-1473649085228-583485e6e4d7?auto=format&fit=crop&w=900&q=70") center / cover; }
+.pay-ic { background: rgba(255,255,255,0.12); color: var(--gold-soft); }
+.pay-copy h3 { font-size: 22px; margin-bottom: 8px; font-weight: 700; }
+.pay-copy p { color: #cdd4e6; font-size: 15px; max-width: 460px; }
+.pay-details { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pay-details div { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); border-radius: 10px; padding: 14px 16px; transition: background .25s, transform .25s; }
+.pay-details div:hover { background: rgba(255,255,255,0.14); transform: translateY(-2px); }
+.pay-details dt { font-size: 12.5px; color: #b9c2d6; margin-bottom: 2px; }
+.pay-details dd { font-weight: 600; font-size: 15px; overflow-wrap: anywhere; }
+.policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.p-card { display: grid; grid-template-columns: 46px 1fr; column-gap: 18px; }
+.p-card .p-ic { grid-row: 1 / span 2; margin-bottom: 0; }
+.p-card h3 { margin: 2px 0 6px; }
+.policy-note { margin-top: 20px; font-size: 14px; color: var(--muted); }
+
+/* faq */
+.faq-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 56px; align-items: start; }
+.faq-side { position: sticky; top: 140px; }
+.faq-side .section-head { margin-bottom: 24px; }
+.faq-list { max-width: none; }
+.faq-a { transition: max-height .35s ease; }
+.faq-item.open .faq-a { max-height: 340px; }
+.faq-item { transition: background .2s; }
+.faq-item.open { background: linear-gradient(90deg, rgba(232,235,245,0.55), transparent); }
+.help-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 26px; }
+.help-card h3 { font-size: 18px; color: var(--navy); margin-bottom: 6px; font-weight: 600; }
+.help-card > p { font-size: 14.5px; color: var(--muted); margin-bottom: 14px; }
+.help-card ul { list-style: none; display: grid; gap: 10px; }
+.help-card li { display: flex; gap: 10px; align-items: center; font-size: 14.5px; }
+.help-card li svg { width: 17px; height: 17px; color: var(--maroon); flex-shrink: 0; }
+
+/* cta with fixed photo */
+.cta-photo { position: relative; isolation: isolate; background: linear-gradient(rgba(110,31,43,0.9), rgba(85,22,32,0.94)), var(--img-classroom) center / cover fixed, var(--maroon); padding: 100px 24px; }
+
+@media (max-width: 1000px) {
+  .glance { grid-template-columns: 1fr 1fr; }
+  .struct-grid { grid-template-columns: 1fr; }
+  .timeline { grid-template-columns: 1fr; gap: 28px; padding-left: 4px; }
+  .t-line { top: 20px; bottom: 40px; left: 24px; right: auto; width: 3px; height: auto; transform: scaleY(0); transform-origin: top; background: linear-gradient(var(--maroon), var(--gold)); }
+  .timeline.visible .t-line { transform: scaleY(1); }
+  .timeline li { display: grid; grid-template-columns: 40px 1fr; column-gap: 20px; }
+  .timeline .t-dot { grid-row: 1 / span 2; margin-bottom: 0; }
+  .timeline p { max-width: none; }
+  .pay-card, .faq-layout { grid-template-columns: 1fr; }
+  .faq-side { position: static; }
+  .policy-grid { grid-template-columns: 1fr; }
+  .cta-photo { background-attachment: scroll; }
+}
+@media (max-width: 560px) {
+  section { padding: 60px 18px; }
+  .fees-hero { padding: 72px 18px 64px; }
+  .glance { grid-template-columns: 1fr; }
+  .pay-card { padding: 26px 20px; }
+  .pay-details { grid-template-columns: 1fr; }
+  .tool-actions { width: 100%; } .tool-actions input { flex: 1; width: auto; }
+  .p-card { grid-template-columns: 1fr; } .p-card .p-ic { grid-row: auto; margin-bottom: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .t-line { transform: none !important; } .timeline li { opacity: 1 !important; transform: none !important; }
+  .fees-hero::before { animation: none !important; }
+}
+@media print {
+  .navbar, .nav-drawer, .subnav, .scroll-progress, .fees-hero, .glance-sec, .structure-sec, .calendar-sec, .policy, .faq-sec, .cta, footer, .fee-tools { display: none !important; }
+  .schedule-sec { padding: 0; } .reveal { opacity: 1 !important; transform: none !important; }
+  .fees-table th { background: #eee !important; color: #000 !important; }
+}
 </style>
 </head>
 <body>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <header class="navbar">
   <div class="nav-container">
@@ -173,17 +438,58 @@ footer p, footer a { font-size: 13.5px; }
   </div>
 </div>
 
-<div class="page-hero">
-  <p class="eyebrow">Fees</p>
-  <h1>Clear, upfront tuition — no hidden charges</h1>
-  <p>A straightforward fee schedule across every class level, so you always know exactly what to expect.</p>
+<div class="page-hero fees-hero">
+  <div class="fees-hero-inner">
+    <p class="eyebrow">Fees &amp; payment policy</p>
+    <h1>Clear, upfront tuition — no hidden charges</h1>
+    <p class="lead">A straightforward fee schedule for every class level, a simple payment calendar and a written policy, so you always know what to expect and when.</p>
+    <div class="hero-actions">
+      <a href="#schedule" class="btn btn-primary">See the fee schedule</a>
+      <a href="/enroll.html" class="btn-ghost">Enroll your child</a>
+    </div>
+    <ul class="hero-chips">
+      <li><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>Billed termly</li>
+      <li><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 4l9 6"/><line x1="5" y1="10" x2="5" y2="18"/><line x1="10" y1="10" x2="10" y2="18"/><line x1="14" y1="10" x2="14" y2="18"/><line x1="19" y1="10" x2="19" y2="18"/><line x1="3" y1="21" x2="21" y2="21"/></svg>Pay by bank transfer</li>
+      <li><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/></svg>Receipts in the School Portal</li>
+    </ul>
+  </div>
 </div>
 
-<section>
+<nav class="subnav" aria-label="On this page">
+  <div class="subnav-inner">
+    <a href="#glance" class="active">At a glance</a>
+    <a href="#schedule">Fee schedule</a>
+    <a href="#structure">How fees work</a>
+    <a href="#calendar">Payment calendar</a>
+    <a href="#policy">Payment policy</a>
+    <a href="#faq">FAQ</a>
+  </div>
+</nav>
+
+<section id="glance" class="glance-sec">
+  <div class="section-container">
+    <div class="glance reveal-stagger reveal">
+      <div class="g-card"><span class="g-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg></span><h3>Paid every term</h3><p>The school year has three terms. Tuition is billed once per term, so you can plan around each one.</p></div>
+      <div class="g-card"><span class="g-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 19.5V4.5"/></svg></span><h3>What tuition covers</h3><p>Tuition, learning materials and continuous assessment are included unless the schedule says otherwise.</p></div>
+      <div class="g-card"><span class="g-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span><h3>Billed separately</h3><p>Uniforms, textbooks and exercise books, transport, lunch and trips are charged on top of tuition.</p></div>
+      <div class="g-card"><span class="g-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/></svg></span><h3>Proof of payment</h3><p>Every payment is acknowledged with an official receipt, also available in the School Portal.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="schedule" class="schedule-sec">
   <div class="section-container">
     <div class="section-head reveal">
       <h2>Current fee schedule</h2>
-      <p>Pulled live from the school's records — always up to date.</p>
+      <p>Pulled live from the school's records — always up to date. Filter by class or print a copy for your records.</p>
+    </div>
+    <div class="fee-tools reveal">
+      <div class="chips" id="feeChips" role="group" aria-label="Filter by class"></div>
+      <div class="tool-actions">
+        <label class="sr-only" for="feeFilter">Search fees</label>
+        <input id="feeFilter" type="search" placeholder="Search class or fee…" autocomplete="off">
+        <button type="button" id="feePrint" class="btn btn-outline">Print schedule</button>
+      </div>
     </div>
     <div class="fees-table-wrap reveal">
       <table class="fees-table">
@@ -194,56 +500,151 @@ footer p, footer a { font-size: 13.5px; }
           <tr><td colspan="3">Loading fees…</td></tr>
         </tbody>
       </table>
+      <p class="fee-empty" id="feeEmpty" hidden>No fees match your search.</p>
     </div>
-    <p class="fees-note">Figures reflect the current session. Fees cover tuition, learning materials, and continuous assessment unless otherwise noted.</p>
+    <div class="fee-meta">
+      <p class="fees-note">Figures reflect the current session. Fees cover tuition, learning materials, and continuous assessment unless otherwise noted.</p>
+      <p class="fee-count" id="feeCount" aria-live="polite"></p>
+    </div>
   </div>
 </section>
 
-<section class="policy">
+<section id="structure" class="structure-sec">
+  <div class="section-container">
+    <div class="section-head reveal">
+      <h2>How your fees are built</h2>
+      <p>Charges fall into three groups, so there are no surprises on your invoice.</p>
+    </div>
+    <div class="struct-grid reveal-stagger reveal">
+      <article class="struct-card once">
+        <span class="s-tag">Once, on admission</span>
+        <h3>One-time charges</h3>
+        <ul>
+          <li>Registration / acceptance fee, which secures your child's place</li>
+          <li>Admission processing and ID card</li>
+          <li>Welcome pack, where provided</li>
+        </ul>
+      </article>
+      <article class="struct-card term">
+        <span class="s-tag">Every term</span>
+        <h3>Termly charges</h3>
+        <ul>
+          <li>Tuition for the class your child is placed in</li>
+          <li>Learning materials and continuous assessment</li>
+          <li>Any termly levies listed in the schedule above</li>
+        </ul>
+      </article>
+      <article class="struct-card extra">
+        <span class="s-tag">As needed</span>
+        <h3>Billed separately</h3>
+        <ul>
+          <li>School uniform and sportswear</li>
+          <li>Textbooks and exercise books</li>
+          <li>School transport and lunch, where used</li>
+          <li>Excursions, events and optional extra lessons</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="calendar" class="calendar-sec">
+  <div class="section-container">
+    <div class="section-head reveal">
+      <h2>Your payment calendar</h2>
+      <p>What is due, and when, from acceptance through to the end of each term.</p>
+    </div>
+    <ol class="timeline reveal">
+      <span class="t-line" aria-hidden="true"></span>
+      <li><span class="t-dot">1</span><h3>On acceptance</h3><p>Pay the registration / acceptance fee to confirm your child's place.</p></li>
+      <li><span class="t-dot">2</span><h3>Before term begins</h3><p>Pay the term's tuition in full, or the first part if you have an approved installment plan.</p></li>
+      <li><span class="t-dot">3</span><h3>Mid-term</h3><p>Any balance on an installment plan falls due by the middle of the term.</p></li>
+      <li><span class="t-dot">4</span><h3>End of term</h3><p>Fees are cleared before end-of-term results are released, and the cycle repeats next term.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="policy" class="policy">
   <div class="section-container">
     <div class="section-head reveal">
       <h2>Payment policy</h2>
-      <p>What to know before making a payment.</p>
+      <p>The standard terms that apply to every family. Please read them before making a payment.</p>
     </div>
-    <div class="policy-list reveal">
-      <div class="policy-row">
-        <div class="policy-num">01</div>
-        <div><h3>Payment methods</h3><p>[Replace with your accepted payment methods — bank transfer, card, cash, etc. — and account details if applicable.]</p></div>
+
+    <div class="pay-card reveal">
+      <div class="pay-copy">
+        <span class="pay-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 4l9 6"/><line x1="5" y1="10" x2="5" y2="18"/><line x1="10" y1="10" x2="10" y2="18"/><line x1="14" y1="10" x2="14" y2="18"/><line x1="19" y1="10" x2="19" y2="18"/><line x1="3" y1="21" x2="21" y2="21"/></svg></span>
+        <h3>Where to pay</h3>
+        <p>Pay into the school's official account only. Use your child's full name and class as the payment reference, and keep your proof of payment until you receive a receipt.</p>
       </div>
-      <div class="policy-row">
-        <div class="policy-num">02</div>
-        <div><h3>Payment deadline</h3><p>[Replace with your actual deadline — e.g. "Fees are due within the first two weeks of each term."]</p></div>
-      </div>
-      <div class="policy-row">
-        <div class="policy-num">03</div>
-        <div><h3>Installment option</h3><p>[Replace with your installment policy, or remove this row if fees must be paid in full.]</p></div>
-      </div>
-      <div class="policy-row">
-        <div class="policy-num">04</div>
-        <div><h3>Refunds &amp; withdrawals</h3><p>[Replace with your refund/withdrawal policy.]</p></div>
-      </div>
+      <dl class="pay-details">
+        <div><dt>Account name</dt><dd>[School account name]</dd></div>
+        <div><dt>Bank</dt><dd>[Bank name]</dd></div>
+        <div><dt>Account number</dt><dd>[Account number]</dd></div>
+        <div><dt>Payment reference</dt><dd>Child's full name + class</dd></div>
+      </dl>
     </div>
+
+    <div class="policy-grid reveal-stagger reveal">
+      <article class="p-card"><span class="p-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 4l9 6"/><line x1="5" y1="10" x2="5" y2="18"/><line x1="10" y1="10" x2="10" y2="18"/><line x1="14" y1="10" x2="14" y2="18"/><line x1="19" y1="10" x2="19" y2="18"/><line x1="3" y1="21" x2="21" y2="21"/></svg></span><h3>Payment methods</h3><p>Fees are paid by bank transfer or deposit into the school's official account. Cash can be paid at the school bursary during working hours against an official receipt. Please do not pay fees to individual staff members.</p></article>
+      <article class="p-card"><span class="p-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></span><h3>Payment deadline</h3><p>Tuition for each term is due in full on or before resumption, and no later than the end of the second week of term unless an installment plan has been approved.</p></article>
+      <article class="p-card"><span class="p-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h6"/><path d="M9 12 15 6h6"/><path d="M9 12l6 6h6"/></svg></span><h3>Installment option</h3><p>Parents who cannot pay in full may ask the bursar in writing, before the term starts, to pay in installments. A typical plan is a first payment on or before resumption and the balance by mid-term. Every plan is confirmed in writing and must be completed before end-of-term examinations.</p></article>
+      <article class="p-card"><span class="p-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><h3>Late or failed payments</h3><p>Fees not paid by the agreed date may attract a late-payment charge stated in the term's fee notice. Payments that are reversed or rejected by the bank count as unpaid. Persistent arrears may affect access to examinations or results, and parents are notified in writing first.</p></article>
+      <article class="p-card"><span class="p-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><h3>Sibling discounts</h3><p>A concession on tuition may be available for the second and later children from the same family enrolled at the same time. Ask the bursar for the current rate; any discount is confirmed in writing and applies to tuition only.</p></article>
+      <article class="p-card"><span class="p-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.5 15a9 9 0 1 0 2.1-9.4L1 10"/></svg></span><h3>Refunds &amp; withdrawals</h3><p>The registration / acceptance fee is non-refundable. Tuition paid for a term is non-refundable once the term has begun. To withdraw a child, give written notice of at least one term; otherwise a term's tuition may be charged in lieu of notice.</p></article>
+      <article class="p-card"><span class="p-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/></svg></span><h3>Receipts &amp; records</h3><p>Every payment receives an official receipt. Parents can also view and download invoices and receipts at any time in the School Portal.</p></article>
+      <article class="p-card"><span class="p-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span><h3>Fee reviews</h3><p>Fees are reviewed from time to time. Any change is communicated to parents in writing before the new session or term begins, and does not affect amounts already paid for the current term.</p></article>
+    </div>
+    <p class="policy-note reveal">These terms apply to all pupils. For anything not covered here, please speak to the bursar.</p>
   </div>
 </section>
 
-<section>
-  <div class="section-container">
-    <div class="section-head reveal">
-      <h2>Fees FAQ</h2>
-      <p>Common questions about tuition and payments.</p>
+<section id="faq" class="faq-sec">
+  <div class="section-container faq-layout">
+    <div class="faq-side reveal">
+      <div class="section-head">
+        <h2>Fees FAQ</h2>
+        <p>Common questions about tuition and payments.</p>
+      </div>
+      <div class="help-card">
+        <span class="p-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></span>
+        <h3>Still have a question?</h3>
+        <p>The bursar's office can explain any charge on your invoice.</p>
+        <ul>
+          <li><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span>[Phone number]</span></li>
+          <li><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span>[Email address]</span></li>
+          <li><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg><span>[Bursary hours, e.g. Monday to Friday]</span></li>
+        </ul>
+      </div>
     </div>
     <div class="faq-list reveal">
       <div class="faq-item">
         <button class="faq-q">What does the registration fee cover? <span class="plus">+</span></button>
-        <div class="faq-a"><p>[Replace with what your one-time registration fee covers — admission processing, ID card, welcome pack, etc.]</p></div>
+        <div class="faq-a"><p>It is a one-time charge paid on acceptance. It secures your child's place and covers admission processing, the ID card and any welcome materials.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">Are uniforms and books included? <span class="plus">+</span></button>
-        <div class="faq-a"><p>[Replace with your actual policy on uniforms, books, and feeding — typically billed separately.]</p></div>
+        <div class="faq-a"><p>No. Uniforms, textbooks, exercise books, transport and lunch are billed separately from tuition. The school will tell you the cost of each before you pay.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Can I pay in installments? <span class="plus">+</span></button>
+        <div class="faq-a"><p>Yes, with approval. Ask the bursar in writing before the term begins. A typical plan is a first payment on or before resumption and the balance by mid-term.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What happens if I pay late? <span class="plus">+</span></button>
+        <div class="faq-a"><p>A late-payment charge may apply, as stated in the term's fee notice. If you expect a delay, contact the bursar before the deadline so a plan can be agreed.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">Do you offer sibling discounts? <span class="plus">+</span></button>
-        <div class="faq-a"><p>[Replace with your sibling/discount policy, or remove this question.]</p></div>
+        <div class="faq-a"><p>A tuition concession may be available for the second and later children from one family enrolled together. Ask the bursar for the current rate.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Can I get a refund if I withdraw my child? <span class="plus">+</span></button>
+        <div class="faq-a"><p>The registration fee is non-refundable, and tuition is not refunded once a term has begun. Please give a term's written notice when withdrawing a child.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Will fees go up during the year? <span class="plus">+</span></button>
+        <div class="faq-a"><p>Fees are fixed for a term once billed. Any review is announced in writing before the next session or term starts.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">How do I get a receipt after payment? <span class="plus">+</span></button>
@@ -253,7 +654,7 @@ footer p, footer a { font-size: 13.5px; }
   </div>
 </section>
 
-<section class="cta">
+<section class="cta cta-photo">
   <div class="section-container">
     <h2>Ready to secure your child's place?</h2>
     <p>Start the admission process today — our team is ready to guide you through every step.</p>
@@ -370,6 +771,73 @@ footer p, footer a { font-size: 13.5px; }
     })
   }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' })
   document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => revealObserver.observe(el))
+</script>
+
+<script>
+(function () {
+  'use strict';
+  // top-of-page reading progress
+  var bar = document.getElementById('scrollProgress'), ticking = false;
+  function onScroll() {
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(function () {
+      var d = document.documentElement, max = d.scrollHeight - d.clientHeight;
+      bar.style.transform = 'scaleX(' + (max > 0 ? d.scrollTop / max : 0) + ')'; ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  // in-page nav highlight
+  var inner = document.querySelector('.subnav-inner');
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('.subnav a'));
+  var spy = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      navLinks.forEach(function (a) {
+        var on = a.getAttribute('href') === '#' + en.target.id;
+        a.classList.toggle('active', on);
+        if (on && inner.scrollWidth > inner.clientWidth) inner.scrollTo({ left: a.offsetLeft - 24, behavior: 'smooth' });
+      });
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  navLinks.forEach(function (a) { var s = document.querySelector(a.getAttribute('href')); if (s) spy.observe(s); });
+
+  // fee schedule: class chips, search, print
+  var body = document.getElementById('feesTableBody'), chips = document.getElementById('feeChips');
+  var input = document.getElementById('feeFilter'), count = document.getElementById('feeCount'), empty = document.getElementById('feeEmpty');
+  var activeClass = '';
+  function dataRows() {
+    return Array.prototype.filter.call(body.querySelectorAll('tr'), function (r) { return r.children.length === 3; });
+  }
+  function applyFilter() {
+    var q = input.value.trim().toLowerCase(), rows = dataRows(), shown = 0;
+    rows.forEach(function (r) {
+      var cls = r.children[0].textContent.trim();
+      var ok = (!activeClass || cls === activeClass) && (!q || r.textContent.toLowerCase().indexOf(q) > -1);
+      r.hidden = !ok; if (ok) shown++;
+    });
+    empty.hidden = !(rows.length && shown === 0);
+    count.textContent = rows.length ? 'Showing ' + shown + ' of ' + rows.length + ' fees' : '';
+  }
+  function buildChips() {
+    var names = [];
+    dataRows().forEach(function (r) { var c = r.children[0].textContent.trim(); if (c && c !== '—' && names.indexOf(c) < 0) names.push(c); });
+    chips.innerHTML = '';
+    if (names.length < 2) return;
+    ['All classes'].concat(names).forEach(function (n, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + ((i === 0 && !activeClass) || n === activeClass ? ' on' : ''); b.textContent = n;
+      b.addEventListener('click', function () {
+        activeClass = i === 0 ? '' : n;
+        Array.prototype.forEach.call(chips.children, function (c) { c.classList.toggle('on', c === b); });
+        applyFilter();
+      });
+      chips.appendChild(b);
+    });
+  }
+  new MutationObserver(function () { buildChips(); applyFilter(); }).observe(body, { childList: true });
+  input.addEventListener('input', applyFilter);
+  document.getElementById('feePrint').addEventListener('click', function () { window.print(); });
+})();
 </script>
 
 </body>

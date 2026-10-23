@@ -3,97 +3,239 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#101B3D" />
 <title>Student Enrollment — Al-Haqq Nur &amp; Pry School</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,500..700;1,7..72,500..700&display=swap" rel="stylesheet">
 <style>
+
+:root { --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620; --cream: #EFF1F6; --paper: #FFFFFF; --gold: #B98B2A; --gold-soft: #E2BE6A; --ink: #161A27; --muted: #5B6275; --border: #DDE0E8; --error: #B3261E; --success: #1b6b3a; --navy-tint: #E8EBF5;
+  --serif: 'Literata', Georgia, 'Times New Roman', serif; --sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; --img-classroom: url("https://images.unsplash.com/photo-1473649085228-583485e6e4d7?auto=format&fit=crop&w=1800&q=70"); }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
-  --cream: #F6F1E7; --paper: #FBF8F2; --gold: #B98B2A; --ink: #1E1A16;
-  --muted: #6b5f52; --border: #E3DACB; --error: #B3261E; --success: #1b6b3a;
-}
-body { font-family: 'Inter', Arial, sans-serif; color: var(--ink); background: var(--cream); line-height: 1.6; padding-bottom: 60px; }
-h1, h2, .display { font-family: 'Fraunces', Georgia, serif; }
-a { color: var(--maroon); }
+html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+body { font-family: var(--sans); font-size: 16px; color: var(--ink); background: var(--cream); line-height: 1.6; -webkit-font-smoothing: antialiased; padding-bottom: 72px; }
+h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.015em; line-height: 1.22; }
+a { color: var(--maroon); text-decoration: none; }
+button, input, select, textarea { font: inherit; }
+:focus-visible { outline: 3px solid rgba(185,139,42,0.7); outline-offset: 2px; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.09) translate3d(-1.2%, -1%, 0); } }
+@keyframes popIn { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes ring { 0% { box-shadow: 0 0 0 0 rgba(27,107,58,0.45); } 100% { box-shadow: 0 0 0 26px rgba(27,107,58,0); } }
+@keyframes check { 0% { transform: scale(0) rotate(-20deg); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
-header { background: var(--navy); color: var(--paper); padding: 30px 24px; text-align: center; }
-header img { width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 12px; }
-header h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
-header p { font-size: 13.5px; color: #cdd4e6; }
+/* hero */
+header.enroll-hero { position: relative; isolation: isolate; overflow: hidden; color: #fff; text-align: center; padding: 22px 24px 70px; background: var(--navy); }
+header.enroll-hero::before { content: ""; position: absolute; inset: -5%; z-index: -2; background: var(--img-classroom) center 35% / cover no-repeat, var(--navy); animation: kenburns 28s ease-in-out infinite alternate; }
+header.enroll-hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background:
+  repeating-linear-gradient(to bottom, transparent 0 35px, rgba(255,255,255,0.05) 35px 36px),
+  linear-gradient(180deg, rgba(11,19,41,0.82) 0%, rgba(11,19,41,0.9) 100%); }
+.trim { position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: linear-gradient(var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); }
+.hero-top { max-width: 1100px; margin: 0 auto 34px; display: flex; justify-content: space-between; gap: 16px; font-size: 14.5px; font-weight: 600; }
+.hero-top a { color: rgba(255,255,255,0.86); transition: color .2s; }
+.hero-top a:hover { color: var(--gold-soft); }
+header.enroll-hero img { display: block; width: 62px; height: 62px; border-radius: 50%; margin: 0 auto 14px; background: #fff; animation: fadeUp .7s ease .05s both; }
+header.enroll-hero h1 { font-size: clamp(28px, 4.4vw, 42px); font-weight: 700; margin-bottom: 6px; animation: fadeUp .7s ease .15s both; }
+header.enroll-hero p { font-size: 17px; color: #d6dcec; animation: fadeUp .7s ease .25s both; }
+.hero-facts { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; list-style: none; margin-top: 24px; animation: fadeUp .7s ease .38s both; }
+.hero-facts li { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 8px; background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.22); backdrop-filter: blur(6px); font-size: 14px; font-weight: 500; }
+.hero-facts svg { width: 17px; height: 17px; color: var(--gold-soft); }
 
-.wrap { max-width: 720px; margin: 32px auto 0; padding: 0 20px; }
-.message { padding: 14px 16px; border-radius: 10px; font-size: 14px; margin-bottom: 20px; display: none; }
-.message.error { background: #fbeaea; color: var(--error); display: block; }
-.message.success { background: #eaf3ec; color: var(--success); display: block; }
+/* progress */
+.form-progress { position: sticky; top: 0; z-index: 60; background: rgba(255,255,255,0.94); backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid var(--border); }
+.fp-inner { max-width: 1100px; margin: 0 auto; padding: 12px 24px 0; }
+.form-progress ol { list-style: none; display: flex; justify-content: space-between; gap: 6px; }
+.form-progress a { display: flex; align-items: center; gap: 9px; padding: 2px 0; font-size: 14px; font-weight: 600; color: var(--muted); }
+.dot { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; border: 2px solid var(--border); background: #fff; font-size: 13px; font-weight: 700; transition: background .3s, border-color .3s, color .3s, transform .3s; }
+.form-progress li.current .dot { border-color: var(--navy); background: var(--navy); color: #fff; transform: scale(1.1); }
+.form-progress li.current a { color: var(--navy); }
+.form-progress li.done .dot { border-color: var(--success); background: var(--success); color: #fff; font-size: 0; }
+.form-progress li.done .dot::before { content: "\2713"; font-size: 15px; animation: check .4s ease; }
+.fp-bar { height: 4px; margin-top: 10px; background: var(--navy-tint); }
+.fp-bar i { display: block; height: 100%; transform: scaleX(0); transform-origin: left; background: linear-gradient(90deg, var(--maroon), var(--gold)); transition: transform .6s cubic-bezier(.22,1,.36,1); }
 
-.card { background: var(--paper); border: 1px solid var(--border); border-radius: 18px; padding: 30px 26px; margin-bottom: 22px; }
-.card h2 { font-size: 18px; color: var(--navy); margin-bottom: 4px; }
-.card .sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+/* layout */
+.wrap { max-width: 1100px; margin: 36px auto 0; padding: 0 24px; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px 32px; align-items: start; }
+.wrap > .message, .wrap > .success-screen, .wrap > form { grid-column: 1; }
+.enroll-aside { grid-column: 2; grid-row: 1 / span 4; position: sticky; top: 100px; display: grid; gap: 16px; }
+form#enrollForm { display: grid; gap: 20px; }
+
+.message { padding: 14px 16px; border-radius: 8px; font-size: 14.5px; font-weight: 500; display: none; border-left: 4px solid; }
+.message.error { background: #fbeaea; color: #8d1d17; border-color: var(--error); display: block; animation: popIn .3s ease; }
+.message.success { background: #eaf3ec; color: #14522c; border-color: var(--success); display: block; animation: popIn .3s ease; }
+
+/* cards */
+.card { background: #fff; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: border-color .3s, box-shadow .3s; }
+.card:focus-within { border-color: #b7bfd6; box-shadow: 0 10px 30px rgba(16,27,61,0.07); }
+.js .card.rv { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s cubic-bezier(.22,1,.36,1), border-color .3s, box-shadow .3s; }
+.js .card.rv.in { opacity: 1; transform: none; }
+.card-head { display: flex; align-items: center; gap: 14px; padding: 20px 26px; border-bottom: 1px solid var(--border); background: linear-gradient(#fff, #f8f9fc); }
+.step-badge { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--navy); color: var(--gold-soft); flex-shrink: 0; transition: transform .4s cubic-bezier(.22,1,.36,1); }
+.card:hover .step-badge { transform: rotate(-6deg) scale(1.05); }
+.step-badge svg { width: 22px; height: 22px; }
+.card-head h2 { font-size: 20px; font-weight: 700; color: var(--navy); }
+.card .sub { font-size: 14px; color: var(--muted); margin: 2px 0 0; }
+.step-count { margin-left: auto; font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.card-body { padding: 26px; }
 
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.field { margin-bottom: 16px; }
-label { display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
-input, select, textarea {
-  width: 100%; padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 9px;
-  font: inherit; font-size: 14.5px; background: #fff; color: var(--ink);
+.field { margin-bottom: 18px; }
+.card-body > .field:last-child, .card-body > .row:last-child .field { margin-bottom: 0; }
+label { display: block; font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 6px; transition: color .2s; }
+.field:focus-within > label { color: var(--maroon); }
+input, select, textarea { width: 100%; min-height: 48px; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 15.5px; background: #fff; color: var(--ink); transition: border-color .2s, box-shadow .2s, background .2s; }
+input:hover, select:hover, textarea:hover { border-color: #c3c8d6; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,27,61,0.14); }
+textarea { resize: vertical; min-height: 88px; }
+.hint { display: block; margin-top: 6px; font-size: 13px; color: var(--muted); }
+
+.radio-group { display: flex; gap: 10px; flex-wrap: wrap; }
+.radio-option { display: flex; align-items: center; min-height: 46px; padding-left: 14px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; cursor: pointer; transition: border-color .2s, background .2s, box-shadow .2s, transform .15s; }
+.radio-option:hover { border-color: var(--navy); }
+.radio-option:active { transform: scale(.97); }
+.radio-option:has(input:checked) { border-color: var(--navy); background: var(--navy-tint); box-shadow: inset 0 0 0 1px var(--navy); }
+.radio-option input { width: auto; min-height: 0; accent-color: var(--maroon); }
+.radio-option label { margin: 0; padding: 11px 18px 11px 10px; flex: 1; cursor: pointer; font-weight: 600; color: var(--ink); }
+
+.photo-upload { display: flex; align-items: center; gap: 18px; padding: 16px; border: 1.5px dashed #aeb6cd; border-radius: 10px; background: var(--navy-tint); transition: border-color .2s, background .2s; }
+.photo-upload:hover { border-color: var(--navy); background: #e0e5f3; }
+.photo-preview { width: 76px; height: 76px; border-radius: 10px; background: #fff; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; font-size: 12px; color: var(--muted); text-align: center; }
+.photo-preview img { width: 100%; height: 100%; object-fit: cover; animation: popIn .4s ease; }
+.photo-pick input { min-height: 0; padding: 0; border: none; background: none; font-size: 14px; }
+.photo-pick input::file-selector-button { margin-right: 12px; padding: 9px 16px; border: none; border-radius: 8px; background: var(--navy); color: #fff; font: inherit; font-weight: 600; cursor: pointer; transition: background .2s; }
+.photo-pick input::file-selector-button:hover { background: var(--maroon); }
+
+.pickup-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: end; margin-bottom: 12px; padding: 16px 16px 0; background: var(--cream); border-radius: 10px; animation: popIn .35s ease; }
+.pickup-row .field { margin-bottom: 16px; }
+.add-pickup { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1.5px dashed var(--maroon); border-radius: 8px; background: none; font-size: 14.5px; font-weight: 600; color: var(--maroon); cursor: pointer; transition: background .2s, border-style .2s; }
+.add-pickup:hover { background: #f6e9eb; border-style: solid; }
+
+.confirm-card { border-left: 5px solid var(--gold); padding: 22px 26px; }
+.confirm-box { display: flex; align-items: flex-start; gap: 14px; }
+.confirm-box input { width: 20px; height: 20px; min-height: 0; margin-top: 3px; accent-color: var(--maroon); flex-shrink: 0; }
+.confirm-box label { margin: 0; font-weight: 500; font-size: 14.5px; line-height: 1.6; color: var(--ink); cursor: pointer; }
+
+.btn-submit { position: relative; width: 100%; min-height: 56px; padding: 15px; border: none; border-radius: 8px; color: #fff; font-weight: 700; font-size: 16.5px; cursor: pointer; background: linear-gradient(100deg, var(--maroon) 0 50%, var(--maroon-dark) 50% 100%); background-size: 200% 100%; background-position: 0 0; transition: background-position .5s cubic-bezier(.22,1,.36,1), transform .15s; }
+.btn-submit::after { content: " \2192"; display: inline-block; transition: transform .3s; }
+.btn-submit:hover:not(:disabled) { background-position: 100% 0; }
+.btn-submit:hover:not(:disabled)::after { transform: translateX(5px); }
+.btn-submit:active:not(:disabled) { transform: scale(.99); }
+.btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+
+.success-screen { display: none; text-align: center; padding: 64px 28px; background: #fff; border: 1px solid var(--border); border-top: 6px solid var(--success); border-radius: 14px; }
+.success-screen.show { display: block; animation: popIn .6s cubic-bezier(.22,1,.36,1); }
+.success-icon { width: 76px; height: 76px; border-radius: 50%; background: var(--success); color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 34px; animation: check .6s ease .15s both, ring 1.6s ease-out .5s 2; }
+.success-screen h2 { font-size: 26px; font-weight: 700; color: var(--navy); margin-bottom: 12px; }
+.success-screen p { color: var(--muted); font-size: 16px; max-width: 440px; margin: 0 auto 28px; }
+.btn-another { display: inline-flex; align-items: center; min-height: 48px; padding: 0 26px; border-radius: 8px; background: var(--navy); color: #fff; font-weight: 700; font-size: 15px; cursor: pointer; border: none; transition: background .2s; }
+.btn-another:hover { background: var(--maroon); }
+.is-done .form-progress, .is-done .enroll-aside { display: none; }
+.is-done .wrap { grid-template-columns: minmax(0, 720px); justify-content: center; }
+
+/* aside */
+.aside-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.aside-photo img { display: block; width: 100%; height: 170px; object-fit: cover; object-position: center 30%; }
+.aside-photo p { padding: 16px 20px; font-family: var(--serif); font-size: 15.5px; line-height: 1.5; color: var(--navy); border-top: 4px solid var(--gold); }
+.aside-photo.no-img img { display: none; }
+details { padding: 0 20px; }
+summary { list-style: none; display: flex; justify-content: space-between; align-items: center; padding: 16px 0; font-family: var(--serif); font-size: 16.5px; font-weight: 600; color: var(--navy); cursor: pointer; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: ""; width: 9px; height: 9px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .3s; margin-right: 4px; }
+details[open] summary::after { transform: rotate(-135deg); }
+details[open] > :not(summary) { animation: fadeUp .35s ease; }
+.need-list, .next-list { list-style: none; padding-bottom: 18px; display: grid; gap: 11px; }
+.need-list li { position: relative; padding-left: 24px; font-size: 14.5px; line-height: 1.5; }
+.need-list li::before { content: ""; position: absolute; left: 0; top: 5px; width: 15px; height: 15px; border-radius: 50%; background: var(--navy-tint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23101B3D' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 9px no-repeat; }
+.next-list { counter-reset: n; gap: 0; }
+.next-list li { counter-increment: n; position: relative; padding: 0 0 16px 38px; }
+.next-list li::before { content: counter(n); position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 12.5px; font-weight: 700; display: grid; place-items: center; z-index: 1; }
+.next-list li::after { content: ""; position: absolute; left: 12px; top: 26px; bottom: 0; width: 2px; background: var(--border); }
+.next-list li:last-child { padding-bottom: 0; } .next-list li:last-child::after { display: none; }
+.next-list strong { display: block; font-size: 14.5px; color: var(--ink); }
+.next-list span { font-size: 13.5px; color: var(--muted); line-height: 1.5; display: block; }
+.aside-card.help { padding: 20px; background: var(--navy); color: #fff; border-color: var(--navy); border-bottom: 5px solid var(--gold); }
+.aside-card.help h3 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+.aside-card.help ul { list-style: none; display: grid; gap: 10px; margin-bottom: 16px; }
+.aside-card.help li { display: flex; align-items: center; gap: 10px; font-size: 14.5px; }
+.aside-card.help li svg { width: 17px; height: 17px; color: var(--gold-soft); flex-shrink: 0; }
+.help-links { display: flex; flex-wrap: wrap; gap: 8px 18px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.18); }
+.help-links a { color: var(--gold-soft); font-size: 14px; font-weight: 600; transition: color .2s; }
+.help-links a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+
+@media (max-width: 960px) {
+  .wrap { display: block; }
+  .wrap > * + * { margin-top: 20px; }
+  .enroll-aside { position: static; margin-top: 28px; grid-template-columns: 1fr 1fr; }
+  .aside-photo, .aside-card.help { grid-column: 1 / -1; }
 }
-input:focus, select:focus, textarea:focus { outline: none; border-color: var(--navy); }
-textarea { resize: vertical; min-height: 70px; }
-
-.radio-group { display: flex; gap: 18px; flex-wrap: wrap; }
-.radio-option { display: flex; align-items: center; gap: 7px; font-size: 14px; }
-.radio-option input { width: auto; }
-
-.photo-upload {
-  display: flex; align-items: center; gap: 16px; padding: 16px; border: 1.5px dashed var(--border);
-  border-radius: 12px; background: var(--cream);
+@media (max-width: 700px) {
+  .form-progress .lbl { display: none; }
+  .form-progress li.current .lbl { display: inline; }
+  .fp-inner { padding: 10px 16px 0; }
+  .wrap { padding: 0 16px; margin-top: 24px; }
+  .enroll-aside { grid-template-columns: 1fr; }
+  .card-head { padding: 16px 18px; } .card-body { padding: 20px 18px; } .step-count { display: none; }
+  .row, .pickup-row { grid-template-columns: 1fr; gap: 0 16px; }
+  .photo-upload { flex-direction: column; align-items: flex-start; }
+  header.enroll-hero { padding: 18px 18px 60px; }
 }
-.photo-preview {
-  width: 64px; height: 64px; border-radius: 10px; background: #fff; border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; font-size: 11px; color: var(--muted); text-align: center;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js .card.rv { opacity: 1 !important; transform: none !important; }
 }
-.photo-preview img { width: 100%; height: 100%; object-fit: cover; }
-
-.pickup-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: end; margin-bottom: 12px; }
-.remove-pickup { font-size: 13px; color: var(--error); cursor: pointer; align-self: center; padding-bottom: 12px; }
-.add-pickup { font-size: 13.5px; font-weight: 600; color: var(--maroon); cursor: pointer; }
-
-.confirm-box { display: flex; align-items: flex-start; gap: 10px; margin-top: 4px; }
-.confirm-box input { width: auto; margin-top: 3px; }
-.confirm-box label { font-weight: 500; font-size: 13.5px; }
-
-.btn-submit {
-  width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--maroon);
-  color: var(--paper); font-weight: 700; font-size: 15px; cursor: pointer; transition: background 0.18s ease;
-}
-.btn-submit:hover { background: var(--maroon-dark); }
-.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-
-@media (max-width: 560px) { .row, .pickup-row { grid-template-columns: 1fr; } }
 </style>
+<script>document.documentElement.className += " js"</script>
 </head>
 <body>
 
-<header>
+<header class="enroll-hero">
+  <div class="hero-top">
+    <a href="/index.html">&larr; Back to website</a>
+    <a href="/fees.html">View fees</a>
+  </div>
   <img src="/assets/images/logo.png" alt="School logo">
   <h1 class="js-school-name-display">Al-Haqq Nur &amp; Pry School</h1>
   <p>Registration Form</p>
+  <ul class="hero-facts">
+    <li><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>About 10 minutes</li>
+    <li><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>5 short sections</li>
+    <li><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Reviewed by the school</li>
+  </ul>
+  <span class="trim" aria-hidden="true"></span>
 </header>
+
+<nav class="form-progress" id="formProgress" aria-label="Application progress">
+  <div class="fp-inner">
+    <ol>
+      <li data-for="sec-child"><a href="#sec-child"><span class="dot">1</span><span class="lbl">Child</span></a></li>
+      <li data-for="sec-parent"><a href="#sec-parent"><span class="dot">2</span><span class="lbl">Parent</span></a></li>
+      <li data-for="sec-pickup"><a href="#sec-pickup"><span class="dot">3</span><span class="lbl">Pickup</span></a></li>
+      <li data-for="sec-medical"><a href="#sec-medical"><span class="dot">4</span><span class="lbl">Medical</span></a></li>
+      <li data-for="sec-confirm"><a href="#sec-confirm"><span class="dot">5</span><span class="lbl">Confirm</span></a></li>
+    </ol>
+    <div class="fp-bar"><i id="fpFill"></i></div>
+  </div>
+</nav>
 
 <div class="wrap">
   <div id="message" class="message"></div>
 
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✓</div>
+    <h2>Application Submitted!</h2>
+    <p>Thank you — your child's enrollment application has been received. The school will review it and reach out once a decision is made on admission.</p>
+    <button type="button" class="btn-another" id="submitAnotherBtn">Submit Another Application</button>
+  </div>
+
   <form id="enrollForm">
 
-    <div class="card">
-      <h2>Child / Ward</h2>
-      <p class="sub">Bio-data of the child being enrolled.</p>
-
+    <div class="card rv" id="sec-child" data-step="sec-child">
+      <div class="card-head"><span class="step-badge"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span><div><h2>Child / Ward</h2><p class="sub">Bio-data of the child being enrolled.</p></div><span class="step-count">1 of 5</span></div>
+      <div class="card-body">
       <div class="row">
-        <div class="field"><label for="surname">Surname</label><input type="text" id="surname" required></div>
-        <div class="field"><label for="otherNames">Other name(s)</label><input type="text" id="otherNames" required></div>
+        <div class="field"><label for="surname">Surname</label><input type="text" id="surname" autocomplete="off" required></div>
+        <div class="field"><label for="otherNames">Other name(s)</label><input type="text" id="otherNames" autocomplete="off" required></div>
       </div>
       <div class="field">
         <label>Sex</label>
@@ -110,7 +252,7 @@ textarea { resize: vertical; min-height: 70px; }
         <div class="field"><label for="stateOfOrigin">State of origin</label><input type="text" id="stateOfOrigin"></div>
         <div class="field"><label for="religion">Religion</label><input type="text" id="religion" value="Islam"></div>
       </div>
-      <div class="field"><label for="address">Address</label><textarea id="address" required></textarea></div>
+      <div class="field"><label for="address">Address</label><textarea id="address" autocomplete="street-address" placeholder="House number, street, area, city" required></textarea></div>
       <div class="row">
         <div class="field"><label for="formerSchoolName">Former school (if any)</label><input type="text" id="formerSchoolName"></div>
         <div class="field"><label for="formerSchoolClass">Former class</label><input type="text" id="formerSchoolClass"></div>
@@ -120,35 +262,39 @@ textarea { resize: vertical; min-height: 70px; }
         <label>Passport photograph</label>
         <div class="photo-upload">
           <div class="photo-preview" id="photoPreview">No photo</div>
-          <input type="file" id="photoFile" accept="image/*" style="width:auto;">
+          <div class="photo-pick">
+            <input type="file" id="photoFile" accept="image/*" style="width:auto;">
+            <span class="hint">A clear, recent passport-style photo in JPG or PNG works best.</span>
+          </div>
         </div>
+      </div>
       </div>
     </div>
 
-    <div class="card">
-      <h2>Parent / Guardian</h2>
-      <p class="sub">Primary contact for this child.</p>
-
-      <div class="field"><label for="parentName">Full name</label><input type="text" id="parentName" required></div>
+    <div class="card rv" id="sec-parent" data-step="sec-parent">
+      <div class="card-head"><span class="step-badge"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><div><h2>Parent / Guardian</h2><p class="sub">Primary contact for this child.</p></div><span class="step-count">2 of 5</span></div>
+      <div class="card-body">
+      <div class="field"><label for="parentName">Full name</label><input type="text" id="parentName" autocomplete="name" required></div>
       <div class="row">
-        <div class="field"><label for="parentPhone">Phone number</label><input type="tel" id="parentPhone" required></div>
+        <div class="field"><label for="parentPhone">Phone number</label><input type="tel" id="parentPhone" autocomplete="tel" inputmode="tel" required><span class="hint">The school will use this number to reach you about the application.</span></div>
         <div class="field"><label for="parentOccupation">Occupation</label><input type="text" id="parentOccupation"></div>
       </div>
       <div class="field"><label for="parentOfficeAddress">Office address</label><textarea id="parentOfficeAddress"></textarea></div>
       <div class="field"><label for="parentHomeAddress">Home address</label><textarea id="parentHomeAddress" required></textarea></div>
+      </div>
     </div>
 
-    <div class="card">
-      <h2>Authorized for Pickup</h2>
-      <p class="sub">Anyone besides the parent/guardian who may collect the child.</p>
+    <div class="card rv" id="sec-pickup" data-step="sec-pickup">
+      <div class="card-head"><span class="step-badge"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14M3 13l2-6h14l2 6v4H3z"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/></svg></span><div><h2>Authorized for Pickup</h2><p class="sub">Anyone besides the parent/guardian who may collect the child.</p></div><span class="step-count">3 of 5</span></div>
+      <div class="card-body">
       <div id="pickupList"></div>
-      <div class="add-pickup" id="addPickup">+ Add another person</div>
+      <button type="button" class="add-pickup" id="addPickup">+ Add another person</button>
+      </div>
     </div>
 
-    <div class="card">
-      <h2>Medical</h2>
-      <p class="sub">Health information for the school's records.</p>
-
+    <div class="card rv" id="sec-medical" data-step="sec-medical">
+      <div class="card-head"><span class="step-badge"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg></span><div><h2>Medical</h2><p class="sub">Health information for the school's records.</p></div><span class="step-count">4 of 5</span></div>
+      <div class="card-body">
       <div class="field">
         <label>General health condition</label>
         <div class="radio-group">
@@ -183,9 +329,10 @@ textarea { resize: vertical; min-height: 70px; }
           <div class="radio-option"><input type="radio" name="tb" value="no" id="tbNo"><label for="tbNo">No</label></div>
         </div>
       </div>
+      </div>
     </div>
 
-    <div class="card">
+    <div class="card confirm-card rv" id="sec-confirm" data-step="sec-confirm">
       <div class="confirm-box">
         <input type="checkbox" id="confirmAccuracy" required>
         <label for="confirmAccuracy">I confirm that the information provided in this form is accurate to the best of my knowledge, and I understand this application will be reviewed by the school before admission is confirmed.</label>
@@ -194,6 +341,44 @@ textarea { resize: vertical; min-height: 70px; }
 
     <button type="submit" class="btn-submit" id="submitBtn">Submit Enrollment Application</button>
   </form>
+
+  <aside class="enroll-aside" aria-label="Help with your application">
+    <div class="aside-card aside-photo">
+      <img src="https://images.unsplash.com/photo-1473649085228-583485e6e4d7?auto=format&fit=crop&w=900&q=70" alt="Pupils at their desks in a classroom" loading="lazy" onerror="this.parentNode.classList.add('no-img')">
+      <p>Quality education, spiritual growth and moral integrity, from crèche through Primary 6.</p>
+    </div>
+    <div class="aside-card">
+      <details open>
+        <summary>What you'll need</summary>
+        <ul class="need-list">
+          <li>Your child's date of birth and former school details</li>
+          <li>A clear passport photograph</li>
+          <li>Your phone number and home address</li>
+          <li>Names and addresses of anyone else who may collect your child</li>
+          <li>Immunisation details, if you have them</li>
+        </ul>
+      </details>
+    </div>
+    <div class="aside-card">
+      <details open>
+        <summary>What happens next</summary>
+        <ol class="next-list">
+          <li><strong>You submit</strong><span>Your application is sent to the school straight away.</span></li>
+          <li><strong>The school reviews it</strong><span>Staff check the details you've given.</span></li>
+          <li><strong>You hear back</strong><span>The school contacts you with a decision on admission.</span></li>
+          <li><strong>Class and term assigned</strong><span>If admitted, your child is placed in a class and term.</span></li>
+        </ol>
+      </details>
+    </div>
+    <div class="aside-card help">
+      <h3>Need help?</h3>
+      <ul>
+        <li><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span>[Phone number]</span></li>
+        <li><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span>[Email address]</span></li>
+      </ul>
+      <div class="help-links"><a href="/admission.html">Admission information</a><a href="/fees.html">Fees &amp; payment policy</a></div>
+    </div>
+  </aside>
 </div>
 
 <script type="module">
@@ -231,6 +416,16 @@ textarea { resize: vertical; min-height: 70px; }
   }
   addPickupRow()
   document.getElementById('addPickup').addEventListener('click', addPickupRow)
+
+  document.getElementById('submitAnotherBtn').addEventListener('click', () => {
+    document.getElementById('enrollForm').reset()
+    document.getElementById('enrollForm').style.display = 'block'
+    document.getElementById('successScreen').classList.remove('show')
+    photoPreview.innerHTML = 'No photo'
+    pickupList.innerHTML = ''
+    addPickupRow()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  })
 
   document.getElementById('enrollForm').addEventListener('submit', async (e) => {
     e.preventDefault()
@@ -322,11 +517,10 @@ textarea { resize: vertical; min-height: 70px; }
         })
       if (medicalError) throw medicalError
 
-      showMessage('Application submitted! The school will review it and confirm admission.', 'success')
-      document.getElementById('enrollForm').reset()
-      photoPreview.innerHTML = 'No photo'
-      pickupList.innerHTML = ''
-      addPickupRow()
+      messageEl.className = 'message'
+      document.getElementById('enrollForm').style.display = 'none'
+      document.getElementById('successScreen').classList.add('show')
+      document.getElementById('successScreen').scrollIntoView({ behavior: 'smooth', block: 'start' })
 
     } catch (err) {
       showMessage(err.message || 'Something went wrong. Please try again.', 'error')
@@ -335,6 +529,61 @@ textarea { resize: vertical; min-height: 70px; }
       submitBtn.textContent = 'Submit Enrollment Application'
     }
   })
+</script>
+
+<script>
+(function () {
+  'use strict';
+  var sections = Array.prototype.slice.call(document.querySelectorAll('[data-step]'));
+  var items = {}; Array.prototype.forEach.call(document.querySelectorAll('.form-progress li'), function (li) { items[li.getAttribute('data-for')] = li; });
+  var fill = document.getElementById('fpFill'), form = document.getElementById('enrollForm');
+
+  // section reveal on scroll
+  var seen = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); seen.unobserve(e.target); } }); }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  sections.forEach(function (s) { seen.observe(s); });
+
+  // which section is current
+  var cur = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      Object.keys(items).forEach(function (k) { items[k].classList.toggle('current', k === e.target.id); });
+    });
+  }, { rootMargin: '-25% 0px -60% 0px' });
+  sections.forEach(function (s) { cur.observe(s); });
+
+  // completion state per section
+  function isDone(sec) {
+    var req = sec.querySelectorAll('[required]');
+    if (req.length) {
+      return Array.prototype.every.call(req, function (el) {
+        if (el.type === 'radio') return !!form.querySelector('input[name="' + el.name + '"]:checked');
+        if (el.type === 'checkbox') return el.checked;
+        return el.value.trim() !== '';
+      });
+    }
+    return Array.prototype.some.call(sec.querySelectorAll('input, textarea'), function (el) {
+      if (el.type === 'radio' || el.type === 'checkbox') return el.checked;
+      if (el.type === 'file') return el.files && el.files.length;
+      return el.value.trim() !== '';
+    });
+  }
+  function refresh() {
+    var n = 0;
+    sections.forEach(function (s) { var d = isDone(s); if (d) n++; if (items[s.id]) items[s.id].classList.toggle('done', d); });
+    fill.style.transform = 'scaleX(' + (n / sections.length) + ')';
+  }
+  form.addEventListener('input', refresh); form.addEventListener('change', refresh);
+  refresh();
+
+  // on phones the side panels start collapsed
+  if (window.matchMedia('(max-width: 700px)').matches) {
+    Array.prototype.forEach.call(document.querySelectorAll('.enroll-aside details'), function (d) { d.removeAttribute('open'); });
+  }
+
+  // hide progress and help once the application has been submitted
+  var ok = document.getElementById('successScreen');
+  new MutationObserver(function () { document.body.classList.toggle('is-done', ok.classList.contains('show')); }).observe(ok, { attributes: true, attributeFilter: ['class'] });
+})();
 </script>
 
 </body>

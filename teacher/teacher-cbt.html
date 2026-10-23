@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CBT — Teacher Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F6F1E7; --paper: #FBF8F2; --gold: #B98B2A; --gold-soft: #D9B873; --ink: #1E1A16;
+  --muted: #6b5f52; --border: #E3DACB; --green: #2E7D32; --red: #B3261E;
+}
+body { font-family: 'Inter', Arial, sans-serif; color: var(--ink); background: var(--cream); line-height: 1.6; min-height: 100vh; }
+h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; }
+a { color: inherit; text-decoration: none; }
+button, select, input, textarea { font: inherit; }
+
+.topbar { background: var(--paper); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+.topbar .brand { display: flex; align-items: center; gap: 10px; }
+.topbar .brand img { width: 32px; height: 32px; border-radius: 50%; }
+.topbar .brand strong { font-family: 'Fraunces', serif; color: var(--navy); font-size: 15px; }
+.topbar .brand span { display: block; font-size: 11px; color: var(--muted); }
+.signout { font-size: 13px; font-weight: 600; color: var(--maroon); border: 1px solid var(--border); border-radius: 999px; padding: 8px 16px; cursor: pointer; background: var(--paper); }
+.hamburger-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--cream); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy); flex-shrink: 0; }
+.hamburger-btn svg { width: 18px; height: 18px; }
+
+.wrap { max-width: 920px; margin: 0 auto; padding: 28px 18px 50px; }
+.welcome h1 { font-size: 24px; color: var(--navy); margin-bottom: 4px; }
+.welcome p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+
+.card { background: var(--paper); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 18px; }
+.card h2 { font-size: 16px; color: var(--navy); margin-bottom: 14px; }
+.field-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.field-row label { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+select, input, textarea { padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: #fff; color: var(--ink); width: 100%; }
+select:focus, input:focus, textarea:focus { outline: none; border-color: var(--navy); }
+textarea { resize: vertical; min-height: 70px; }
+.check-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 13.5px; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.btn-primary { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--maroon); color: var(--paper); font-weight: 700; font-size: 15px; cursor: pointer; }
+.btn-primary:disabled { opacity: 0.6; }
+.btn-primary:hover:not(:disabled) { background: var(--maroon-dark); }
+.btn-outline { width: 100%; padding: 13px; border: 1.5px solid var(--navy); border-radius: 10px; background: transparent; color: var(--navy); font-weight: 700; font-size: 14.5px; cursor: pointer; margin-bottom: 10px; }
+
+.exam-card { padding: 16px 0; border-bottom: 1px solid var(--border); }
+.exam-card:last-child { border-bottom: none; }
+.exam-card h3 { font-size: 16.5px; color: var(--navy); margin-bottom: 4px; }
+.exam-card .meta { font-size: 12.5px; color: var(--muted); margin-bottom: 10px; }
+.exam-card .stats { display: flex; gap: 14px; font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+.exam-card .stats strong { color: var(--maroon); }
+.exam-actions { display: flex; gap: 8px; }
+.btn-small { flex: 1; padding: 9px; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--cream); color: var(--navy); }
+.btn-small.danger { color: var(--red); border-color: var(--red); background: #fff; }
+
+.back-link { font-size: 13.5px; color: var(--maroon); font-weight: 600; margin-bottom: 14px; display: inline-block; }
+
+.question-item { padding: 14px 0; border-bottom: 1px solid var(--border); }
+.question-item:last-child { border-bottom: none; }
+.question-item .qtext { font-weight: 600; font-size: 14.5px; margin-bottom: 8px; }
+.option-list { display: grid; gap: 5px; margin-bottom: 8px; }
+.option-item { font-size: 13px; color: var(--muted); padding: 6px 10px; border-radius: 6px; background: var(--cream); }
+.option-item.correct { background: #e9f5ea; color: var(--green); font-weight: 600; }
+.question-item .qmarks { font-size: 12px; color: var(--muted); }
+
+.option-input-row { display: grid; grid-template-columns: 28px 1fr; gap: 8px; align-items: center; margin-bottom: 8px; }
+.option-letter { font-weight: 700; color: var(--gold); text-align: center; }
+
+.msg { padding: 12px 14px; border-radius: 10px; font-size: 13.5px; margin-bottom: 16px; display: none; }
+.msg.success { background: #e9f5ea; color: var(--green); display: block; }
+.msg.error { background: #fbeaea; color: var(--red); display: block; }
+.empty-note { color: var(--muted); font-size: 14px; text-align: center; padding: 30px 0; }
+.loading { color: var(--muted); font-size: 14px; text-align: center; padding: 40px 0; }
+
+.hamburger-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--cream); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy); flex-shrink: 0; }
+.hamburger-btn svg { width: 18px; height: 18px; }
+.nav-drawer { position: fixed; inset: 0; background: var(--navy-deep); z-index: 2000; display: flex; flex-direction: column; padding: 22px 26px 36px; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); overflow-y: auto; }
+.nav-drawer.open { transform: translateX(0); }
+.nav-drawer-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
+.nav-drawer-top strong { font-family: 'Fraunces', serif; color: var(--paper); font-size: 16px; }
+.nav-drawer-close { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--paper); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.nav-drawer-links { display: flex; flex-direction: column; gap: 4px; }
+.nav-drawer-links a { display: flex; align-items: center; gap: 14px; font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; color: var(--paper); padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.nav-drawer-links a svg { width: 22px; height: 22px; color: var(--gold-soft); flex-shrink: 0; }
+.nav-drawer-links a:hover { color: var(--gold-soft); }
+.nav-drawer-signout { margin-top: auto; padding: 15px; border-radius: 10px; background: rgba(255,255,255,0.1); color: var(--paper); font-weight: 600; font-size: 14.5px; text-align: center; border: none; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <img src="/assets/images/logo.png" alt="logo">
+    <div><strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong><span>Teacher Portal</span></div>
+  </div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+    <button class="signout" id="signOutBtn">Sign Out</button>
+  </div>
+</div>
+
+<div class="wrap" id="appWrap" style="display:none;">
+
+  <div id="examListView">
+    <div class="welcome">
+      <h1>CBT</h1>
+      <p>Create and manage computer-based tests for your classes.</p>
+    </div>
+    <button class="btn-outline" id="newExamBtn">+ Create New Exam</button>
+    <div class="card">
+      <h2>Your Exams</h2>
+      <div id="examList"></div>
+    </div>
+  </div>
+
+  <div id="examFormView" class="card" style="display:none;">
+    <a class="back-link" id="formBackLink">← Back to exams</a>
+    <h2>Create Exam</h2>
+    <div id="formMsgBox" class="msg"></div>
+    <div class="field-row">
+      <label for="assignmentSelect">Class, Subject &amp; Term</label>
+      <select id="assignmentSelect"></select>
+    </div>
+    <div class="field-row">
+      <label for="examTitle">Exam Title</label>
+      <input type="text" id="examTitle" placeholder="e.g. Mid-Term Mathematics Test">
+    </div>
+    <div class="field-row">
+      <label for="examDuration">Duration (minutes)</label>
+      <input type="number" id="examDuration" min="1" value="30">
+    </div>
+    <div class="two-col">
+      <div class="field-row">
+        <label for="examStart">Start Time (optional)</label>
+        <input type="datetime-local" id="examStart">
+      </div>
+      <div class="field-row">
+        <label for="examEnd">End Time (optional)</label>
+        <input type="datetime-local" id="examEnd">
+      </div>
+    </div>
+    <div class="check-row"><input type="checkbox" id="randomizeQuestions" checked><label for="randomizeQuestions">Randomize question order</label></div>
+    <div class="check-row"><input type="checkbox" id="randomizeOptions" checked><label for="randomizeOptions">Randomize answer options</label></div>
+    <button class="btn-primary" id="createExamBtn">Create Exam &amp; Add Questions</button>
+  </div>
+
+  <div id="questionManageView" style="display:none;">
+    <a class="back-link" id="questionsBackLink">← Back to exams</a>
+    <div class="card">
+      <h2 id="examHeaderTitle">Exam</h2>
+      <p id="examHeaderMeta" style="font-size:13px; color:var(--muted);"></p>
+    </div>
+
+    <div class="card">
+      <h2>Questions</h2>
+      <div id="questionMsgBox" class="msg"></div>
+      <div id="questionList"></div>
+      <p class="empty-note" id="noQuestionsNote" style="display:none;">No questions added yet.</p>
+    </div>
+
+    <div class="card">
+      <h2>Add a Question</h2>
+      <div class="field-row">
+        <label for="qText">Question</label>
+        <textarea id="qText" placeholder="Type the question here…"></textarea>
+      </div>
+      <div class="option-input-row"><div class="option-letter">A</div><input type="text" id="optA" placeholder="Option A"></div>
+      <div class="option-input-row"><div class="option-letter">B</div><input type="text" id="optB" placeholder="Option B"></div>
+      <div class="option-input-row"><div class="option-letter">C</div><input type="text" id="optC" placeholder="Option C"></div>
+      <div class="option-input-row"><div class="option-letter">D</div><input type="text" id="optD" placeholder="Option D"></div>
+      <div class="two-col">
+        <div class="field-row">
+          <label for="correctOption">Correct Option</label>
+          <select id="correctOption">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <label for="qMarks">Marks</label>
+          <input type="number" id="qMarks" min="0" step="0.5" value="1">
+        </div>
+      </div>
+      <button class="btn-primary" id="addQuestionBtn">Add Question</button>
+    </div>
+  </div>
+
+</div>
+
+<div id="loadingState" class="loading">Loading…</div>
+
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-top">
+    <strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong>
+    <button class="nav-drawer-close" id="drawerClose" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+  <nav class="nav-drawer-links">
+    <a href="/teacher/dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>Dashboard</span></a>
+    <a href="/teacher/students.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
+    <a href="/teacher/report-cards.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Reports</span></a>
+    <a href="/teacher/cbt.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span>CBT</span></a>
+    <a href="/teacher/profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
+  </nav>
+  <button class="nav-drawer-signout" id="drawerSignOutBtn">Sign Out</button>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'YOUR_ANON_KEY')
+
+  let currentUser = null
+  let teacherRecord = null
+  let assignments = []
+  let currentExam = null
+
+  function showMessage(boxId, text, type) {
+    const box = document.getElementById(boxId)
+    box.textContent = text
+    box.className = 'msg ' + type
+    setTimeout(() => { box.className = 'msg' }, 4000)
+  }
+
+  async function loadSchoolName() {
+    const { data } = await supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name })
+  }
+
+  function showView(view) {
+    document.getElementById('examListView').style.display = view === 'list' ? 'block' : 'none'
+    document.getElementById('examFormView').style.display = view === 'form' ? 'block' : 'none'
+    document.getElementById('questionManageView').style.display = view === 'questions' ? 'block' : 'none'
+  }
+
+  async function init() {
+    loadSchoolName()
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/login.html'; return }
+    currentUser = session.user
+
+    const { data: membership } = await supabase.from('school_members').select('role').eq('user_id', currentUser.id).single()
+    if (!membership || membership.role !== 'teacher') { window.location.href = '/login.html'; return }
+
+    const { data: teacher } = await supabase.from('teachers').select('id, school_id').eq('user_id', currentUser.id).single()
+    if (!teacher) { document.getElementById('loadingState').textContent = 'No teacher record found for your account.'; return }
+    teacherRecord = teacher
+
+    const { data: assignmentData } = await supabase
+      .from('teacher_assignments')
+      .select('id, class_id, subject_id, term_id, classes(name), subjects(name), terms(name)')
+      .eq('teacher_id', teacherRecord.id)
+
+    assignments = assignmentData || []
+    const select = document.getElementById('assignmentSelect')
+    select.innerHTML = assignments.length
+      ? assignments.map(a => `<option value="${a.id}">${a.classes?.name || '—'} · ${a.subjects?.name || '—'} · ${a.terms?.name || '—'}</option>`).join('')
+      : '<option value="">No assignments yet</option>'
+
+    await loadExams()
+
+    document.getElementById('loadingState').style.display = 'none'
+    document.getElementById('appWrap').style.display = 'block'
+  }
+
+  async function loadExams() {
+    const container = document.getElementById('examList')
+    const { data, error } = await supabase
+      .from('cbt_exams')
+      .select('id, title, duration_minutes, start_time, end_time, class_id, subject_id, term_id, classes(name), subjects(name), terms(name)')
+      .eq('created_by', currentUser.id)
+      .order('id', { ascending: false })
+
+    if (error || !data || data.length === 0) {
+      container.innerHTML = '<p class="empty-note">You haven\'t created any exams yet.</p>'
+      return
+    }
+
+    const withCounts = await Promise.all(data.map(async exam => {
+      const { count } = await supabase.from('cbt_questions').select('*', { count: 'exact', head: true }).eq('exam_id', exam.id)
+      return { ...exam, questionCount: count ?? 0 }
+    }))
+
+    container.innerHTML = withCounts.map(exam => `
+      <div class="exam-card" data-id="${exam.id}">
+        <h3>${exam.title}</h3>
+        <div class="meta">${exam.classes?.name || '—'} · ${exam.subjects?.name || '—'} · ${exam.terms?.name || '—'}</div>
+        <div class="stats"><span><strong>${exam.questionCount}</strong> questions</span><span><strong>${exam.duration_minutes}</strong> min</span></div>
+        <div class="exam-actions">
+          <button class="btn-small manage-btn">Manage Questions</button>
+          <button class="btn-small danger delete-btn">Delete</button>
+        </div>
+      </div>
+    `).join('')
+
+    container.querySelectorAll('.exam-card').forEach(card => {
+      const examId = card.dataset.id
+      const exam = withCounts.find(e => e.id === examId)
+      card.querySelector('.manage-btn').addEventListener('click', () => openQuestionManage(exam))
+      card.querySelector('.delete-btn').addEventListener('click', () => deleteExam(examId))
+    })
+  }
+
+  async function deleteExam(examId) {
+    if (!confirm('Delete this exam and all its questions? This cannot be undone.')) return
+    await supabase.from('cbt_questions').delete().eq('exam_id', examId)
+    const { error } = await supabase.from('cbt_exams').delete().eq('id', examId)
+    if (error) alert('Could not delete exam: ' + error.message)
+    await loadExams()
+  }
+
+  document.getElementById('newExamBtn').addEventListener('click', () => {
+    document.getElementById('examTitle').value = ''
+    document.getElementById('examDuration').value = 30
+    document.getElementById('examStart').value = ''
+    document.getElementById('examEnd').value = ''
+    showView('form')
+  })
+  document.getElementById('formBackLink').addEventListener('click', () => showView('list'))
+  document.getElementById('questionsBackLink').addEventListener('click', async () => { await loadExams(); showView('list') })
+
+  document.getElementById('createExamBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('createExamBtn')
+    const assignmentId = document.getElementById('assignmentSelect').value
+    const title = document.getElementById('examTitle').value.trim()
+    const duration = parseInt(document.getElementById('examDuration').value, 10)
+    const startVal = document.getElementById('examStart').value
+    const endVal = document.getElementById('examEnd').value
+
+    if (!assignmentId) { showMessage('formMsgBox', 'Please choose a class, subject and term.', 'error'); return }
+    if (!title) { showMessage('formMsgBox', 'Please enter an exam title.', 'error'); return }
+
+    const assignment = assignments.find(a => a.id === assignmentId)
+
+    btn.disabled = true
+    btn.textContent = 'Creating…'
+
+    const { data, error } = await supabase.from('cbt_exams').insert({
+      school_id: teacherRecord.school_id,
+      subject_id: assignment.subject_id,
+      class_id: assignment.class_id,
+      term_id: assignment.term_id,
+      title: title,
+      duration_minutes: duration,
+      randomize_questions: document.getElementById('randomizeQuestions').checked,
+      randomize_options: document.getElementById('randomizeOptions').checked,
+      start_time: startVal ? new Date(startVal).toISOString() : null,
+      end_time: endVal ? new Date(endVal).toISOString() : null,
+      created_by: currentUser.id
+    }).select('id, title, classes(name), subjects(name), terms(name)').single()
+
+    btn.disabled = false
+    btn.textContent = 'Create Exam & Add Questions'
+
+    if (error) { showMessage('formMsgBox', 'Could not create exam: ' + error.message, 'error'); return }
+
+    openQuestionManage({ ...data, questionCount: 0 })
+  })
+
+  async function openQuestionManage(exam) {
+    currentExam = exam
+    document.getElementById('examHeaderTitle').textContent = exam.title
+    document.getElementById('examHeaderMeta').textContent = `${exam.classes?.name || '—'} · ${exam.subjects?.name || '—'} · ${exam.terms?.name || '—'}`
+    document.getElementById('qText').value = ''
+    document.getElementById('optA').value = ''
+    document.getElementById('optB').value = ''
+    document.getElementById('optC').value = ''
+    document.getElementById('optD').value = ''
+    document.getElementById('qMarks').value = 1
+    await loadQuestions()
+    showView('questions')
+  }
+
+  async function loadQuestions() {
+    const container = document.getElementById('questionList')
+    const note = document.getElementById('noQuestionsNote')
+    const { data, error } = await supabase
+      .from('cbt_questions')
+      .select('id, question_text, options, correct_option, marks')
+      .eq('exam_id', currentExam.id)
+
+    if (error || !data || data.length === 0) {
+      container.innerHTML = ''
+      note.style.display = 'block'
+      return
+    }
+    note.style.display = 'none'
+
+    container.innerHTML = data.map(q => `
+      <div class="question-item" data-id="${q.id}">
+        <div class="qtext">${q.question_text}</div>
+        <div class="option-list">
+          ${['A','B','C','D'].map(letter => `<div class="option-item ${q.correct_option === letter ? 'correct' : ''}">${letter}. ${q.options?.[letter] || ''}</div>`).join('')}
+        </div>
+        <div class="qmarks">${q.marks} mark(s) · <span class="del-q" style="color:var(--red); cursor:pointer; font-weight:600;">Delete</span></div>
+      </div>
+    `).join('')
+
+    container.querySelectorAll('.question-item').forEach(item => {
+      item.querySelector('.del-q').addEventListener('click', async () => {
+        await supabase.from('cbt_questions').delete().eq('id', item.dataset.id)
+        await loadQuestions()
+      })
+    })
+  }
+
+  document.getElementById('addQuestionBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('addQuestionBtn')
+    const text = document.getElementById('qText').value.trim()
+    const optA = document.getElementById('optA').value.trim()
+    const optB = document.getElementById('optB').value.trim()
+    const optC = document.getElementById('optC').value.trim()
+    const optD = document.getElementById('optD').value.trim()
+    const correct = document.getElementById('correctOption').value
+    const marks = parseFloat(document.getElementById('qMarks').value)
+
+    if (!text || !optA || !optB || !optC || !optD) {
+      showMessage('questionMsgBox', 'Please fill in the question and all four options.', 'error')
+      return
+    }
+
+    btn.disabled = true
+    btn.textContent = 'Adding…'
+
+    const { error } = await supabase.from('cbt_questions').insert({
+      exam_id: currentExam.id,
+      question_text: text,
+      options: { A: optA, B: optB, C: optC, D: optD },
+      correct_option: correct,
+      marks: marks
+    })
+
+    btn.disabled = false
+    btn.textContent = 'Add Question'
+
+    if (error) { showMessage('questionMsgBox', 'Could not add question: ' + error.message, 'error'); return }
+
+    document.getElementById('qText').value = ''
+    document.getElementById('optA').value = ''
+    document.getElementById('optB').value = ''
+    document.getElementById('optC').value = ''
+    document.getElementById('optD').value = ''
+    document.getElementById('qMarks').value = 1
+    showMessage('questionMsgBox', 'Question added.', 'success')
+    await loadQuestions()
+  })
+
+  const navDrawer = document.getElementById('navDrawer')
+  document.getElementById('hamburgerBtn').addEventListener('click', () => navDrawer.classList.add('open'))
+  document.getElementById('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
+  document.getElementById('drawerSignOutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut()
+    window.location.href = '/login.html'
+  })
+
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut()
+    window.location.href = '/login.html'
+  })
+
+  init()
+</script>
+
+</body>
+</html>

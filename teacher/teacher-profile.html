@@ -26,7 +26,7 @@ button, input { font: inherit; }
 .topbar .brand span { display: block; font-size: 11px; color: var(--muted); }
 .signout { font-size: 13px; font-weight: 600; color: var(--maroon); border: 1px solid var(--border); border-radius: 999px; padding: 8px 16px; cursor: pointer; background: var(--paper); }
 
-.wrap { max-width: 640px; margin: 0 auto; padding: 28px 18px 90px; }
+.wrap { max-width: 640px; margin: 0 auto; padding: 28px 18px 50px; }
 .welcome h1 { font-size: 24px; color: var(--navy); margin-bottom: 4px; }
 .welcome p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
 
@@ -56,10 +56,18 @@ input:focus { outline: none; border-color: var(--navy); }
 .msg.error { background: #fbeaea; color: var(--red); display: block; }
 .loading { color: var(--muted); font-size: 14px; text-align: center; padding: 40px 0; }
 
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--paper); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px)); z-index: 50; }
-.bn-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 10px; border-radius: 10px; color: var(--muted); font-size: 10.5px; font-weight: 600; flex: 1; text-align: center; }
-.bn-item svg { width: 21px; height: 21px; }
-.bn-item.active { color: var(--maroon); }
+.hamburger-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--cream); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy); flex-shrink: 0; }
+.hamburger-btn svg { width: 18px; height: 18px; }
+.nav-drawer { position: fixed; inset: 0; background: var(--navy-deep); z-index: 2000; display: flex; flex-direction: column; padding: 22px 26px 36px; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); overflow-y: auto; }
+.nav-drawer.open { transform: translateX(0); }
+.nav-drawer-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
+.nav-drawer-top strong { font-family: 'Fraunces', serif; color: var(--paper); font-size: 16px; }
+.nav-drawer-close { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--paper); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.nav-drawer-links { display: flex; flex-direction: column; gap: 4px; }
+.nav-drawer-links a { display: flex; align-items: center; gap: 14px; font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; color: var(--paper); padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.nav-drawer-links a svg { width: 22px; height: 22px; color: var(--gold-soft, var(--gold)); flex-shrink: 0; }
+.nav-drawer-links a:hover { color: var(--gold-soft, var(--gold)); }
+.nav-drawer-signout { margin-top: auto; padding: 15px; border-radius: 10px; background: rgba(255,255,255,0.1); color: var(--paper); font-weight: 600; font-size: 14.5px; text-align: center; border: none; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -69,7 +77,12 @@ input:focus { outline: none; border-color: var(--navy); }
     <img src="/assets/images/logo.png" alt="logo">
     <div><strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong><span>Teacher Portal</span></div>
   </div>
-  <button class="signout" id="signOutBtn">Sign Out</button>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+    <button class="signout" id="signOutBtn">Sign Out</button>
+  </div>
 </div>
 
 <div class="wrap" id="appWrap" style="display:none;">
@@ -110,16 +123,26 @@ input:focus { outline: none; border-color: var(--navy); }
 
 <div id="loadingState" class="loading">Loading…</div>
 
-<nav class="bottom-nav">
-  <a href="/teacher/dashboard.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>Dashboard</span></a>
-  <a href="/teacher/students.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
-  <a href="/teacher/report-cards.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Reports</span></a>
-  <a href="/teacher/profile.html" class="bn-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
-</nav>
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-top">
+    <strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong>
+    <button class="nav-drawer-close" id="drawerClose" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+  <nav class="nav-drawer-links">
+    <a href="/teacher/dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>Dashboard</span></a>
+    <a href="/teacher/students.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
+    <a href="/teacher/report-cards.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Reports</span></a>
+    <a href="/teacher/cbt.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span>CBT</span></a>
+    <a href="/teacher/profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
+  </nav>
+  <button class="nav-drawer-signout" id="drawerSignOutBtn">Sign Out</button>
+</div>
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
-  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'YOUR_ANON_KEY')
 
   function showMessage(text, type) {
     const box = document.getElementById('msgBox')
@@ -182,6 +205,14 @@ input:focus { outline: none; border-color: var(--navy); }
   document.getElementById('signOutBtn').addEventListener('click', async () => {
     await supabase.auth.signOut()
     window.location.href = '/login.html'
+  })
+
+  const navDrawer = document.getElementById('navDrawer')
+  document.getElementById('hamburgerBtn').addEventListener('click', () => navDrawer.classList.add('open'))
+  document.getElementById('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
+  document.getElementById('drawerSignOutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut()
+    window.location.href = window.location.pathname.startsWith('/admin') ? '/admin/login.html' : '/login.html'
   })
 
   init()
