@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#101B3D" />
+<title>Academics — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500..700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F1F2F6; --paper: #FFFFFF; --gold: #B98B2A; --gold-soft: #E2BE6A; --ink: #161A27;
+  --muted: #5B6275; --border: #DDE0E8; --green: #2E7D32; --red: #B3261E; --error: #B3261E;
+  --navy-tint: #E8EBF5; --maroon-tint: #F6E9EB; --green-tint: #E7F3E8; --red-tint: #FBEAE8; --amber-tint: #FBF1DC; --amber-text: #7A5A12;
+  --sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --serif: 'Literata', Georgia, 'Times New Roman', serif;
+  --side: 264px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); font-size: 15px; color: var(--ink); background: var(--cream); line-height: 1.55; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.01em; line-height: 1.22; }
+a { color: inherit; text-decoration: none; }
+button, select, input { font: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid rgba(185,139,42,0.65); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* ---------- top bar (mobile) ---------- */
+.topbar { background: var(--paper); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+.topbar::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 6px; background: linear-gradient(var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); pointer-events: none; }
+.topbar .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.topbar .brand img { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; }
+.topbar .brand strong { font-family: var(--serif); color: var(--navy); font-size: 14.5px; font-weight: 600; line-height: 1.25; display: block; }
+.topbar .brand span { display: block; font-size: 11.5px; color: var(--muted); }
+.signout { font-size: 13px; font-weight: 600; color: var(--maroon); border: 1.5px solid var(--border); border-radius: 999px; padding: 7px 15px; background: var(--paper); transition: background .15s, border-color .15s; }
+.signout:hover { background: var(--maroon-tint); border-color: var(--maroon); }
+.hamburger-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--navy-tint); border: 1px solid transparent; display: flex; align-items: center; justify-content: center; color: var(--navy); flex-shrink: 0; transition: background .15s; }
+.hamburger-btn:hover { background: #d9deef; }
+.hamburger-btn svg { width: 18px; height: 18px; }
+
+/* ---------- navigation drawer / sidebar ---------- */
+.nav-drawer { position: fixed; inset: 0; background: var(--navy-deep); z-index: 2000; display: flex; flex-direction: column; padding: 22px 26px 32px; transform: translateX(100%); visibility: hidden; transition: transform .4s cubic-bezier(.22,1,.36,1), visibility 0s .4s; overflow-y: auto; }
+.nav-drawer.open { transform: translateX(0); visibility: visible; transition: transform .4s cubic-bezier(.22,1,.36,1), visibility 0s 0s; }
+.nav-drawer-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 34px; gap: 12px; }
+.nav-drawer-top strong { font-family: var(--serif); font-weight: 600; color: #fff; font-size: 15.5px; line-height: 1.25; display: flex; align-items: center; gap: 12px; }
+.nav-drawer-top strong::before { content: ""; width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; background: #fff url(/assets/images/logo.png) center / cover no-repeat; }
+.nav-drawer-close { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-drawer-close:hover { background: rgba(255,255,255,0.18); }
+.nav-drawer-links { display: flex; flex-direction: column; gap: 2px; }
+.nav-drawer-links a { display: flex; align-items: center; gap: 14px; font-family: var(--serif); font-size: 22px; font-weight: 600; color: #fff; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.1); transition: color .15s; }
+.nav-drawer-links a svg { width: 22px; height: 22px; color: var(--gold-soft); flex-shrink: 0; }
+.nav-drawer-links a:hover, .nav-drawer-links a.active { color: var(--gold-soft); }
+.nav-drawer-signout { margin-top: auto; padding: 15px; border-radius: 10px; background: rgba(255,255,255,0.1); color: #fff; font-weight: 600; font-size: 14.5px; text-align: center; border: none; transition: background .15s; }
+.nav-drawer-signout:hover { background: rgba(255,255,255,0.18); }
+
+/* ---------- shared content ---------- */
+.wrap { margin: 0 auto; padding: 34px 16px 56px; }
+.welcome { margin-bottom: 22px; }
+.welcome h1 { font-size: 27px; color: var(--navy); font-weight: 700; margin-bottom: 6px; }
+.welcome p { color: var(--muted); font-size: 15px; max-width: 60ch; }
+.card { background: var(--paper); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 20px; }
+.card h2 { font-size: 17px; color: var(--navy); margin-bottom: 16px; font-weight: 600; }
+select, input { padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; color: var(--ink); width: 100%; font-size: 14.5px; min-height: 44px; transition: border-color .15s, box-shadow .15s; }
+select:hover, input:hover { border-color: #c3c8d6; }
+select:focus, input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,27,61,0.14); }
+select { appearance: none; -webkit-appearance: none; padding-right: 36px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235B6275' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+.empty-note { color: var(--muted); font-size: 15px; text-align: center; padding: 28px 16px; }
+.loading { color: var(--muted); font-size: 14.5px; text-align: center; padding: 72px 0; }
+.loading::before { content: ""; display: block; width: 26px; height: 26px; margin: 0 auto 14px; border-radius: 50%; border: 3px solid var(--navy-tint); border-top-color: var(--maroon); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* status message, shown as a toast */
+.msg { position: fixed; z-index: 3000; left: 16px; right: 16px; bottom: 20px; max-width: 460px; margin: 0 auto; padding: 13px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; display: none; box-shadow: 0 12px 32px rgba(11,19,41,0.22); border-left: 4px solid; }
+.msg.success { background: var(--green-tint); color: #1d5a21; border-color: var(--green); display: block; animation: toastIn .28s cubic-bezier(.22,1,.36,1); }
+.msg.error { background: var(--red-tint); color: #8d1d17; border-color: var(--red); display: block; animation: toastIn .28s cubic-bezier(.22,1,.36,1); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ---------- desktop: persistent sidebar ---------- */
+@media (min-width: 1000px) {
+  body { padding-left: var(--side); }
+  .topbar { display: none; }
+  .hamburger-btn, .nav-drawer-close { display: none; }
+  .nav-drawer, .nav-drawer.open { inset: 0 auto 0 0; width: var(--side); transform: none; visibility: visible; transition: none; padding: 26px 18px 24px; z-index: 20; }
+  .nav-drawer::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 6px; background: linear-gradient(to right, var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); }
+  .nav-drawer-top { padding: 0 8px; margin-bottom: 30px; }
+  .nav-drawer-links { gap: 4px; }
+  .nav-drawer-links a { font-family: var(--sans); font-size: 15px; font-weight: 500; padding: 11px 12px; border: none; border-radius: 8px; color: rgba(255,255,255,0.76); }
+  .nav-drawer-links a svg { width: 19px; height: 19px; color: rgba(255,255,255,0.55); }
+  .nav-drawer-links a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .nav-drawer-links a:hover svg { color: var(--gold-soft); }
+  .nav-drawer-links a.active { background: rgba(255,255,255,0.1); color: #fff; box-shadow: inset 3px 0 0 var(--gold-soft); }
+  .nav-drawer-links a.active svg { color: var(--gold-soft); }
+  .nav-drawer-signout { margin-right: 6px; }
+  .wrap { padding: 52px 44px 72px; }
+  .welcome h1 { font-size: 32px; }
+  .msg { left: calc(var(--side) + 24px); right: 24px; bottom: 28px; margin: 0 auto; }
+}
+
+.btn-primary, .btn-ghost, .btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 8px; font-weight: 600; font-size: 14.5px; border: 1.5px solid transparent; transition: background .15s, border-color .15s, color .15s, transform .1s; }
+.btn-primary { background: var(--navy); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--maroon); }
+.btn-ghost { background: #fff; color: var(--navy); border-color: var(--border); }
+.btn-ghost:hover { border-color: var(--navy); background: var(--navy-tint); }
+.btn-danger { background: var(--red); color: #fff; }
+.btn-danger:hover:not(:disabled) { background: #8f1d17; }
+.btn-primary:active, .btn-ghost:active, .btn-danger:active { transform: scale(.98); }
+button:disabled { opacity: .55; cursor: not-allowed; }
+.field { margin-bottom: 18px; }
+.field label { display: block; font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.hint { font-size: 12.5px; color: var(--muted); margin-top: 6px; display: block; }
+input:disabled { background: var(--cream); color: var(--muted); cursor: not-allowed; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(11,19,41,0.55); backdrop-filter: blur(2px); z-index: 2500; display: none; align-items: flex-end; justify-content: center; padding: 0; }
+.modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
+.modal { background: #fff; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; border-radius: 18px 18px 0 0; border-top: 5px solid var(--gold); padding: 24px 24px 26px; }
+.modal-overlay.open .modal { animation: sheetUp .3s cubic-bezier(.22,1,.36,1); }
+.modal h2 { font-size: 21px; color: var(--navy); margin-bottom: 4px; }
+.modal .sub { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheetUp { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (min-width: 640px) { .modal-overlay { align-items: center; padding: 20px; } .modal { border-radius: 16px; } }
+
+.wrap { max-width: 1080px; }
+.page-head { margin-bottom: 20px; } .page-head .welcome { margin: 0; }
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+.stat-card { background: var(--paper); border: 1px solid var(--border); border-radius: 14px; padding: 18px 18px 16px; display: flex; flex-direction: column-reverse; gap: 2px; }
+.stat-card strong { font-family: var(--serif); font-size: 30px; line-height: 1.1; font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.stat-card strong.small { font-size: 18px; line-height: 1.35; padding: 5px 0; }
+.stat-card span { font-size: 13.5px; font-weight: 500; color: var(--muted); }
+.stat-card.highlight { background: var(--navy); border-color: var(--navy); box-shadow: inset 0 -4px 0 var(--gold); }
+.stat-card.highlight strong { color: #fff; } .stat-card.highlight span { color: #c4cce0; }
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 22px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { position: relative; padding: 13px 16px; font-weight: 600; font-size: 14.5px; color: var(--muted); background: none; border: none; white-space: nowrap; transition: color .15s; }
+.tab small { margin-left: 6px; background: var(--navy-tint); color: var(--navy); border-radius: 999px; padding: 1px 8px; font-size: 12px; font-weight: 700; }
+.tab::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 3px; border-radius: 3px 3px 0 0; background: var(--maroon); transform: scaleX(0); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+.tab:hover { color: var(--navy); } .tab.on { color: var(--navy); } .tab.on::after { transform: scaleX(1); }
+.panel { display: none; } .panel.on { display: block; animation: rise .35s ease both; }
+.panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+.panel-head h2 { font-size: 20px; margin: 0; color: var(--navy); } .panel-head p { font-size: 14px; color: var(--muted); }
+.suggest { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 14px 16px; margin-bottom: 16px; background: var(--amber-tint); border: 1px solid #e8d5a2; border-left: 4px solid var(--gold); border-radius: 10px; font-size: 14px; color: var(--amber-text); }
+.suggest button.chip { background: #fff; border: 1px solid #e0c98c; color: var(--amber-text); border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 600; transition: background .15s; }
+.suggest button.chip:hover { background: #fff7e3; }
+.suggest .all { margin-left: auto; background: var(--navy); color: #fff; border: none; border-radius: 8px; padding: 8px 14px; font-weight: 600; font-size: 13.5px; }
+.suggest .all:hover { background: var(--maroon); }
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.item-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 16px 16px 14px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; transition: border-color .2s, box-shadow .2s, transform .2s; animation: rise .4s ease both; }
+.item-card:hover { border-color: #c3c8d6; box-shadow: 0 10px 26px rgba(16,27,61,0.08); transform: translateY(-2px); }
+.item-card h3 { font-size: 17px; color: var(--navy); margin-bottom: 2px; overflow-wrap: anywhere; } .item-card p { font-size: 13px; color: var(--muted); }
+.row-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.row-actions button { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: #fff; color: var(--muted); display: grid; place-items: center; transition: background .15s, color .15s, border-color .15s; }
+.row-actions button svg { width: 16px; height: 16px; }
+.row-actions button:hover { background: var(--navy-tint); color: var(--navy); border-color: var(--navy); }
+.row-actions button.del:hover { background: var(--red-tint); color: var(--red); border-color: var(--red); }
+.toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+.toolbar select { width: auto; min-width: 220px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.chip { padding: 8px 15px; border-radius: 999px; border: 1.5px solid var(--border); background: #fff; color: var(--navy); font-size: 13.5px; font-weight: 600; transition: background .15s, color .15s, border-color .15s; }
+.chip:hover { border-color: var(--navy); } .chip.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+.group { padding: 0; overflow: hidden; margin-bottom: 16px; animation: rise .4s ease both; }
+.group-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 20px; background: linear-gradient(#fff, #f8f9fc); border-bottom: 1px solid var(--border); }
+.group-head h3 { font-size: 18px; color: var(--navy); } .group-meta { font-size: 13px; color: var(--muted); }
+.asg-row { display: grid; grid-template-columns: 1fr 1fr auto; align-items: center; gap: 14px; padding: 12px 20px; border-bottom: 1px solid var(--border); transition: background .15s; }
+.asg-row:last-child { border-bottom: none; } .asg-row:hover { background: var(--navy-tint); }
+.asg-subject { font-weight: 600; } .asg-teacher { color: var(--muted); font-size: 14.5px; }
+.note { padding: 14px 16px; margin-bottom: 16px; background: var(--cream); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; color: var(--muted); }
+.note a { color: var(--maroon); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.empty-state { text-align: center; padding: 48px 20px; background: #fff; border: 1.5px dashed #c3c8d6; border-radius: 14px; }
+.empty-state h3 { font-size: 19px; color: var(--navy); margin-bottom: 6px; } .empty-state p { color: var(--muted); margin-bottom: 16px; }
+.session-card { padding: 0; overflow: hidden; margin-bottom: 16px; animation: rise .4s ease both; }
+.session-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 16px 20px; background: linear-gradient(#fff, #f8f9fc); border-bottom: 1px solid var(--border); }
+.session-head h3 { font-size: 18px; color: var(--navy); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.badge-current { font-family: var(--sans); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: var(--green-tint); color: #1d5a21; }
+.term-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--border); }
+.term-row:last-of-type { border-bottom: none; } .term-row strong { display: block; } .term-row span { font-size: 13px; color: var(--muted); }
+.session-foot { padding: 12px 20px; border-top: 1px solid var(--border); background: var(--cream); }
+.link-btn { background: none; border: none; color: var(--maroon); font-weight: 600; font-size: 14px; padding: 6px 0; }
+.link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+@media (min-width: 760px) { .stat-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
+@media (max-width: 600px) { .asg-row { grid-template-columns: 1fr auto; } .asg-teacher { grid-column: 1; grid-row: 2; } .asg-row .row-actions { grid-column: 2; grid-row: 1 / span 2; } .toolbar select { width: 100%; } .suggest .all { margin-left: 0; } }
+@media (max-width: 639px) { .modal { padding-bottom: 88px; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <img src="/assets/images/logo.png" alt="logo">
+    <div><strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong><span>Admin Portal</span></div>
+  </div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+    <button class="signout" id="signOutBtn">Sign Out</button>
+  </div>
+</div>
+
+<div class="wrap" id="appWrap" style="display:none;">
+  <div class="page-head welcome">
+    <h1>Academics</h1>
+    <p>Set up classes and subjects, run your sessions and terms, and assign teachers to the classes and subjects they teach.</p>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card highlight"><strong id="statClasses">—</strong><span>Classes</span></div>
+    <div class="stat-card"><strong id="statSubjects">—</strong><span>Subjects</span></div>
+    <div class="stat-card"><strong id="statTeachers">—</strong><span>Teachers</span></div>
+    <div class="stat-card"><strong class="small" id="statTerm">—</strong><span>Current term</span></div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button type="button" class="tab on" data-tab="classes" role="tab">Classes <small id="cntClasses">0</small></button>
+    <button type="button" class="tab" data-tab="subjects" role="tab">Subjects <small id="cntSubjects">0</small></button>
+    <button type="button" class="tab" data-tab="assignments" role="tab">Teacher assignments <small id="cntAssignments">0</small></button>
+    <button type="button" class="tab" data-tab="terms" role="tab">Sessions &amp; terms <small id="cntSessions">0</small></button>
+  </div>
+
+  <section class="panel on" id="panel-classes"></section>
+  <section class="panel" id="panel-subjects"></section>
+  <section class="panel" id="panel-assignments"></section>
+  <section class="panel" id="panel-terms"></section>
+</div>
+
+<div id="loadingState" class="loading">Loading academics…</div>
+<div id="msgBox" class="msg"></div>
+
+<div class="modal-overlay" id="formModal" role="dialog" aria-modal="true" aria-labelledby="formTitle">
+  <form class="modal" id="formEl" novalidate>
+    <h2 id="formTitle"></h2>
+    <p class="sub" id="formSub"></p>
+    <div id="formFields"></div>
+    <span class="hint" id="formError" style="color: var(--red); margin: -6px 0 10px;" hidden></span>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost" id="formCancel">Cancel</button>
+      <button type="submit" class="btn-primary" id="formSubmit">Save</button>
+    </div>
+  </form>
+</div>
+
+<div class="modal-overlay" id="confirmModal" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+  <div class="modal">
+    <h2 id="confirmTitle"></h2>
+    <p class="sub" id="confirmText"></p>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost" id="confirmCancel">Keep it</button>
+      <button type="button" class="btn-danger" id="confirmOk">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-top">
+    <strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong>
+    <button class="nav-drawer-close" id="drawerClose" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+  <nav class="nav-drawer-links">
+    <a href="/admin/dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>Dashboard</span></a>
+    <a href="/admin/enrollments.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg><span>Enrollments</span></a>
+    <a href="/admin/staff.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span>Staff</span></a>
+    <a href="/admin/students.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
+    <a href="/admin/academics.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>Academics</span></a>
+    <a href="/admin/fees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span>Fees</span></a>
+    <a href="/admin/profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
+  </nav>
+  <button class="nav-drawer-signout" id="drawerSignOutBtn">Sign Out</button>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
+
+  let schoolId = null
+  let classes = [], subjects = [], teachers = [], sessions = [], terms = [], assignments = []
+  let activeTab = 'classes', asgTermId = '', asgClassId = 'all'
+
+  const CLASS_SUGGESTIONS = ['Creche', 'Nursery 1', 'Nursery 2', 'Primary 1', 'Primary 2', 'Primary 3', 'Primary 4', 'Primary 5', 'Primary 6']
+  const SUBJECT_SUGGESTIONS = ['Mathematics', 'English Language', 'Basic Science', 'Social Studies', 'Islamic Studies', "Qur'an", 'Arabic', 'Civic Education', 'Computer Studies', 'Verbal Reasoning', 'Quantitative Reasoning', 'Creative Arts', 'Physical & Health Education']
+  const KINDS = {
+    class: { table: 'classes', label: 'class', plural: 'classes', list: () => classes, suggestions: CLASS_SUGGESTIONS },
+    subject: { table: 'subjects', label: 'subject', plural: 'subjects', list: () => subjects, suggestions: SUBJECT_SUGGESTIONS }
+  }
+
+  const byName = (a, b) => String(a).localeCompare(String(b), undefined, { numeric: true })
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  const fmtDate = (d) => d ? new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : ''
+  const ICON = {
+    edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+    del: '<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>'
+  }
+  const iconBtn = (action, attrs, label, path, cls) => `<button type="button" class="${cls || ''}" data-action="${action}" ${attrs} aria-label="${label}" title="${label}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${path}</svg></button>`
+
+  function showMessage(text, type) {
+    const box = document.getElementById('msgBox')
+    box.textContent = text; box.className = 'msg ' + type
+    clearTimeout(showMessage._t)
+    showMessage._t = setTimeout(() => { box.className = 'msg' }, 4500)
+  }
+  function friendlyError(error) {
+    const m = (error && error.message) || 'Something went wrong.'
+    if (error && error.code === '23503') return 'This is still in use (by students, fees, assignments or terms), so it cannot be removed. Remove or move those first.'
+    if (error && error.code === '23505') return 'That already exists.'
+    if (/row-level security|permission denied/i.test(m)) return 'Your account is not allowed to make this change yet. The database needs an administrator write policy for this table.'
+    return m
+  }
+
+  async function loadSchoolName() {
+    const { data } = await supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name })
+  }
+
+  async function loadAll() {
+    const [c, s, t, ss] = await Promise.all([
+      supabase.from('classes').select('id, name').eq('school_id', schoolId),
+      supabase.from('subjects').select('id, name').eq('school_id', schoolId),
+      supabase.from('teachers').select('id, user_id').eq('school_id', schoolId),
+      supabase.from('academic_sessions').select('id, name, is_current').eq('school_id', schoolId)
+    ])
+    const firstError = [c, s, t, ss].find(r => r.error)
+    if (firstError) showMessage('Could not load everything: ' + firstError.error.message, 'error')
+
+    classes = (c.data || []).sort((a, b) => byName(a.name, b.name))
+    subjects = (s.data || []).sort((a, b) => byName(a.name, b.name))
+    sessions = (ss.data || []).sort((a, b) => byName(b.name, a.name))
+
+    const rawTeachers = t.data || []
+    const userIds = rawTeachers.map(x => x.user_id).filter(Boolean)
+    let users = []
+    if (userIds.length) { const u = await supabase.from('users').select('id, full_name, email').in('id', userIds); users = u.data || [] }
+    teachers = rawTeachers.map(x => {
+      const u = users.find(y => y.id === x.user_id)
+      return { id: x.id, user_id: x.user_id, name: (u && (u.full_name || u.email)) || 'Teacher (no name)' }
+    }).sort((a, b) => byName(a.name, b.name))
+
+    if (sessions.length) {
+      const tr = await supabase.from('terms').select('id, session_id, name, start_date, end_date').in('session_id', sessions.map(x => x.id))
+      terms = tr.data || []
+    } else terms = []
+
+    if (classes.length) {
+      const ar = await supabase.from('teacher_assignments').select('id, teacher_id, class_id, subject_id, term_id').in('class_id', classes.map(x => x.id))
+      if (ar.error) showMessage('Could not load teacher assignments: ' + ar.error.message, 'error')
+      assignments = ar.data || []
+    } else assignments = []
+  }
+
+  const sessionName = (id) => (sessions.find(x => x.id === id) || {}).name || ''
+  const termLabel = (t) => t.name + ' · ' + sessionName(t.session_id)
+  const nameOf = (list, id) => (list.find(x => x.id === id) || {}).name || 'Unknown'
+
+  function defaultTermId() {
+    if (!terms.length) return ''
+    const current = sessions.find(s => s.is_current)
+    const pool = current ? terms.filter(t => t.session_id === current.id) : terms
+    const list = pool.length ? pool : terms
+    const today = new Date().toISOString().slice(0, 10)
+    const running = list.find(t => t.start_date && t.end_date && t.start_date <= today && today <= t.end_date)
+    if (running) return running.id
+    return list.slice().sort((a, b) => String(b.start_date || '').localeCompare(String(a.start_date || '')))[0].id
+  }
+
+  // ---------- generic modals ----------
+  let formState = null
+  function fieldHtml(f) {
+    const id = 'f_' + f.id
+    let input
+    if (f.type === 'select') {
+      input = `<select id="${id}">${f.placeholder ? `<option value="" disabled>${esc(f.placeholder)}</option>` : ''}${f.options.map(o => `<option value="${esc(o.value)}">${esc(o.label)}</option>`).join('')}</select>`
+    } else {
+      input = `<input id="${id}" type="${f.type || 'text'}" maxlength="80" autocomplete="off" placeholder="${esc(f.placeholder || '')}" ${f.list ? `list="${id}_list"` : ''}>`
+      if (f.list) input += `<datalist id="${id}_list">${f.list.map(x => `<option value="${esc(x)}">`).join('')}</datalist>`
+    }
+    return `<div class="field"><label for="${id}">${esc(f.label)}</label>${input}${f.hint ? `<span class="hint">${esc(f.hint)}</span>` : ''}</div>`
+  }
+  function openForm(cfg) {
+    formState = cfg
+    document.getElementById('formTitle').textContent = cfg.title
+    document.getElementById('formSub').textContent = cfg.sub || ''
+    document.getElementById('formFields').innerHTML = cfg.fields.map(fieldHtml).join('')
+    cfg.fields.forEach(f => { document.getElementById('f_' + f.id).value = f.value ?? '' })
+    document.getElementById('formSubmit').textContent = cfg.submitLabel || 'Save'
+    document.getElementById('formError').hidden = true
+    document.getElementById('formModal').classList.add('open')
+    setTimeout(() => { const first = document.getElementById('f_' + cfg.fields[0].id); if (first) first.focus() }, 50)
+  }
+  function closeForm() { document.getElementById('formModal').classList.remove('open'); formState = null }
+  document.getElementById('formEl').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    if (!formState) return
+    const errEl = document.getElementById('formError')
+    const values = {}
+    for (const f of formState.fields) {
+      const v = document.getElementById('f_' + f.id).value.trim()
+      if (f.required && !v) { errEl.textContent = 'Please fill in: ' + f.label + '.'; errEl.hidden = false; return }
+      values[f.id] = v
+    }
+    const btn = document.getElementById('formSubmit')
+    btn.disabled = true; const label = btn.textContent; btn.textContent = 'Saving…'
+    const err = await formState.onSubmit(values)
+    btn.disabled = false; btn.textContent = label
+    if (err) { errEl.textContent = err; errEl.hidden = false; return }
+    closeForm()
+  })
+  document.getElementById('formCancel').addEventListener('click', closeForm)
+
+  let confirmHandler = null
+  function openConfirm(title, text, okLabel, onOk) {
+    confirmHandler = onOk
+    document.getElementById('confirmTitle').textContent = title
+    document.getElementById('confirmText').textContent = text
+    document.getElementById('confirmOk').textContent = okLabel
+    document.getElementById('confirmModal').classList.add('open')
+  }
+  function closeConfirm() { document.getElementById('confirmModal').classList.remove('open'); confirmHandler = null }
+  document.getElementById('confirmCancel').addEventListener('click', closeConfirm)
+  document.getElementById('confirmOk').addEventListener('click', async () => {
+    const fn = confirmHandler; const btn = document.getElementById('confirmOk')
+    btn.disabled = true
+    if (fn) await fn()
+    btn.disabled = false; closeConfirm()
+  })
+  ;['formModal', 'confirmModal'].forEach(id => document.getElementById(id).addEventListener('click', (e) => { if (e.target.id === id) { closeForm(); closeConfirm() } }))
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeForm(); closeConfirm() } })
+
+  async function refresh(message) { await loadAll(); renderAll(); if (message) showMessage(message, 'success') }
+
+  // ---------- classes and subjects ----------
+  const dup = (list, name, exceptId) => list.some(x => x.id !== exceptId && x.name.trim().toLowerCase() === name.trim().toLowerCase())
+
+  function addNamed(kind, presetName) {
+    const k = KINDS[kind]
+    openForm({
+      title: 'Add ' + k.label, sub: 'You can rename it later.', submitLabel: 'Add ' + k.label,
+      fields: [{ id: 'name', label: k.label[0].toUpperCase() + k.label.slice(1) + ' name', required: true, value: presetName || '', list: k.suggestions, placeholder: 'e.g. ' + k.suggestions[3] }],
+      onSubmit: async (v) => {
+        if (dup(k.list(), v.name)) return 'A ' + k.label + ' called "' + v.name + '" already exists.'
+        const { error } = await supabase.from(k.table).insert({ school_id: schoolId, name: v.name })
+        if (error) return friendlyError(error)
+        await refresh(k.label[0].toUpperCase() + k.label.slice(1) + ' added.'); return null
+      }
+    })
+  }
+  async function addMissing(kind) {
+    const k = KINDS[kind]
+    const rows = k.suggestions.filter(n => !dup(k.list(), n)).map(n => ({ school_id: schoolId, name: n }))
+    if (!rows.length) return
+    const { error } = await supabase.from(k.table).insert(rows)
+    if (error) { showMessage(friendlyError(error), 'error'); return }
+    await refresh(rows.length + ' ' + k.plural + ' added.')
+  }
+  function editNamed(kind, id) {
+    const k = KINDS[kind]; const item = k.list().find(x => x.id === id); if (!item) return
+    openForm({
+      title: 'Rename ' + k.label, submitLabel: 'Save',
+      fields: [{ id: 'name', label: k.label[0].toUpperCase() + k.label.slice(1) + ' name', required: true, value: item.name }],
+      onSubmit: async (v) => {
+        if (dup(k.list(), v.name, id)) return 'Another ' + k.label + ' already has that name.'
+        const { error } = await supabase.from(k.table).update({ name: v.name }).eq('id', id)
+        if (error) return friendlyError(error)
+        await refresh('Saved.'); return null
+      }
+    })
+  }
+  function deleteNamed(kind, id) {
+    const k = KINDS[kind]; const item = k.list().find(x => x.id === id); if (!item) return
+    openConfirm('Delete ' + k.label + '?', '"' + item.name + '" will be removed. This only works if nothing else uses it.', 'Delete ' + k.label, async () => {
+      const { error } = await supabase.from(k.table).delete().eq('id', id)
+      if (error) { showMessage(friendlyError(error), 'error'); return }
+      await refresh(k.label[0].toUpperCase() + k.label.slice(1) + ' deleted.')
+    })
+  }
+
+  function renderNamed(kind) {
+    const k = KINDS[kind]; const list = k.list()
+    const panel = document.getElementById('panel-' + k.plural)
+    const missing = k.suggestions.filter(n => !dup(list, n))
+    const usage = (x) => kind === 'class'
+      ? assignments.filter(a => a.class_id === x.id).length + ' teaching assignment' + (assignments.filter(a => a.class_id === x.id).length === 1 ? '' : 's')
+      : 'Taught in ' + new Set(assignments.filter(a => a.subject_id === x.id).map(a => a.class_id)).size + ' class(es)'
+    panel.innerHTML = `
+      <div class="panel-head"><div><h2>${kind === 'class' ? 'Classes' : 'Subjects'}</h2><p>${kind === 'class' ? 'The classes your school runs. They are used when admitting students and for fees.' : 'The subjects taught at your school.'}</p></div>
+        <button type="button" class="btn-primary" data-action="add-${kind}">+ Add ${k.label}</button></div>
+      ${missing.length ? `<div class="suggest"><strong>Quick add:</strong>${missing.slice(0, 14).map(n => `<button type="button" class="chip" data-action="suggest-${kind}" data-name="${esc(n)}">${esc(n)}</button>`).join('')}<button type="button" class="all" data-action="missing-${kind}">Add all ${missing.length} suggested</button></div>` : ''}
+      ${list.length ? `<div class="cards-grid">${list.map(x => `<div class="item-card"><div><h3>${esc(x.name)}</h3><p>${usage(x)}</p></div><div class="row-actions">${iconBtn('edit-' + kind, 'data-id="' + esc(x.id) + '"', 'Rename', ICON.edit)}${iconBtn('delete-' + kind, 'data-id="' + esc(x.id) + '"', 'Delete', ICON.del, 'del')}</div></div>`).join('')}</div>`
+        : `<div class="empty-state"><h3>No ${k.plural} yet</h3><p>Add your first ${k.label}, or use the quick-add suggestions above.</p><button type="button" class="btn-primary" data-action="add-${kind}">+ Add ${k.label}</button></div>`}`
+  }
+
+  // ---------- assignments ----------
+  function renderAssignments() {
+    const panel = document.getElementById('panel-assignments')
+    if (!asgTermId || !terms.some(t => t.id === asgTermId)) asgTermId = defaultTermId()
+    const blockers = []
+    if (!classes.length) blockers.push('add your <b>classes</b>')
+    if (!subjects.length) blockers.push('add your <b>subjects</b>')
+    if (!teachers.length) blockers.push('make sure your teachers exist (add them on the <a href="/admin/staff.html">Staff page</a>)')
+    if (!terms.length) blockers.push('create a <b>session and term</b> (Sessions &amp; terms tab)')
+
+    const rows = assignments.filter(a => a.term_id === asgTermId && (asgClassId === 'all' || a.class_id === asgClassId))
+    const visibleClasses = classes.filter(c => asgClassId === 'all' || c.id === asgClassId)
+    const groups = visibleClasses.map(c => ({ c, rows: rows.filter(a => a.class_id === c.id).sort((a, b) => byName(nameOf(subjects, a.subject_id), nameOf(subjects, b.subject_id))) }))
+    const without = groups.filter(g => !g.rows.length).map(g => g.c.name)
+
+    panel.innerHTML = `
+      <div class="panel-head"><div><h2>Teacher assignments</h2><p>Who teaches which subject in which class, per term.</p></div>
+        <button type="button" class="btn-primary" data-action="add-asg" ${blockers.length ? 'disabled' : ''}>+ Assign teacher</button></div>
+      ${blockers.length ? `<div class="note">Before you can assign teachers, ${blockers.join(', ')}.</div>` : ''}
+      <div class="toolbar"><select id="asgTerm" aria-label="Term">${terms.length ? terms.slice().sort((a, b) => String(b.start_date || '').localeCompare(String(a.start_date || ''))).map(t => `<option value="${esc(t.id)}" ${t.id === asgTermId ? 'selected' : ''}>${esc(termLabel(t))}</option>`).join('') : '<option>No terms yet</option>'}</select></div>
+      ${classes.length ? `<div class="chips">${[{ id: 'all', name: 'All classes' }].concat(classes).map(c => `<button type="button" class="chip${c.id === asgClassId ? ' on' : ''}" data-action="asg-class" data-id="${esc(c.id)}">${esc(c.name)}</button>`).join('')}</div>` : ''}
+      ${groups.filter(g => g.rows.length).map(g => `<div class="card group"><div class="group-head"><h3>${esc(g.c.name)}</h3><div class="group-meta">${g.rows.length} subject${g.rows.length === 1 ? '' : 's'} assigned</div></div>
+        ${g.rows.map(a => `<div class="asg-row"><div class="asg-subject">${esc(nameOf(subjects, a.subject_id))}</div><div class="asg-teacher">${esc(nameOf(teachers, a.teacher_id))}</div><div class="row-actions">${iconBtn('edit-asg', 'data-id="' + esc(a.id) + '"', 'Change teacher', ICON.edit)}${iconBtn('delete-asg', 'data-id="' + esc(a.id) + '"', 'Remove assignment', ICON.del, 'del')}</div></div>`).join('')}</div>`).join('')}
+      ${!rows.length && !blockers.length ? `<div class="empty-state"><h3>No assignments for this term</h3><p>Assign a teacher to a subject in a class to get started.</p><button type="button" class="btn-primary" data-action="add-asg">+ Assign teacher</button></div>` : ''}
+      ${rows.length && without.length ? `<div class="note"><b>No teachers assigned yet in:</b> ${esc(without.join(', '))}</div>` : ''}`
+  }
+
+  const optionsOf = (list) => list.map(x => ({ value: x.id, label: x.name }))
+  function addAssignment() {
+    openForm({
+      title: 'Assign teacher', sub: 'Choose the teacher, the class, the subject and the term.', submitLabel: 'Assign',
+      fields: [
+        { id: 'teacher', label: 'Teacher', type: 'select', placeholder: 'Select a teacher…', options: optionsOf(teachers), required: true },
+        { id: 'class', label: 'Class', type: 'select', placeholder: 'Select a class…', options: optionsOf(classes), required: true, value: asgClassId !== 'all' ? asgClassId : '' },
+        { id: 'subject', label: 'Subject', type: 'select', placeholder: 'Select a subject…', options: optionsOf(subjects), required: true },
+        { id: 'term', label: 'Term', type: 'select', options: terms.map(t => ({ value: t.id, label: termLabel(t) })), required: true, value: asgTermId }
+      ],
+      onSubmit: async (v) => {
+        const clash = assignments.find(a => a.class_id === v.class && a.subject_id === v.subject && a.term_id === v.term)
+        if (clash) return nameOf(subjects, v.subject) + ' in ' + nameOf(classes, v.class) + ' is already assigned to ' + nameOf(teachers, clash.teacher_id) + ' for this term. Use the edit button to change the teacher.'
+        const { error } = await supabase.from('teacher_assignments').insert({ teacher_id: v.teacher, class_id: v.class, subject_id: v.subject, term_id: v.term })
+        if (error) return friendlyError(error)
+        asgTermId = v.term
+        await refresh('Teacher assigned.'); return null
+      }
+    })
+  }
+  function editAssignment(id) {
+    const a = assignments.find(x => x.id === id); if (!a) return
+    openForm({
+      title: 'Change teacher', sub: nameOf(subjects, a.subject_id) + ' · ' + nameOf(classes, a.class_id), submitLabel: 'Save',
+      fields: [{ id: 'teacher', label: 'Teacher', type: 'select', options: optionsOf(teachers), required: true, value: a.teacher_id }],
+      onSubmit: async (v) => {
+        const { error } = await supabase.from('teacher_assignments').update({ teacher_id: v.teacher }).eq('id', id)
+        if (error) return friendlyError(error)
+        await refresh('Teacher changed.'); return null
+      }
+    })
+  }
+  function deleteAssignment(id) {
+    const a = assignments.find(x => x.id === id); if (!a) return
+    openConfirm('Remove this assignment?', nameOf(teachers, a.teacher_id) + ' will no longer teach ' + nameOf(subjects, a.subject_id) + ' in ' + nameOf(classes, a.class_id) + ' for this term.', 'Remove', async () => {
+      const { error } = await supabase.from('teacher_assignments').delete().eq('id', id)
+      if (error) { showMessage(friendlyError(error), 'error'); return }
+      await refresh('Assignment removed.')
+    })
+  }
+
+  // ---------- sessions and terms ----------
+  function renderTerms() {
+    const panel = document.getElementById('panel-terms')
+    panel.innerHTML = `
+      <div class="panel-head"><div><h2>Sessions &amp; terms</h2><p>An academic session (for example 2026/2027) contains its terms. Mark one session as current.</p></div>
+        <button type="button" class="btn-primary" data-action="add-session">+ Add session</button></div>
+      ${sessions.length ? sessions.map(s => {
+        const ts = terms.filter(t => t.session_id === s.id).sort((a, b) => String(a.start_date || '').localeCompare(String(b.start_date || '')))
+        return `<div class="card session-card"><div class="session-head"><h3>${esc(s.name)} ${s.is_current ? '<span class="badge-current">Current</span>' : ''}</h3>
+          <div class="row-actions">${s.is_current ? '' : `<button type="button" class="btn-ghost" style="min-height:36px;padding:0 14px;font-size:13.5px;width:auto;height:36px;" data-action="make-current" data-id="${esc(s.id)}">Make current</button>`}${iconBtn('edit-session', 'data-id="' + esc(s.id) + '"', 'Rename session', ICON.edit)}${iconBtn('delete-session', 'data-id="' + esc(s.id) + '"', 'Delete session', ICON.del, 'del')}</div></div>
+          ${ts.length ? ts.map(t => `<div class="term-row"><div><strong>${esc(t.name)}</strong><span>${t.start_date || t.end_date ? esc(fmtDate(t.start_date) + (t.end_date ? ' – ' + fmtDate(t.end_date) : '')) : 'No dates set'}</span></div><div class="row-actions">${iconBtn('edit-term', 'data-id="' + esc(t.id) + '"', 'Edit term', ICON.edit)}${iconBtn('delete-term', 'data-id="' + esc(t.id) + '"', 'Delete term', ICON.del, 'del')}</div></div>`).join('') : '<div class="term-row"><span>No terms yet.</span></div>'}
+          <div class="session-foot"><button type="button" class="link-btn" data-action="add-term" data-id="${esc(s.id)}">+ Add term</button></div></div>`
+      }).join('') : `<div class="empty-state"><h3>No sessions yet</h3><p>Create your first academic session, then add its terms.</p><button type="button" class="btn-primary" data-action="add-session">+ Add session</button></div>`}`
+  }
+  function addSession() {
+    openForm({
+      title: 'Add session', sub: 'For example 2026/2027.', submitLabel: 'Add session',
+      fields: [{ id: 'name', label: 'Session name', required: true, placeholder: 'e.g. 2026/2027' }],
+      onSubmit: async (v) => {
+        if (dup(sessions, v.name)) return 'That session already exists.'
+        const { error } = await supabase.from('academic_sessions').insert({ school_id: schoolId, name: v.name, is_current: sessions.length === 0 })
+        if (error) return friendlyError(error)
+        await refresh('Session added.'); return null
+      }
+    })
+  }
+  function editSession(id) {
+    const s = sessions.find(x => x.id === id); if (!s) return
+    openForm({
+      title: 'Rename session', submitLabel: 'Save', fields: [{ id: 'name', label: 'Session name', required: true, value: s.name }],
+      onSubmit: async (v) => {
+        if (dup(sessions, v.name, id)) return 'Another session already has that name.'
+        const { error } = await supabase.from('academic_sessions').update({ name: v.name }).eq('id', id)
+        if (error) return friendlyError(error)
+        await refresh('Saved.'); return null
+      }
+    })
+  }
+  async function makeCurrent(id) {
+    const a = await supabase.from('academic_sessions').update({ is_current: false }).eq('school_id', schoolId)
+    if (a.error) { showMessage(friendlyError(a.error), 'error'); return }
+    const b = await supabase.from('academic_sessions').update({ is_current: true }).eq('id', id)
+    if (b.error) { showMessage(friendlyError(b.error), 'error'); await refresh(); return }
+    await refresh('Current session updated.')
+  }
+  function deleteSession(id) {
+    const s = sessions.find(x => x.id === id); if (!s) return
+    openConfirm('Delete session?', '"' + s.name + '" will be removed. This only works if it has no terms or other records.', 'Delete session', async () => {
+      const { error } = await supabase.from('academic_sessions').delete().eq('id', id)
+      if (error) { showMessage(friendlyError(error), 'error'); return }
+      await refresh('Session deleted.')
+    })
+  }
+  function termFields(t) {
+    return [
+      { id: 'name', label: 'Term name', required: true, value: t ? t.name : '', list: ['First Term', 'Second Term', 'Third Term'], placeholder: 'e.g. First Term' },
+      { id: 'start', label: 'Starts', type: 'date', value: t ? t.start_date || '' : '' },
+      { id: 'end', label: 'Ends', type: 'date', value: t ? t.end_date || '' : '' }
+    ]
+  }
+  const termProblem = (v) => (v.start && v.end && v.end < v.start) ? 'The end date must be after the start date.' : null
+  function addTerm(sessionId) {
+    openForm({
+      title: 'Add term', sub: 'Session ' + sessionName(sessionId), submitLabel: 'Add term', fields: termFields(null),
+      onSubmit: async (v) => {
+        const p = termProblem(v); if (p) return p
+        if (dup(terms.filter(t => t.session_id === sessionId), v.name)) return 'This session already has a term with that name.'
+        const { error } = await supabase.from('terms').insert({ session_id: sessionId, name: v.name, start_date: v.start || null, end_date: v.end || null })
+        if (error) return friendlyError(error)
+        await refresh('Term added.'); return null
+      }
+    })
+  }
+  function editTerm(id) {
+    const t = terms.find(x => x.id === id); if (!t) return
+    openForm({
+      title: 'Edit term', sub: 'Session ' + sessionName(t.session_id), submitLabel: 'Save', fields: termFields(t),
+      onSubmit: async (v) => {
+        const p = termProblem(v); if (p) return p
+        const { error } = await supabase.from('terms').update({ name: v.name, start_date: v.start || null, end_date: v.end || null }).eq('id', id)
+        if (error) return friendlyError(error)
+        await refresh('Term saved.'); return null
+      }
+    })
+  }
+  function deleteTerm(id) {
+    const t = terms.find(x => x.id === id); if (!t) return
+    openConfirm('Delete term?', t.name + ' (' + sessionName(t.session_id) + ') will be removed, along with anything that depends on it.', 'Delete term', async () => {
+      const { error } = await supabase.from('terms').delete().eq('id', id)
+      if (error) { showMessage(friendlyError(error), 'error'); return }
+      await refresh('Term deleted.')
+    })
+  }
+
+  // ---------- page ----------
+  function renderAll() {
+    document.getElementById('statClasses').textContent = classes.length
+    document.getElementById('statSubjects').textContent = subjects.length
+    document.getElementById('statTeachers').textContent = teachers.length
+    const dt = terms.find(t => t.id === defaultTermId())
+    document.getElementById('statTerm').textContent = dt ? termLabel(dt) : 'Not set'
+    document.getElementById('cntClasses').textContent = classes.length
+    document.getElementById('cntSubjects').textContent = subjects.length
+    document.getElementById('cntAssignments').textContent = assignments.length
+    document.getElementById('cntSessions').textContent = sessions.length
+    renderNamed('class'); renderNamed('subject'); renderAssignments(); renderTerms()
+  }
+  function setTab(name) {
+    activeTab = name
+    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.getAttribute('data-tab') === name))
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('on', p.id === 'panel-' + name))
+    if (history.replaceState) history.replaceState(null, '', '#' + name)
+  }
+
+  document.getElementById('appWrap').addEventListener('click', (e) => {
+    const tab = e.target.closest('[data-tab]'); if (tab) { setTab(tab.getAttribute('data-tab')); return }
+    const b = e.target.closest('[data-action]'); if (!b || b.disabled) return
+    const action = b.getAttribute('data-action'), id = b.getAttribute('data-id')
+    const [verb, kind] = action.split('-')
+    if (action === 'add-class' || action === 'add-subject') return addNamed(kind)
+    if (action === 'suggest-class' || action === 'suggest-subject') return addNamed(kind, b.getAttribute('data-name'))
+    if (action === 'missing-class' || action === 'missing-subject') return addMissing(kind)
+    if (action === 'edit-class' || action === 'edit-subject') return editNamed(kind, id)
+    if (action === 'delete-class' || action === 'delete-subject') return deleteNamed(kind, id)
+    if (action === 'add-asg') return addAssignment()
+    if (action === 'edit-asg') return editAssignment(id)
+    if (action === 'delete-asg') return deleteAssignment(id)
+    if (action === 'asg-class') { asgClassId = id; renderAssignments(); return }
+    if (action === 'add-session') return addSession()
+    if (action === 'edit-session') return editSession(id)
+    if (action === 'delete-session') return deleteSession(id)
+    if (action === 'make-current') return makeCurrent(id)
+    if (action === 'add-term') return addTerm(id)
+    if (action === 'edit-term') return editTerm(id)
+    if (action === 'delete-term') return deleteTerm(id)
+  })
+  document.getElementById('appWrap').addEventListener('change', (e) => {
+    if (e.target.id === 'asgTerm') { asgTermId = e.target.value; renderAssignments() }
+  })
+
+  async function init() {
+    loadSchoolName()
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/admin/login.html?next=' + encodeURIComponent(window.location.pathname); return }
+    const { data: membership } = await supabase.from('school_members').select('role, school_id').eq('user_id', session.user.id).single()
+    if (!membership || !['school_admin', 'super_admin'].includes(membership.role)) { window.location.href = '/admin/login.html?next=' + encodeURIComponent(window.location.pathname); return }
+    schoolId = membership.school_id
+    await loadAll()
+    renderAll()
+    const wanted = (window.location.hash || '').replace('#', '')
+    if (['classes', 'subjects', 'assignments', 'terms'].includes(wanted)) setTab(wanted)
+    document.getElementById('loadingState').style.display = 'none'
+    document.getElementById('appWrap').style.display = 'block'
+  }
+
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut()
+    window.location.href = '/admin/login.html'
+  })
+  const navDrawer = document.getElementById('navDrawer')
+  document.getElementById('hamburgerBtn').addEventListener('click', () => navDrawer.classList.add('open'))
+  document.getElementById('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
+  document.getElementById('drawerSignOutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut()
+    window.location.href = window.location.pathname.startsWith('/admin') ? '/admin/login.html' : '/login.html'
+  })
+
+  init()
+
+</script>
+<script>
+  // marks the current page in the navigation (display only)
+  (function () {
+    var file = location.pathname.split('/').pop();
+    document.querySelectorAll('.nav-drawer-links a').forEach(function (a) {
+      if (file && a.getAttribute('href').split('/').pop() === file) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
+    });
+  })();
+</script>
+
+</body>
+</html>
