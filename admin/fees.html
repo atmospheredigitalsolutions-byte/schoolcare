@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#101B3D" />
+<title>Fees — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500..700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F1F2F6; --paper: #FFFFFF; --gold: #B98B2A; --gold-soft: #E2BE6A; --ink: #161A27;
+  --muted: #5B6275; --border: #DDE0E8; --green: #2E7D32; --red: #B3261E; --error: #B3261E;
+  --navy-tint: #E8EBF5; --maroon-tint: #F6E9EB; --green-tint: #E7F3E8; --red-tint: #FBEAE8; --amber-tint: #FBF1DC; --amber-text: #7A5A12;
+  --sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --serif: 'Literata', Georgia, 'Times New Roman', serif;
+  --side: 264px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); font-size: 15px; color: var(--ink); background: var(--cream); line-height: 1.55; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.01em; line-height: 1.22; }
+a { color: inherit; text-decoration: none; }
+button, select, input { font: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid rgba(185,139,42,0.65); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* ---------- top bar (mobile) ---------- */
+.topbar { background: var(--paper); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+.topbar::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 6px; background: linear-gradient(var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); pointer-events: none; }
+.topbar .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.topbar .brand img { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; }
+.topbar .brand strong { font-family: var(--serif); color: var(--navy); font-size: 14.5px; font-weight: 600; line-height: 1.25; display: block; }
+.topbar .brand span { display: block; font-size: 11.5px; color: var(--muted); }
+.signout { font-size: 13px; font-weight: 600; color: var(--maroon); border: 1.5px solid var(--border); border-radius: 999px; padding: 7px 15px; background: var(--paper); transition: background .15s, border-color .15s; }
+.signout:hover { background: var(--maroon-tint); border-color: var(--maroon); }
+.hamburger-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--navy-tint); border: 1px solid transparent; display: flex; align-items: center; justify-content: center; color: var(--navy); flex-shrink: 0; transition: background .15s; }
+.hamburger-btn:hover { background: #d9deef; }
+.hamburger-btn svg { width: 18px; height: 18px; }
+
+/* ---------- navigation drawer / sidebar ---------- */
+.nav-drawer { position: fixed; inset: 0; background: var(--navy-deep); z-index: 2000; display: flex; flex-direction: column; padding: 22px 26px 32px; transform: translateX(100%); visibility: hidden; transition: transform .4s cubic-bezier(.22,1,.36,1), visibility 0s .4s; overflow-y: auto; }
+.nav-drawer.open { transform: translateX(0); visibility: visible; transition: transform .4s cubic-bezier(.22,1,.36,1), visibility 0s 0s; }
+.nav-drawer-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 34px; gap: 12px; }
+.nav-drawer-top strong { font-family: var(--serif); font-weight: 600; color: #fff; font-size: 15.5px; line-height: 1.25; display: flex; align-items: center; gap: 12px; }
+.nav-drawer-top strong::before { content: ""; width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; background: #fff url(/assets/images/logo.png) center / cover no-repeat; }
+.nav-drawer-close { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-drawer-close:hover { background: rgba(255,255,255,0.18); }
+.nav-drawer-links { display: flex; flex-direction: column; gap: 2px; }
+.nav-drawer-links a { display: flex; align-items: center; gap: 14px; font-family: var(--serif); font-size: 22px; font-weight: 600; color: #fff; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.1); transition: color .15s; }
+.nav-drawer-links a svg { width: 22px; height: 22px; color: var(--gold-soft); flex-shrink: 0; }
+.nav-drawer-links a:hover, .nav-drawer-links a.active { color: var(--gold-soft); }
+.nav-drawer-signout { margin-top: auto; padding: 15px; border-radius: 10px; background: rgba(255,255,255,0.1); color: #fff; font-weight: 600; font-size: 14.5px; text-align: center; border: none; transition: background .15s; }
+.nav-drawer-signout:hover { background: rgba(255,255,255,0.18); }
+
+/* ---------- shared content ---------- */
+.wrap { margin: 0 auto; padding: 34px 16px 56px; }
+.welcome { margin-bottom: 22px; }
+.welcome h1 { font-size: 27px; color: var(--navy); font-weight: 700; margin-bottom: 6px; }
+.welcome p { color: var(--muted); font-size: 15px; max-width: 60ch; }
+.card { background: var(--paper); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 20px; }
+.card h2 { font-size: 17px; color: var(--navy); margin-bottom: 16px; font-weight: 600; }
+select, input { padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; color: var(--ink); width: 100%; font-size: 14.5px; min-height: 44px; transition: border-color .15s, box-shadow .15s; }
+select:hover, input:hover { border-color: #c3c8d6; }
+select:focus, input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,27,61,0.14); }
+select { appearance: none; -webkit-appearance: none; padding-right: 36px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235B6275' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+.empty-note { color: var(--muted); font-size: 15px; text-align: center; padding: 28px 16px; }
+.loading { color: var(--muted); font-size: 14.5px; text-align: center; padding: 72px 0; }
+.loading::before { content: ""; display: block; width: 26px; height: 26px; margin: 0 auto 14px; border-radius: 50%; border: 3px solid var(--navy-tint); border-top-color: var(--maroon); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* status message, shown as a toast */
+.msg { position: fixed; z-index: 3000; left: 16px; right: 16px; bottom: 20px; max-width: 460px; margin: 0 auto; padding: 13px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; display: none; box-shadow: 0 12px 32px rgba(11,19,41,0.22); border-left: 4px solid; }
+.msg.success { background: var(--green-tint); color: #1d5a21; border-color: var(--green); display: block; animation: toastIn .28s cubic-bezier(.22,1,.36,1); }
+.msg.error { background: var(--red-tint); color: #8d1d17; border-color: var(--red); display: block; animation: toastIn .28s cubic-bezier(.22,1,.36,1); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ---------- desktop: persistent sidebar ---------- */
+@media (min-width: 1000px) {
+  body { padding-left: var(--side); }
+  .topbar { display: none; }
+  .hamburger-btn, .nav-drawer-close { display: none; }
+  .nav-drawer, .nav-drawer.open { inset: 0 auto 0 0; width: var(--side); transform: none; visibility: visible; transition: none; padding: 26px 18px 24px; z-index: 20; }
+  .nav-drawer::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 6px; background: linear-gradient(to right, var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); }
+  .nav-drawer-top { padding: 0 8px; margin-bottom: 30px; }
+  .nav-drawer-links { gap: 4px; }
+  .nav-drawer-links a { font-family: var(--sans); font-size: 15px; font-weight: 500; padding: 11px 12px; border: none; border-radius: 8px; color: rgba(255,255,255,0.76); }
+  .nav-drawer-links a svg { width: 19px; height: 19px; color: rgba(255,255,255,0.55); }
+  .nav-drawer-links a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .nav-drawer-links a:hover svg { color: var(--gold-soft); }
+  .nav-drawer-links a.active { background: rgba(255,255,255,0.1); color: #fff; box-shadow: inset 3px 0 0 var(--gold-soft); }
+  .nav-drawer-links a.active svg { color: var(--gold-soft); }
+  .nav-drawer-signout { margin-right: 6px; }
+  .wrap { padding: 52px 44px 72px; }
+  .welcome h1 { font-size: 32px; }
+  .msg { left: calc(var(--side) + 24px); right: 24px; bottom: 28px; margin: 0 auto; }
+}
+
+.btn-primary, .btn-ghost, .btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 8px; font-weight: 600; font-size: 14.5px; border: 1.5px solid transparent; transition: background .15s, border-color .15s, color .15s, transform .1s; }
+.btn-primary { background: var(--navy); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--maroon); }
+.btn-ghost { background: #fff; color: var(--navy); border-color: var(--border); }
+.btn-ghost:hover { border-color: var(--navy); background: var(--navy-tint); }
+.btn-danger { background: var(--red); color: #fff; }
+.btn-danger:hover:not(:disabled) { background: #8f1d17; }
+.btn-primary:active, .btn-ghost:active, .btn-danger:active { transform: scale(.98); }
+button:disabled { opacity: .55; cursor: not-allowed; }
+.field { margin-bottom: 18px; }
+.field label { display: block; font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.hint { font-size: 12.5px; color: var(--muted); margin-top: 6px; display: block; }
+input:disabled { background: var(--cream); color: var(--muted); cursor: not-allowed; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(11,19,41,0.55); backdrop-filter: blur(2px); z-index: 2500; display: none; align-items: flex-end; justify-content: center; padding: 0; }
+.modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
+.modal { background: #fff; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; border-radius: 18px 18px 0 0; border-top: 5px solid var(--gold); padding: 24px 24px 26px; }
+.modal-overlay.open .modal { animation: sheetUp .3s cubic-bezier(.22,1,.36,1); }
+.modal h2 { font-size: 21px; color: var(--navy); margin-bottom: 4px; }
+.modal .sub { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheetUp { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (min-width: 640px) { .modal-overlay { align-items: center; padding: 20px; } .modal { border-radius: 16px; } }
+
+.wrap { max-width: 1080px; }
+.page-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 22px; }
+.page-head .welcome { margin: 0; }
+.head-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.stat-card { background: var(--paper); border: 1px solid var(--border); border-radius: 14px; padding: 18px 18px 16px; display: flex; flex-direction: column-reverse; gap: 2px; }
+.stat-card strong { font-family: var(--serif); font-size: 30px; line-height: 1.1; font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.stat-card span { font-size: 13.5px; font-weight: 500; color: var(--muted); }
+.stat-card.highlight { background: var(--navy); border-color: var(--navy); box-shadow: inset 0 -4px 0 var(--gold); }
+.stat-card.highlight strong { color: #fff; } .stat-card.highlight span { color: #c4cce0; }
+.missing-note { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 16px; margin-bottom: 20px; background: var(--amber-tint); border: 1px solid #e8d5a2; border-left: 4px solid var(--gold); border-radius: 10px; font-size: 14px; color: var(--amber-text); }
+.missing-note strong { margin-right: 4px; }
+.missing-note button { background: #fff; border: 1px solid #e0c98c; color: var(--amber-text); border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 600; transition: background .15s; }
+.missing-note button:hover { background: #fff7e3; }
+.toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 8px 15px; border-radius: 999px; border: 1.5px solid var(--border); background: #fff; color: var(--navy); font-size: 13.5px; font-weight: 600; transition: background .15s, color .15s, border-color .15s; }
+.chip:hover { border-color: var(--navy); } .chip.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+.toolbar input { width: 240px; max-width: 100%; }
+.group { padding: 0; overflow: hidden; margin-bottom: 16px; animation: rise .4s ease both; }
+.group-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; background: linear-gradient(#fff, #f8f9fc); border-bottom: 1px solid var(--border); }
+.group-head h2 { margin: 0; font-size: 18px; }
+.group-meta { font-size: 13px; color: var(--muted); text-align: right; }
+.group-meta strong { color: var(--navy); font-variant-numeric: tabular-nums; }
+.fee-row { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 16px; padding: 13px 20px; border-bottom: 1px solid var(--border); transition: background .15s; }
+.fee-row:last-child { border-bottom: none; } .fee-row:hover { background: var(--navy-tint); }
+.fee-name { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.fee-amount { font-family: var(--serif); font-weight: 700; color: var(--maroon); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.row-actions { display: flex; gap: 6px; }
+.row-actions button { width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--border); background: #fff; color: var(--muted); display: grid; place-items: center; transition: background .15s, color .15s, border-color .15s; }
+.row-actions button svg { width: 17px; height: 17px; }
+.row-actions button:hover { background: var(--navy-tint); color: var(--navy); border-color: var(--navy); }
+.row-actions button.del:hover { background: var(--red-tint); color: var(--red); border-color: var(--red); }
+.empty-state { text-align: center; padding: 56px 20px; background: #fff; border: 1.5px dashed #c3c8d6; border-radius: 14px; }
+.empty-state h2 { font-size: 20px; color: var(--navy); margin-bottom: 6px; }
+.empty-state p { color: var(--muted); margin-bottom: 18px; }
+.money-field { position: relative; } .money-field span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-weight: 600; } .money-field input { padding-left: 32px; }
+@media (min-width: 760px) { .stat-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
+@media (max-width: 560px) { .fee-row { grid-template-columns: 1fr auto; } .fee-amount { grid-column: 1; grid-row: 2; } .row-actions { grid-column: 2; grid-row: 1 / span 2; } .toolbar input { width: 100%; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <img src="/assets/images/logo.png" alt="logo">
+    <div><strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong><span>Admin Portal</span></div>
+  </div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+    <button class="signout" id="signOutBtn">Sign Out</button>
+  </div>
+</div>
+
+<div class="wrap" id="appWrap" style="display:none;">
+  <div class="page-head">
+    <div class="welcome">
+      <h1>School Fees</h1>
+      <p>Add and update the fees shown on your public Fees page. Changes appear there straight away.</p>
+    </div>
+    <div class="head-actions">
+      <a href="/fees.html" target="_blank" rel="noopener" class="btn-ghost">View public page ↗</a>
+      <button type="button" class="btn-ghost" id="exportBtn">Export CSV</button>
+      <button type="button" class="btn-primary" id="addFeeBtn">+ Add fee</button>
+    </div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card highlight"><strong id="statFeeCount">—</strong><span>Fee items</span></div>
+    <div class="stat-card"><strong id="statClassesCovered">—</strong><span>Classes with fees</span></div>
+    <div class="stat-card"><strong id="statClassesMissing">—</strong><span>Classes without fees</span></div>
+    <div class="stat-card"><strong id="statHighest">—</strong><span>Highest single fee</span></div>
+  </div>
+
+  <div class="missing-note" id="missingNote" hidden></div>
+
+  <div class="toolbar">
+    <div class="chips" id="classChips" role="group" aria-label="Filter by class"></div>
+    <input type="search" id="feeSearch" placeholder="Search fees…" aria-label="Search fees" autocomplete="off">
+  </div>
+
+  <div id="feeGroups"></div>
+  <div class="empty-state" id="emptyState" hidden>
+    <h2>No fees yet</h2>
+    <p>Add your first fee and it will show on the public Fees page.</p>
+    <button type="button" class="btn-primary" id="emptyAddBtn">+ Add fee</button>
+  </div>
+</div>
+
+<div id="loadingState" class="loading">Loading fees…</div>
+<div id="msgBox" class="msg"></div>
+
+<div class="modal-overlay" id="feeModal" role="dialog" aria-modal="true" aria-labelledby="feeModalTitle">
+  <form class="modal" id="feeForm" novalidate>
+    <h2 id="feeModalTitle">Add fee</h2>
+    <p class="sub" id="feeModalSub">This fee will appear on the public Fees page.</p>
+    <div class="field">
+      <label for="feeClass">Class</label>
+      <select id="feeClass"></select>
+    </div>
+    <div class="field">
+      <label for="feeName">Fee name</label>
+      <input type="text" id="feeName" list="feeNameSuggestions" maxlength="80" placeholder="e.g. Tuition" autocomplete="off">
+      <datalist id="feeNameSuggestions"><option value="Tuition"><option value="Registration"><option value="Development levy"><option value="Uniform"><option value="Textbooks"><option value="Lunch"><option value="Transport"><option value="Excursion"></datalist>
+    </div>
+    <div class="field">
+      <label for="feeAmount">Amount</label>
+      <div class="money-field"><span>₦</span><input type="number" id="feeAmount" min="0" step="1" inputmode="numeric" placeholder="0"></div>
+      <span class="hint" id="feeFormError" style="color: var(--red);" hidden></span>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost" id="feeCancelBtn">Cancel</button>
+      <button type="submit" class="btn-primary" id="feeSaveBtn">Save fee</button>
+    </div>
+  </form>
+</div>
+
+<div class="modal-overlay" id="deleteModal" role="alertdialog" aria-modal="true" aria-labelledby="deleteTitle">
+  <div class="modal">
+    <h2 id="deleteTitle">Delete this fee?</h2>
+    <p class="sub" id="deleteText"></p>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost" id="deleteCancelBtn">Keep it</button>
+      <button type="button" class="btn-danger" id="deleteConfirmBtn">Delete fee</button>
+    </div>
+  </div>
+</div>
+
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-top">
+    <strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong>
+    <button class="nav-drawer-close" id="drawerClose" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+  <nav class="nav-drawer-links">
+    <a href="/admin/dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>Dashboard</span></a>
+    <a href="/admin/enrollments.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg><span>Enrollments</span></a>
+    <a href="/admin/staff.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span>Staff</span></a>
+    <a href="/admin/students.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
+    <a href="/admin/fees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span>Fees</span></a>
+    <a href="/admin/profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
+  </nav>
+  <button class="nav-drawer-signout" id="drawerSignOutBtn">Sign Out</button>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
+
+  let schoolId = null
+  let feeList = []
+  let classList = []
+  let activeClassId = 'all'
+  let editingFeeId = null
+  let deletingFeeId = null
+
+  const money = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 })
+  const byName = (a, b) => String(a).localeCompare(String(b), undefined, { numeric: true })
+  function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])) }
+
+  function showMessage(text, type) {
+    const box = document.getElementById('msgBox')
+    box.textContent = text
+    box.className = 'msg ' + type
+    clearTimeout(showMessage._t)
+    showMessage._t = setTimeout(() => { box.className = 'msg' }, 4500)
+  }
+
+  function friendlyError(error) {
+    const m = (error && error.message) || 'Something went wrong.'
+    if (/row-level security|permission denied/i.test(m)) return 'Your account is not allowed to change fees yet. The database needs a write policy for administrators on fee_structures.'
+    return m
+  }
+
+  async function loadSchoolName() {
+    const { data } = await supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name })
+  }
+
+  async function loadClasses() {
+    const { data } = await supabase.from('classes').select('id, name').eq('school_id', schoolId)
+    classList = (data || []).sort((a, b) => byName(a.name, b.name))
+  }
+
+  async function loadFeeList() {
+    const cols = 'id, name, amount, classes(id, name)'
+    let res = await supabase.from('fee_structures').select(cols).eq('school_id', schoolId).order('amount', { ascending: true })
+    if (res.error) res = await supabase.from('fee_structures').select(cols).order('amount', { ascending: true })
+    if (res.error) { showMessage('Could not load fees: ' + res.error.message, 'error'); feeList = []; return }
+    feeList = res.data || []
+  }
+
+  function feeClassId(f) { return f.classes ? f.classes.id : null }
+
+  function renderStats() {
+    const covered = new Set(feeList.map(feeClassId).filter(Boolean))
+    const missing = classList.filter(c => !covered.has(c.id))
+    document.getElementById('statFeeCount').textContent = feeList.length
+    document.getElementById('statClassesCovered').textContent = covered.size
+    document.getElementById('statClassesMissing').textContent = missing.length
+    document.getElementById('statHighest').textContent = feeList.length ? money.format(Math.max(...feeList.map(f => Number(f.amount) || 0))) : '—'
+
+    const note = document.getElementById('missingNote')
+    if (feeList.length && missing.length) {
+      note.hidden = false
+      note.innerHTML = '<strong>No fees yet for:</strong>' + missing.map(c => `<button type="button" data-add-class="${esc(c.id)}">${esc(c.name)}</button>`).join('')
+    } else {
+      note.hidden = true
+    }
+  }
+
+  function renderChips() {
+    const usedIds = new Set(feeList.map(feeClassId))
+    const chips = [{ id: 'all', name: 'All classes' }]
+      .concat(classList.filter(c => usedIds.has(c.id)).map(c => ({ id: c.id, name: c.name })))
+    if (usedIds.has(null)) chips.push({ id: 'general', name: 'General' })
+    if (!chips.some(c => c.id === activeClassId)) activeClassId = 'all'
+    document.getElementById('classChips').innerHTML = chips.map(c =>
+      `<button type="button" class="chip${c.id === activeClassId ? ' on' : ''}" data-chip="${esc(c.id)}">${esc(c.name)}</button>`).join('')
+  }
+
+  function iconBtn(action, id, label, path, extra) {
+    return `<button type="button" class="${extra || ''}" data-action="${action}" data-id="${esc(id)}" aria-label="${label}" title="${label}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${path}</svg></button>`
+  }
+
+  function renderGroups() {
+    const q = document.getElementById('feeSearch').value.trim().toLowerCase()
+    const wrap = document.getElementById('feeGroups')
+    const empty = document.getElementById('emptyState')
+    const visible = feeList.filter(f => {
+      const cid = feeClassId(f)
+      const okClass = activeClassId === 'all' || (activeClassId === 'general' ? cid === null : cid === activeClassId)
+      const okText = !q || (f.name + ' ' + (f.classes ? f.classes.name : 'general')).toLowerCase().includes(q)
+      return okClass && okText
+    })
+
+    empty.hidden = feeList.length > 0
+    if (!feeList.length) { wrap.innerHTML = ''; return }
+    if (!visible.length) { wrap.innerHTML = '<div class="card"><p class="empty-note">No fees match your search.</p></div>'; return }
+
+    const groups = classList.map(c => ({ id: c.id, name: c.name, rows: visible.filter(f => feeClassId(f) === c.id) }))
+    groups.push({ id: null, name: 'General (no specific class)', rows: visible.filter(f => feeClassId(f) === null) })
+
+    wrap.innerHTML = groups.filter(g => g.rows.length).map(g => {
+      const total = g.rows.reduce((s, f) => s + (Number(f.amount) || 0), 0)
+      return `<div class="card group">
+        <div class="group-head"><h2>${esc(g.name)}</h2><div class="group-meta">${g.rows.length} fee${g.rows.length === 1 ? '' : 's'} · Total <strong>${money.format(total)}</strong></div></div>
+        ${g.rows.map(f => `<div class="fee-row">
+          <div class="fee-name">${esc(f.name)}</div>
+          <div class="fee-amount">${money.format(Number(f.amount) || 0)}</div>
+          <div class="row-actions">
+            ${iconBtn('edit', f.id, 'Edit fee', '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>')}
+            ${iconBtn('copy', f.id, 'Duplicate fee', '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>')}
+            ${iconBtn('delete', f.id, 'Delete fee', '<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>', 'del')}
+          </div>
+        </div>`).join('')}
+      </div>`
+    }).join('')
+  }
+
+  function renderAll() { renderStats(); renderChips(); renderGroups() }
+
+  // ---- add / edit modal
+  function openFeeModal(fee, asCopy, presetClassId) {
+    editingFeeId = fee && !asCopy ? fee.id : null
+    document.getElementById('feeModalTitle').textContent = editingFeeId ? 'Edit fee' : (asCopy ? 'Duplicate fee' : 'Add fee')
+    document.getElementById('feeModalSub').textContent = editingFeeId ? 'Changes appear on the public Fees page straight away.' : 'This fee will appear on the public Fees page.'
+    const sel = document.getElementById('feeClass')
+    sel.innerHTML = '<option value="">General (no specific class)</option>' + classList.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('')
+    sel.value = fee ? (feeClassId(fee) || '') : (presetClassId || (activeClassId !== 'all' && activeClassId !== 'general' ? activeClassId : ''))
+    document.getElementById('feeName').value = fee ? fee.name : ''
+    document.getElementById('feeAmount').value = fee ? fee.amount : ''
+    document.getElementById('feeFormError').hidden = true
+    document.getElementById('feeModal').classList.add('open')
+    setTimeout(() => document.getElementById(editingFeeId ? 'feeAmount' : 'feeName').focus(), 50)
+  }
+  function closeFeeModal() { document.getElementById('feeModal').classList.remove('open') }
+
+  document.getElementById('feeForm').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const errEl = document.getElementById('feeFormError')
+    const name = document.getElementById('feeName').value.trim()
+    const amount = Number(document.getElementById('feeAmount').value)
+    const classId = document.getElementById('feeClass').value || null
+    const fail = (t) => { errEl.textContent = t; errEl.hidden = false }
+    if (!name) return fail('Enter a name for the fee.')
+    if (document.getElementById('feeAmount').value === '' || !Number.isFinite(amount) || amount < 0) return fail('Enter a valid amount.')
+    errEl.hidden = true
+
+    const btn = document.getElementById('feeSaveBtn')
+    btn.disabled = true; btn.textContent = 'Saving…'
+    const payload = { name, amount, class_id: classId }
+    let res
+    if (editingFeeId) {
+      res = await supabase.from('fee_structures').update(payload).eq('id', editingFeeId)
+    } else {
+      res = await supabase.from('fee_structures').insert({ ...payload, school_id: schoolId })
+      if (res.error && /school_id/i.test(res.error.message)) res = await supabase.from('fee_structures').insert(payload)
+    }
+    btn.disabled = false; btn.textContent = 'Save fee'
+    if (res.error) { fail(friendlyError(res.error)); return }
+
+    closeFeeModal()
+    await loadFeeList()
+    renderAll()
+    showMessage(editingFeeId ? 'Fee updated.' : 'Fee added.', 'success')
+  })
+  document.getElementById('feeCancelBtn').addEventListener('click', closeFeeModal)
+
+  // ---- delete modal
+  function openDeleteModal(fee) {
+    deletingFeeId = fee.id
+    const cls = fee.classes ? fee.classes.name : 'General'
+    document.getElementById('deleteText').textContent = `${fee.name} (${money.format(Number(fee.amount) || 0)}) for ${cls} will be removed from the public Fees page.`
+    document.getElementById('deleteModal').classList.add('open')
+  }
+  function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('open') }
+  document.getElementById('deleteCancelBtn').addEventListener('click', closeDeleteModal)
+  document.getElementById('deleteConfirmBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('deleteConfirmBtn')
+    btn.disabled = true; btn.textContent = 'Deleting…'
+    const { error } = await supabase.from('fee_structures').delete().eq('id', deletingFeeId)
+    btn.disabled = false; btn.textContent = 'Delete fee'
+    closeDeleteModal()
+    if (error) { showMessage(friendlyError(error), 'error'); return }
+    await loadFeeList(); renderAll(); showMessage('Fee deleted.', 'success')
+  })
+
+  ;['feeModal', 'deleteModal'].forEach(id => document.getElementById(id).addEventListener('click', (e) => { if (e.target.id === id) { closeFeeModal(); closeDeleteModal() } }))
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeFeeModal(); closeDeleteModal() } })
+
+  // ---- page interactions
+  document.getElementById('addFeeBtn').addEventListener('click', () => openFeeModal(null))
+  document.getElementById('emptyAddBtn').addEventListener('click', () => openFeeModal(null))
+  document.getElementById('feeSearch').addEventListener('input', renderGroups)
+  document.getElementById('classChips').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-chip]'); if (!b) return
+    activeClassId = b.getAttribute('data-chip'); renderChips(); renderGroups()
+  })
+  document.getElementById('missingNote').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-add-class]'); if (b) openFeeModal(null, false, b.getAttribute('data-add-class'))
+  })
+  document.getElementById('feeGroups').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-action]'); if (!b) return
+    const fee = feeList.find(f => String(f.id) === b.getAttribute('data-id')); if (!fee) return
+    const action = b.getAttribute('data-action')
+    if (action === 'edit') openFeeModal(fee)
+    if (action === 'copy') openFeeModal(fee, true)
+    if (action === 'delete') openDeleteModal(fee)
+  })
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    if (!feeList.length) { showMessage('There are no fees to export yet.', 'error'); return }
+    const cell = v => '"' + String(v ?? '').replace(/"/g, '""') + '"'
+    const rows = [['Class', 'Fee', 'Amount (NGN)']].concat(feeList.map(f => [f.classes ? f.classes.name : 'General', f.name, f.amount]))
+    const blob = new Blob([rows.map(r => r.map(cell).join(',')).join('\n')], { type: 'text/csv;charset=utf-8' })
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'school-fees.csv'
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000)
+  })
+
+  async function init() {
+    loadSchoolName()
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/admin/login.html?next=' + encodeURIComponent(window.location.pathname); return }
+    const user = session.user
+
+    const { data: membership } = await supabase.from('school_members').select('role, school_id').eq('user_id', user.id).single()
+    if (!membership || !['school_admin', 'super_admin'].includes(membership.role)) { window.location.href = '/admin/login.html?next=' + encodeURIComponent(window.location.pathname); return }
+    schoolId = membership.school_id
+
+    await loadClasses()
+    await loadFeeList()
+    renderAll()
+
+    document.getElementById('loadingState').style.display = 'none'
+    document.getElementById('appWrap').style.display = 'block'
+  }
+
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut()
+    window.location.href = '/admin/login.html'
+  })
+
+  const navDrawer = document.getElementById('navDrawer')
+  document.getElementById('hamburgerBtn').addEventListener('click', () => navDrawer.classList.add('open'))
+  document.getElementById('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
+  document.getElementById('drawerSignOutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut()
+    window.location.href = window.location.pathname.startsWith('/admin') ? '/admin/login.html' : '/login.html'
+  })
+
+  init()
+
+</script>
+<script>
+  // marks the current page in the navigation (display only)
+  (function () {
+    var file = location.pathname.split('/').pop();
+    document.querySelectorAll('.nav-drawer-links a').forEach(function (a) {
+      if (file && a.getAttribute('href').split('/').pop() === file) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
+    });
+  })();
+</script>
+
+</body>
+</html>

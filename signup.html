@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#101B3D" />
+<title>Teacher Sign Up — Al-Haqq Nur &amp; Pry School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500..700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F1F2F6; --paper: #FFFFFF; --gold: #B98B2A; --gold-soft: #E2BE6A; --ink: #161A27;
+  --muted: #5B6275; --border: #DDE0E8; --green: #2E7D32; --red: #B3261E; --error: #B3261E;
+  --navy-tint: #E8EBF5; --maroon-tint: #F6E9EB; --green-tint: #E7F3E8; --red-tint: #FBEAE8; --amber-tint: #FBF1DC; --amber-text: #7A5A12;
+  --sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --serif: 'Literata', Georgia, 'Times New Roman', serif;
+}
+html { -webkit-text-size-adjust: 100%; }
+h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.01em; line-height: 1.22; }
+a { color: inherit; text-decoration: none; }
+button, select, input { font: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid rgba(185,139,42,0.65); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+body { font-family: var(--sans); color: var(--ink); background-color: var(--navy); background-image: repeating-linear-gradient(to bottom, transparent 0 35px, rgba(255,255,255,0.055) 35px 36px); line-height: 1.55; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; position: relative; overflow-x: hidden; }
+body::before { content: ""; position: fixed; top: 0; bottom: 0; left: max(18px, 9vw); width: 4px; border-left: 1px solid rgba(226,190,106,0.55); border-right: 1px solid rgba(226,190,106,0.55); pointer-events: none; }
+a { color: var(--maroon); font-weight: 600; text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.card { position: relative; width: 100%; max-width: 420px; background: var(--paper); border: none; border-radius: 14px; padding: 44px 34px 32px; margin: 0; box-shadow: 0 28px 64px rgba(0,0,0,0.38); overflow: hidden; animation: rise .5s cubic-bezier(.22,1,.36,1); }
+.card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 8px; background: linear-gradient(var(--maroon) 0 3px, transparent 3px 5px, var(--gold) 5px 8px); }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.brand { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+.brand img { width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0; }
+.brand span { font-family: var(--serif); font-weight: 600; font-size: 16.5px; line-height: 1.25; color: var(--navy); }
+h1 { font-size: 26px; color: var(--navy); font-weight: 700; margin-bottom: 6px; }
+.card > p { color: var(--muted); font-size: 14.5px; margin-bottom: 26px; }
+label { display: block; font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.field { margin-bottom: 18px; }
+input { width: 100%; padding: 12px 14px; min-height: 48px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 15.5px; background: #fff; color: var(--ink); transition: border-color .15s, box-shadow .15s; }
+input:hover { border-color: #c3c8d6; }
+input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,27,61,0.14); }
+.btn-submit { width: 100%; padding: 14px; min-height: 50px; border: none; border-radius: 8px; background: var(--maroon); color: #fff; font-weight: 700; font-size: 15.5px; cursor: pointer; margin-top: 4px; transition: background .18s ease; }
+.btn-submit:hover { background: var(--maroon-dark); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.message { padding: 12px 14px; border-radius: 8px; font-size: 14px; margin-bottom: 18px; display: none; border-left: 4px solid var(--error); }
+.message.error { background: var(--red-tint); color: #8d1d17; display: block; }
+.login-link { text-align: center; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 14px; }
+
+.success-screen { display: none; text-align: center; }
+.success-screen.show { display: block; }
+.success-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 24px; }
+.success-screen h2 { font-size: 20px; color: var(--navy); margin-bottom: 10px; }
+.success-screen p { color: var(--muted); font-size: 14px; margin-bottom: 0; }
+@media (max-width: 480px) { body { padding: 16px; } .card { padding: 40px 24px 26px; } }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">
+    <img src="/assets/images/logo.png" alt="School logo">
+    <span class="js-school-name">Al-Haqq Nur &amp; Pry School</span>
+  </div>
+
+  <div id="formSection">
+    <h1>Teacher Sign Up</h1>
+    <p>Create your account to apply for a teaching role. An admin will review and approve your application.</p>
+    <div id="message" class="message"></div>
+    <form id="signupForm">
+      <div class="field">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" required>
+      </div>
+      <div class="field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" required>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" minlength="6" required>
+      </div>
+      <div class="field">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" minlength="6" required>
+      </div>
+      <button type="submit" class="btn-submit" id="submitBtn">Submit Application</button>
+    </form>
+    <div class="login-link">Already have an account? <a href="/login.html">Sign in</a></div>
+  </div>
+
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✓</div>
+    <h2>Application Submitted!</h2>
+    <p>Thanks for applying. An admin will review your application and approve your account. You'll be able to sign in once approved.</p>
+    <div class="login-link" style="margin-top:18px;"><a href="/login.html">Back to login</a></div>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
+
+  const messageEl = document.getElementById('message')
+  const submitBtn = document.getElementById('submitBtn')
+
+  function showMessage(text) {
+    messageEl.textContent = text
+    messageEl.className = 'message error'
+  }
+
+  async function loadSchoolName() {
+    const { data, error } = await supabase.from('schools').select('name, id').order('created_at', { ascending: true }).limit(1).single()
+    if (!error && data) {
+      document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name })
+    }
+    return data
+  }
+  let schoolRow = null
+  loadSchoolName().then(d => { schoolRow = d })
+
+  document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    messageEl.className = 'message'
+    submitBtn.disabled = true
+    submitBtn.textContent = 'Submitting…'
+
+    try {
+      const fullName = document.getElementById('fullName').value.trim()
+      const email = document.getElementById('email').value.trim()
+      const password = document.getElementById('password').value
+      const confirmPassword = document.getElementById('confirmPassword').value
+
+      if (password !== confirmPassword) throw new Error('Passwords do not match.')
+      if (password.length < 6) throw new Error('Password must be at least 6 characters.')
+
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName } }
+      })
+      if (signUpError) throw signUpError
+      if (!signUpData.user) throw new Error('Could not create your account. Please try again.')
+
+      if (!schoolRow) {
+        const { data } = await supabase.from('schools').select('id').order('created_at', { ascending: true }).limit(1).single()
+        schoolRow = data
+      }
+      if (!schoolRow) throw new Error('Could not find the school record. Please contact the school directly.')
+
+      const { error: memberError } = await supabase.from('school_members').insert({
+        school_id: schoolRow.id,
+        user_id: signUpData.user.id,
+        role: 'pending'
+      })
+      if (memberError) throw memberError
+
+      document.getElementById('formSection').style.display = 'none'
+      document.getElementById('successScreen').classList.add('show')
+
+    } catch (err) {
+      showMessage(err.message || 'Something went wrong. Please try again.')
+      submitBtn.disabled = false
+      submitBtn.textContent = 'Submit Application'
+    }
+  })
+</script>
+
+</body>
+</html>

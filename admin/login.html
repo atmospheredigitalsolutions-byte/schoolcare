@@ -133,7 +133,9 @@ input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rg
         throw new Error('This login is for school administrators only.')
       }
 
-      window.location.href = destination
+      const next = new URLSearchParams(window.location.search).get('next')
+      const safeNext = next && next.startsWith('/admin/') && !next.startsWith('//') ? next : null
+      window.location.href = safeNext || destination
 
     } catch (err) {
       showMessage(err.message || 'Login failed. Please check your details and try again.')

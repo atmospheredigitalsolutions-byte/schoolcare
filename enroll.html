@@ -446,9 +446,12 @@ details[open] > :not(summary) { animation: fadeUp .35s ease; }
       const tb = document.querySelector('input[name="tb"]:checked')?.value
 
       // 1. Insert student
-      const { data: student, error: studentError } = await supabase
+      // The id is created here so the row never has to be read back (visitors cannot read student rows)
+      const student = { id: crypto.randomUUID() }
+      const { error: studentError } = await supabase
         .from('students')
         .insert({
+          id: student.id,
           school_id: school.id,
           surname: document.getElementById('surname').value.trim(),
           other_names: document.getElementById('otherNames').value.trim(),
@@ -464,7 +467,6 @@ details[open] > :not(summary) { animation: fadeUp .35s ease; }
           parent_confirmed: true,
           parent_confirmed_at: new Date().toISOString()
         })
-        .select().single()
       if (studentError) throw studentError
 
       // 2. Upload photo, if provided
@@ -472,9 +474,9 @@ details[open] > :not(summary) { animation: fadeUp .35s ease; }
       if (photoFile) {
         const path = `${school.id}/${student.id}.${photoFile.name.split('.').pop()}`
         const { error: uploadError } = await supabase.storage
-          .from('student-photos').upload(path, photoFile, { upsert: true })
+          .from('student-photos').upload(path, photoFile, { upsert: false })
         if (!uploadError) {
-          await supabase.from('students').update({ photo_url: path }).eq('id', student.id)
+          await supabase.rpc('attach_student_photo', { p_student_id: student.id, p_path: path })
         }
       }
 
