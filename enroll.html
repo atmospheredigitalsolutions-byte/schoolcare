@@ -180,6 +180,16 @@ details[open] > :not(summary) { animation: fadeUp .35s ease; }
   .photo-upload { flex-direction: column; align-items: flex-start; }
   header.enroll-hero { padding: 18px 18px 60px; }
 }
+.opt { font-weight: 400; color: var(--muted); }
+.file-row input[type="file"] { min-height: 0; padding: 10px; font-size: 14px; background: var(--navy-tint); border-style: dashed; cursor: pointer; }
+.file-row input[type="file"]::file-selector-button { margin-right: 10px; padding: 7px 14px; border: none; border-radius: 8px; background: var(--navy); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+.ref-box { display: inline-flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center; margin: 0 auto 10px; padding: 14px 18px; border: 1.5px dashed #aeb6cd; border-radius: 12px; background: var(--navy-tint); }
+.ref-box span { font-size: 13px; color: var(--muted); width: 100%; }
+.ref-box strong { font-family: var(--serif); font-size: 26px; color: var(--navy); letter-spacing: .02em; }
+.ref-box button { border: 1.5px solid var(--navy); background: #fff; color: var(--navy); border-radius: 8px; padding: 6px 14px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
+.ref-box button:hover { background: var(--navy); color: #fff; }
+.ref-help { font-size: 14px !important; margin: 0 auto 18px !important; } .ref-help a { text-decoration: underline; text-underline-offset: 3px; }
+.upload-note { background: var(--amber-tint); color: var(--amber-text); border-radius: 8px; padding: 10px 14px; font-size: 14px !important; margin: 0 auto 18px !important; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .js .card.rv { opacity: 1 !important; transform: none !important; }
@@ -225,6 +235,9 @@ details[open] > :not(summary) { animation: fadeUp .35s ease; }
     <div class="success-icon">✓</div>
     <h2>Application Submitted!</h2>
     <p>Thank you — your child's enrollment application has been received. The school will review it and reach out once a decision is made on admission.</p>
+    <div class="ref-box"><span>Your application reference</span><strong id="refCode">—</strong><button type="button" id="copyRef">Copy</button></div>
+    <p class="ref-help">Keep this number. With the phone number you gave, you can <a href="/application-status.html">check your application status</a> at any time.</p>
+    <p class="upload-note" id="uploadNote" hidden></p>
     <button type="button" class="btn-another" id="submitAnotherBtn">Submit Another Application</button>
   </div>
 
@@ -258,6 +271,8 @@ details[open] > :not(summary) { animation: fadeUp .35s ease; }
         <div class="field"><label for="formerSchoolClass">Former class</label><input type="text" id="formerSchoolClass"></div>
       </div>
 
+      <div class="field"><label for="classApplied">Class applying for</label><select id="classApplied"><option value="">Select a class…</option></select><span class="hint">Choose the class your child hopes to join. The school confirms the final class.</span></div>
+
       <div class="field">
         <label>Passport photograph</label>
         <div class="photo-upload">
@@ -267,6 +282,11 @@ details[open] > :not(summary) { animation: fadeUp .35s ease; }
             <span class="hint">A clear, recent passport-style photo in JPG or PNG works best.</span>
           </div>
         </div>
+      </div>
+
+      <div class="row file-row">
+        <div class="field"><label for="birthCertFile">Birth certificate <span class="opt">(optional)</span></label><input type="file" id="birthCertFile" accept="image/*,application/pdf"><span class="hint">A clear photo or PDF. Up to 5 MB.</span></div>
+        <div class="field"><label for="immunCardFile">Immunisation card <span class="opt">(optional)</span></label><input type="file" id="immunCardFile" accept="image/*,application/pdf"><span class="hint">A clear photo or PDF. Up to 5 MB.</span></div>
       </div>
       </div>
     </div>
@@ -278,6 +298,10 @@ details[open] > :not(summary) { animation: fadeUp .35s ease; }
       <div class="row">
         <div class="field"><label for="parentPhone">Phone number</label><input type="tel" id="parentPhone" autocomplete="tel" inputmode="tel" required><span class="hint">The school will use this number to reach you about the application.</span></div>
         <div class="field"><label for="parentOccupation">Occupation</label><input type="text" id="parentOccupation"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="parentEmail">Email address <span class="opt">(optional)</span></label><input type="email" id="parentEmail" autocomplete="email" inputmode="email"><span class="hint">If you add one, you can also sign in with it.</span></div>
+        <div class="field"><label for="parentRelationship">Relationship to the child</label><select id="parentRelationship" required><option value="">Select…</option><option value="Father">Father</option><option value="Mother">Mother</option><option value="Guardian">Guardian</option><option value="Other">Other</option></select></div>
       </div>
       <div class="field"><label for="parentOfficeAddress">Office address</label><textarea id="parentOfficeAddress"></textarea></div>
       <div class="field"><label for="parentHomeAddress">Home address</label><textarea id="parentHomeAddress" required></textarea></div>
@@ -366,7 +390,7 @@ details[open] > :not(summary) { animation: fadeUp .35s ease; }
           <li><strong>You submit</strong><span>Your application is sent to the school straight away.</span></li>
           <li><strong>The school reviews it</strong><span>Staff check the details you've given.</span></li>
           <li><strong>You hear back</strong><span>The school contacts you with a decision on admission.</span></li>
-          <li><strong>Class and term assigned</strong><span>If admitted, your child is placed in a class and term.</span></li>
+          <li><strong>Class and term assigned</strong><span>If admitted, your child is placed in a class, and you receive sign-in details for the parent and student portals.</span></li>
         </ol>
       </details>
     </div>
@@ -376,7 +400,7 @@ details[open] > :not(summary) { animation: fadeUp .35s ease; }
         <li><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span>[Phone number]</span></li>
         <li><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span>[Email address]</span></li>
       </ul>
-      <div class="help-links"><a href="/admission.html">Admission information</a><a href="/fees.html">Fees &amp; payment policy</a></div>
+      <div class="help-links"><a href="/admission.html">Admission information</a><a href="/fees.html">Fees &amp; payment policy</a><a href="/application-status.html">Check application status</a></div>
     </div>
   </aside>
 </div>
@@ -427,6 +451,30 @@ details[open] > :not(summary) { animation: fadeUp .35s ease; }
     window.scrollTo({ top: 0, behavior: 'smooth' })
   })
 
+  // classes for "Class applying for"
+  ;(async () => {
+    const { data } = await supabase.from('classes').select('id, name')
+    const sel = document.getElementById('classApplied')
+    ;(data || []).sort((x, y) => String(x.name).localeCompare(String(y.name), undefined, { numeric: true })).forEach(c => {
+      const o = document.createElement('option'); o.value = c.id; o.textContent = c.name; sel.appendChild(o)
+    })
+    if (!data || !data.length) sel.closest('.field').style.display = 'none'
+  })()
+
+  document.getElementById('copyRef').addEventListener('click', async (e) => {
+    const code = document.getElementById('refCode').textContent
+    try { await navigator.clipboard.writeText(code); e.target.textContent = 'Copied' } catch (err) { e.target.textContent = code }
+    setTimeout(() => { e.target.textContent = 'Copy' }, 2000)
+  })
+
+  const MAX_FILE = 5 * 1024 * 1024
+  async function uploadOne(file, path, rpcName, rpcArgs) {
+    const { error } = await supabase.storage.from('student-photos').upload(path, file, { upsert: false })
+    if (error) return false
+    const { error: linkError } = await supabase.rpc(rpcName, rpcArgs)
+    return !linkError
+  }
+
   document.getElementById('enrollForm').addEventListener('submit', async (e) => {
     e.preventDefault()
     messageEl.className = 'message'
@@ -434,91 +482,57 @@ details[open] > :not(summary) { animation: fadeUp .35s ease; }
     submitBtn.textContent = 'Submitting…'
 
     try {
-      // Resolve the single school this portal belongs to
       const { data: school, error: schoolError } = await supabase
         .from('schools').select('id').order('created_at', { ascending: true }).limit(1).single()
-      if (schoolError) throw new Error('Could not find school record.')
+      if (schoolError) throw new Error('Could not find the school record. Please try again.')
 
-      const gender = document.querySelector('input[name="gender"]:checked')?.value
-      const health = document.querySelector('input[name="health"]:checked')?.value || null
-      const polio = document.querySelector('input[name="polio"]:checked')?.value
-      const whooping = document.querySelector('input[name="whooping"]:checked')?.value
-      const tb = document.querySelector('input[name="tb"]:checked')?.value
+      const files = [
+        ['photo', photoInput.files[0]],
+        ['birth_certificate', document.getElementById('birthCertFile').files[0]],
+        ['immunization_card', document.getElementById('immunCardFile').files[0]]
+      ].filter(x => x[1])
+      const tooBig = files.find(x => x[1].size > MAX_FILE)
+      if (tooBig) throw new Error('One of your files is larger than 5 MB. Please choose a smaller photo or PDF.')
 
-      // 1. Insert student
-      // The id is created here so the row never has to be read back (visitors cannot read student rows)
-      const student = { id: crypto.randomUUID() }
-      const { error: studentError } = await supabase
-        .from('students')
-        .insert({
-          id: student.id,
-          school_id: school.id,
-          surname: document.getElementById('surname').value.trim(),
-          other_names: document.getElementById('otherNames').value.trim(),
-          gender,
-          date_of_birth: document.getElementById('dob').value,
-          nationality: document.getElementById('nationality').value.trim(),
-          state_of_origin: document.getElementById('stateOfOrigin').value.trim(),
-          religion: document.getElementById('religion').value.trim(),
-          address: document.getElementById('address').value.trim(),
-          former_school_name: document.getElementById('formerSchoolName').value.trim(),
-          former_school_class: document.getElementById('formerSchoolClass').value.trim(),
-          admission_status: 'pending',
-          parent_confirmed: true,
-          parent_confirmed_at: new Date().toISOString()
-        })
-      if (studentError) throw studentError
+      const val = (id) => document.getElementById(id).value.trim()
+      const pick = (name) => document.querySelector('input[name="' + name + '"]:checked')?.value
+      const yn = (name) => { const v = pick(name); return v ? v === 'yes' : null }
 
-      // 2. Upload photo, if provided
-      const photoFile = photoInput.files[0]
-      if (photoFile) {
-        const path = `${school.id}/${student.id}.${photoFile.name.split('.').pop()}`
-        const { error: uploadError } = await supabase.storage
-          .from('student-photos').upload(path, photoFile, { upsert: false })
-        if (!uploadError) {
-          await supabase.rpc('attach_student_photo', { p_student_id: student.id, p_path: path })
-        }
+      const payload = {
+        student: {
+          surname: val('surname'), other_names: val('otherNames'), gender: pick('gender') || '',
+          date_of_birth: val('dob'), nationality: val('nationality'), state_of_origin: val('stateOfOrigin'), religion: val('religion'),
+          address: val('address'), former_school_name: val('formerSchoolName'), former_school_class: val('formerSchoolClass'),
+          class_applied_for: document.getElementById('classApplied').value
+        },
+        parent: {
+          full_name: val('parentName'), phone: val('parentPhone'), email: val('parentEmail'), relationship: document.getElementById('parentRelationship').value,
+          occupation: val('parentOccupation'), office_address: val('parentOfficeAddress'), home_address: val('parentHomeAddress')
+        },
+        pickups: [...document.querySelectorAll('.pickup-row')].map(row => ({ name: row.querySelector('.pickup-name').value.trim(), address: row.querySelector('.pickup-address').value.trim() })).filter(r => r.name),
+        medical: { health_condition: pick('health') || '', constant_illness: val('constantIllness'), immunized_polio: yn('polio'), immunized_whooping_cough: yn('whooping'), immunized_tuberculosis: yn('tb') }
       }
 
-      // 3. Insert parent/guardian
-      const { error: parentError } = await supabase
-        .from('parents')
-        .insert({
-          school_id: school.id,
-          full_name: document.getElementById('parentName').value.trim(),
-          phone: document.getElementById('parentPhone').value.trim(),
-          occupation: document.getElementById('parentOccupation').value.trim(),
-          office_address: document.getElementById('parentOfficeAddress').value.trim(),
-          home_address: document.getElementById('parentHomeAddress').value.trim()
-        })
-      if (parentError) throw parentError
+      // everything is saved together, or not at all
+      const { data, error } = await supabase.rpc('submit_enrollment', { p: payload })
+      if (error) throw new Error(error.message)
+      const result = data && data[0]
+      if (!result) throw new Error('Could not save your application. Please try again.')
 
-      // 4. Insert pickup authorizations
-      const pickupRows = [...document.querySelectorAll('.pickup-row')]
-        .map(row => ({
-          student_id: student.id,
-          name: row.querySelector('.pickup-name').value.trim(),
-          address: row.querySelector('.pickup-address').value.trim()
-        }))
-        .filter(r => r.name)
-      if (pickupRows.length) {
-        const { error: pickupError } = await supabase.from('pickup_authorizations').insert(pickupRows)
-        if (pickupError) throw pickupError
+      // files are attached afterwards; a failed file never loses the application
+      let failed = 0
+      for (const [kind, file] of files) {
+        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '')
+        const ok = kind === 'photo'
+          ? await uploadOne(file, school.id + '/' + result.r_student_id + '.' + ext, 'attach_student_photo', { p_student_id: result.r_student_id, p_path: school.id + '/' + result.r_student_id + '.' + ext })
+          : await uploadOne(file, school.id + '/docs/' + result.r_student_id + '-' + kind + '.' + ext, 'attach_enrollment_file', { p_student: result.r_student_id, p_kind: kind, p_path: school.id + '/docs/' + result.r_student_id + '-' + kind + '.' + ext })
+        if (!ok) failed++
       }
+      const note = document.getElementById('uploadNote')
+      note.hidden = !failed
+      if (failed) note.textContent = failed + ' of your files could not be uploaded. Your application is saved; the school may ask you to bring them in.'
 
-      // 5. Insert medical record
-      const { error: medicalError } = await supabase
-        .from('medical_records')
-        .insert({
-          student_id: student.id,
-          health_condition: health,
-          constant_illness: document.getElementById('constantIllness').value.trim(),
-          immunized_polio: polio ? polio === 'yes' : null,
-          immunized_whooping_cough: whooping ? whooping === 'yes' : null,
-          immunized_tuberculosis: tb ? tb === 'yes' : null
-        })
-      if (medicalError) throw medicalError
-
+      document.getElementById('refCode').textContent = result.r_ref
       messageEl.className = 'message'
       document.getElementById('enrollForm').style.display = 'none'
       document.getElementById('successScreen').classList.add('show')

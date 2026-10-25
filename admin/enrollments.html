@@ -123,6 +123,36 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
 .btn-admit:disabled, .btn-reject:disabled { opacity: 0.55; cursor: not-allowed; }
 @media (max-width: 420px) { .select-row { grid-template-columns: 1fr; } }
 @media (min-width: 760px) { #appList { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(11,19,41,0.6); backdrop-filter: blur(2px); z-index: 2500; display: none; align-items: flex-end; justify-content: center; }
+.modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
+.modal { background: #fff; width: 100%; max-width: 560px; max-height: 92vh; overflow-y: auto; border-radius: 18px 18px 0 0; border-top: 5px solid var(--gold); padding: 24px 24px 28px; }
+.modal-overlay.open .modal { animation: sheetUp .3s cubic-bezier(.22,1,.36,1); }
+.modal h2 { font-size: 21px; color: var(--navy); margin-bottom: 4px; } .modal .sub { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-top: 16px; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheetUp { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (min-width: 640px) { .modal-overlay { align-items: center; padding: 20px; } .modal { border-radius: 16px; } }
+@media (max-width: 639px) { .modal { padding-bottom: 88px; } }
+.mbtn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 8px; font-weight: 700; font-size: 14.5px; border: 1.5px solid transparent; transition: background .15s, border-color .15s, color .15s; cursor: pointer; text-decoration: none; }
+.mbtn.primary { background: var(--navy); color: #fff; } .mbtn.primary:hover:not(:disabled) { background: var(--maroon); }
+.mbtn.ghost { background: #fff; color: var(--navy); border-color: var(--border); } .mbtn.ghost:hover { border-color: var(--navy); background: var(--navy-tint); }
+.mbtn.wa { background: #1f8f4e; color: #fff; } .mbtn.wa:hover { background: #17703d; }
+.mbtn.danger { background: var(--red); color: #fff; } .mbtn:disabled { opacity: .55; cursor: not-allowed; }
+.cred-fam { border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 14px; background: #fff; }
+.cred-fam h3 { font-size: 17px; color: var(--navy); margin-bottom: 2px; } .cred-fam .adm { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.cred-block { background: var(--cream); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+.cred-block h4 { font-family: var(--sans); font-size: 12.5px; font-weight: 700; letter-spacing: .02em; color: var(--maroon); margin-bottom: 8px; }
+.cred-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; }
+.cred-row span { color: var(--muted); flex-shrink: 0; } .cred-row b { font-weight: 600; overflow-wrap: anywhere; text-align: right; }
+.cred-row b.pwd { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 17px; letter-spacing: .04em; background: #fff; border: 1.5px dashed #aeb6cd; border-radius: 8px; padding: 4px 10px; color: var(--navy); }
+.cred-row button.cp { border: 1px solid var(--border); background: #fff; border-radius: 6px; font-size: 12px; font-weight: 700; padding: 4px 9px; color: var(--navy); cursor: pointer; flex-shrink: 0; }
+.cred-row button.cp:hover { background: var(--navy-tint); }
+.cred-note { font-size: 13.5px; color: var(--muted); padding: 4px 0; } .cred-note.warn { color: var(--amber-text); background: var(--amber-tint); border-radius: 8px; padding: 9px 12px; }
+.cred-warn { font-size: 13px; color: var(--amber-text); background: var(--amber-tint); border-radius: 8px; padding: 10px 12px; margin-top: 4px; }
+.cred-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.login-opt { display: flex; align-items: center; gap: 10px; margin: 4px 0 14px; padding: 10px 12px; background: var(--navy-tint); border-radius: 8px; font-size: 13.5px; font-weight: 600; color: var(--navy); cursor: pointer; }
+.login-opt input { width: 18px; height: 18px; min-height: 0; padding: 0; accent-color: var(--maroon); flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -151,6 +181,16 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
 
 <div id="loadingState" class="loading">Loading…</div>
 
+<div class="modal-overlay" id="credModal" role="dialog" aria-modal="true" aria-labelledby="credTitle">
+  <div class="modal">
+    <h2 id="credTitle">Sign-in details</h2>
+    <p class="sub" id="credSub"></p>
+    <div id="credBody"></div>
+    <p class="cred-warn">Temporary passwords are shown only once. Share them now. Each person is asked to choose their own password the first time they sign in.</p>
+    <div class="modal-actions"><button type="button" class="mbtn ghost" id="credPrint">Print slips</button><button type="button" class="mbtn primary" id="credDone">Done</button></div>
+  </div>
+</div>
+
 <div class="nav-drawer" id="navDrawer">
   <div class="nav-drawer-top">
     <strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong>
@@ -163,6 +203,7 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
     <a href="/admin/enrollments.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg><span>Enrollments</span></a>
     <a href="/admin/staff.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span>Staff</span></a>
     <a href="/admin/students.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
+    <a href="/admin/accounts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 9.8-9.8M16 7l3 3M14 9l2 2"/></svg><span>Logins</span></a>
     <a href="/admin/academics.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>Academics</span></a>
     <a href="/admin/fees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span>Fees</span></a>
     <a href="/admin/profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
@@ -217,16 +258,20 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
 
   async function loadPending() {
     const container = document.getElementById('appList')
-    const { data, error } = await supabase
-      .from('students')
-      .select('id, surname, other_names, date_of_birth, gender, former_school_name, former_school_class, photo_url, address')
-      .eq('school_id', schoolId)
-      .eq('admission_status', 'pending')
+    const extendedCols = 'id, surname, other_names, date_of_birth, gender, former_school_name, former_school_class, photo_url, address, application_ref, class_applied_for'
+    const baseCols = 'id, surname, other_names, date_of_birth, gender, former_school_name, former_school_class, photo_url, address'
+    let { data, error } = await supabase.from('students').select(extendedCols).eq('school_id', schoolId).eq('admission_status', 'pending')
+    if (error) ({ data, error } = await supabase.from('students').select(baseCols).eq('school_id', schoolId).eq('admission_status', 'pending'))
 
     if (error || !data || data.length === 0) {
       container.innerHTML = '<p class="empty-note">No pending applications right now.</p>'
       return
     }
+
+    const parentOf = {}
+    const parentRes = await supabase.from('student_parents').select('student_id, parents(full_name, phone)').in('student_id', data.map(s => s.id))
+    if (!parentRes.error) (parentRes.data || []).forEach(l => { if (l.parents) parentOf[l.student_id] = l.parents })
+    const classNameOf = (id) => (classes.find(c => c.id === id) || {}).name || '—'
 
     container.innerHTML = data.map(s => `
       <div class="card app-card" data-id="${s.id}">
@@ -234,17 +279,20 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
           <div class="avatar">${s.photo_url ? `<img src="${s.photo_url}" alt="">` : initials(s)}</div>
           <div>
             <h3>${studentName(s)}</h3>
-            <div class="sub">${s.gender || '—'} · DOB ${formatDate(s.date_of_birth)}</div>
+            <div class="sub">${s.gender || '—'} · DOB ${formatDate(s.date_of_birth)}${s.application_ref ? ' · ' + escH(s.application_ref) : ''}</div>
           </div>
         </div>
         <div class="detail-row"><span>Former School</span><span>${s.former_school_name || '—'}</span></div>
         <div class="detail-row"><span>Former Class</span><span>${s.former_school_class || '—'}</span></div>
         <div class="detail-row"><span>Address</span><span>${s.address || '—'}</span></div>
+        <div class="detail-row"><span>Applying for</span><span>${escH(classNameOf(s.class_applied_for))}</span></div>
+        <div class="detail-row"><span>Parent / guardian</span><span>${parentOf[s.id] ? escH(parentOf[s.id].full_name) + ' · ' + escH(parentOf[s.id].phone || '') : '—'}</span></div>
+        <label class="login-opt"><input type="checkbox" class="makeLogins" checked> Create parent &amp; student sign-ins when admitting</label>
 
         <div class="select-row">
           <select class="classSelect">
             <option value="">Assign class…</option>
-            ${classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+            ${classes.map(c => `<option value="${c.id}"${c.id === s.class_applied_for ? ' selected' : ''}>${c.name}</option>`).join('')}
           </select>
           <select class="termSelect">
             <option value="">Assign term…</option>
@@ -298,8 +346,18 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
     if (enrollError) { showMessage('Student admitted, but enrollment record failed: ' + enrollError.message, 'error') }
     else { showMessage('Student admitted and enrolled successfully.', 'success') }
 
+    const wantLogins = !!(card.querySelector('.makeLogins') && card.querySelector('.makeLogins').checked)
     card.remove()
     checkEmpty()
+
+    if (wantLogins) {
+      try {
+        const result = await callProvision({ studentId, createStudentLogin: true })
+        showCredentials(result, 'Admitted. Sign-in details')
+      } catch (err) {
+        showMessage('Admitted, but the sign-ins were not created: ' + err.message + ' You can create them from the Logins page.', 'error')
+      }
+    }
   }
 
   async function rejectStudent(studentId, card) {
@@ -327,6 +385,88 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
       container.innerHTML = '<p class="empty-note">No pending applications right now.</p>'
     }
   }
+
+
+  // ---------- sign-in details (shown once, after logins are created or reset) ----------
+  const escH = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  const schoolLabel = () => ((document.querySelector('.js-school-name') || {}).textContent || 'the school').trim()
+  const portalUrl = () => location.origin + '/login.html'
+  function waNumber(phone) { let d = String(phone || '').replace(/\D/g, ''); if (d.length === 11 && d.startsWith('0')) d = '234' + d.slice(1); return d }
+  let credResults = []
+
+  async function callProvision(payload) {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) throw new Error('Please sign in again.')
+    const res = await fetch('/.netlify/functions/provision-accounts', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + session.access_token }, body: JSON.stringify(payload) })
+    const body = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(body.error || 'The request failed (' + res.status + ').')
+    return body
+  }
+
+  function composeMessage(r) {
+    const lines = ['Assalamu alaikum' + (r.parent && r.parent.name ? ' ' + r.parent.name : '') + '.', (r.studentName || 'Your child') + ' is now a pupil of ' + schoolLabel() + '.', '', 'Sign in here: ' + portalUrl()]
+    if (r.parent && r.parent.tempPassword) lines.push('', 'PARENT LOGIN', 'Login: ' + r.parent.loginId, 'Temporary password: ' + r.parent.tempPassword)
+    else if (r.parent && r.parent.status === 'existing') lines.push('', 'Use your existing parent login. This child now shows there too.')
+    if (r.studentLogin && r.studentLogin.tempPassword) lines.push('', 'STUDENT LOGIN', 'Admission number: ' + r.studentLogin.loginId, 'Temporary password: ' + r.studentLogin.tempPassword)
+    lines.push('', 'You will be asked to choose a new password the first time you sign in.')
+    return lines.join('\n')
+  }
+  const credRow = (label, value, pwd) => `<div class="cred-row"><span>${label}</span><b${pwd ? ' class="pwd"' : ''}>${escH(value)}</b><button type="button" class="cp" data-copy="${escH(value)}">Copy</button></div>`
+
+  function familyHtml(r) {
+    let parentBlock = ''
+    const p = r.parent
+    if (r.reset) {
+      parentBlock = `<div class="cred-block"><h4>${r.reset.who === 'student' ? 'STUDENT' : 'PARENT'} PASSWORD RESET</h4>${credRow('Login', r.reset.loginId)}${credRow('New temporary password', r.reset.tempPassword, true)}</div>`
+    } else {
+      if (!p || p.status === 'no_parent') parentBlock = '<div class="cred-block"><h4>PARENT</h4><div class="cred-note warn">No parent is linked to this child yet, so no parent login was made. Use "Link parent" on the Logins page.</div></div>'
+      else if (p.status === 'no_contact') parentBlock = '<div class="cred-block"><h4>PARENT</h4><div class="cred-note warn">The parent has no usable phone number or email, so no login was made.</div></div>'
+      else if (p.status === 'existing') parentBlock = `<div class="cred-block"><h4>PARENT</h4><div class="cred-note">${escH(p.name)} already has a login (for example from a brother or sister). The same sign-in now shows this child too.</div>${credRow('Login', p.loginId)}</div>`
+      else parentBlock = `<div class="cred-block"><h4>PARENT${p.name ? ' · ' + escH(p.name) : ''}</h4>${credRow('Login', p.loginId)}${p.tempPassword ? credRow('Temporary password', p.tempPassword, true) : '<div class="cred-note warn">This person already had an account, so no new password was made. Use a reset if they cannot sign in.</div>'}</div>`
+      const s = r.studentLogin
+      if (s) parentBlock += s.status === 'existing'
+        ? `<div class="cred-block"><h4>STUDENT</h4><div class="cred-note">The student already has a login.</div>${credRow('Admission number', s.loginId)}</div>`
+        : `<div class="cred-block"><h4>STUDENT</h4>${credRow('Admission number', s.loginId)}${s.tempPassword ? credRow('Temporary password', s.tempPassword, true) : '<div class="cred-note warn">This account already existed, so no new password was made.</div>'}</div>`
+    }
+    const phone = p && p.phone ? waNumber(p.phone) : ''
+    const canSend = !r.reset && ((p && p.tempPassword) || (r.studentLogin && r.studentLogin.tempPassword))
+    return `<section class="cred-fam"><h3>${escH(r.studentName || (r.reset && r.reset.name) || '')}</h3><div class="adm">${r.admissionNumber ? 'Admission number ' + escH(r.admissionNumber) : ''}</div>${parentBlock}
+      ${canSend ? `<div class="cred-actions">${phone ? `<a class="mbtn wa" target="_blank" rel="noopener" href="https://wa.me/${phone}?text=${encodeURIComponent(composeMessage(r))}">Send on WhatsApp</a>` : ''}<button type="button" class="mbtn ghost" data-copy-msg="${credResults.indexOf(r)}">Copy message</button></div>` : ''}</section>`
+  }
+
+  function showCredentials(results, title) {
+    credResults = Array.isArray(results) ? results : [results]
+    document.getElementById('credTitle').textContent = title || 'Sign-in details'
+    document.getElementById('credSub').textContent = credResults.length > 1 ? credResults.length + ' families' : 'Give these to the parent. They are not stored anywhere.'
+    document.getElementById('credBody').innerHTML = credResults.map(familyHtml).join('')
+    document.getElementById('credModal').classList.add('open')
+  }
+  function closeCredentials() { document.getElementById('credModal').classList.remove('open'); document.getElementById('credBody').innerHTML = ''; credResults = [] }
+
+  document.getElementById('credBody').addEventListener('click', async (e) => {
+    const c = e.target.closest('[data-copy]'), m = e.target.closest('[data-copy-msg]')
+    const text = c ? c.getAttribute('data-copy') : m ? composeMessage(credResults[Number(m.getAttribute('data-copy-msg'))]) : null
+    if (text === null) return
+    const btn = c || m, old = btn.textContent
+    try { await navigator.clipboard.writeText(text); btn.textContent = 'Copied' } catch (err) { btn.textContent = 'Press and hold to copy' }
+    setTimeout(() => { btn.textContent = old }, 1800)
+  })
+  document.getElementById('credDone').addEventListener('click', closeCredentials)
+  document.getElementById('credModal').addEventListener('click', (e) => { if (e.target.id === 'credModal') closeCredentials() })
+  document.getElementById('credPrint').addEventListener('click', () => {
+    const w = window.open('', '_blank'); if (!w) return
+    const slip = (r) => {
+      const rows = []
+      if (r.reset) rows.push(`<h3>${r.reset.who === 'student' ? 'Student' : 'Parent'} password reset</h3><p>Login: <b>${escH(r.reset.loginId)}</b></p><p>Temporary password: <b class="pw">${escH(r.reset.tempPassword)}</b></p>`)
+      else {
+        if (r.parent && r.parent.loginId) rows.push(`<h3>Parent: ${escH(r.parent.name || '')}</h3><p>Login: <b>${escH(r.parent.loginId)}</b></p>${r.parent.tempPassword ? `<p>Temporary password: <b class="pw">${escH(r.parent.tempPassword)}</b></p>` : '<p><i>Use your existing sign-in.</i></p>'}`)
+        if (r.studentLogin && r.studentLogin.loginId) rows.push(`<h3>Student</h3><p>Admission number: <b>${escH(r.studentLogin.loginId)}</b></p>${r.studentLogin.tempPassword ? `<p>Temporary password: <b class="pw">${escH(r.studentLogin.tempPassword)}</b></p>` : '<p><i>Existing login.</i></p>'}`)
+      }
+      return `<div class="slip"><h1>${escH(schoolLabel())}</h1><h2>${escH(r.studentName || (r.reset && r.reset.name) || '')}${r.admissionNumber ? ' · ' + escH(r.admissionNumber) : ''}</h2>${rows.join('')}<p>Sign in at <b>${escH(portalUrl())}</b></p><p class="small">You will be asked to choose your own password the first time you sign in. Keep it private.</p></div>`
+    }
+    w.document.write(`<!doctype html><title>Sign-in slips</title><style>body{font-family:Arial,sans-serif;color:#161A27;margin:0}.slip{padding:28px;border-bottom:2px dashed #999;page-break-inside:avoid}h1{font-size:20px;margin:0 0 4px;color:#101B3D}h2{font-size:16px;margin:0 0 14px}h3{font-size:14px;margin:14px 0 4px;color:#6E1F2B}p{margin:4px 0;font-size:14px}.pw{font-family:Consolas,monospace;font-size:18px;letter-spacing:.05em;border:1px dashed #666;padding:2px 8px}.small{font-size:12px;color:#555;margin-top:12px}</style>${credResults.map(slip).join('')}<script>window.onload=function(){window.print()}<\/script>`)
+    w.document.close()
+  })
 
   document.getElementById('signOutBtn').addEventListener('click', async () => {
     await supabase.auth.signOut()

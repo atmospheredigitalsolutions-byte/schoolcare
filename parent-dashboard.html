@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard — Parent Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500..700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F1F2F6; --paper: #FFFFFF; --gold: #B98B2A; --gold-soft: #E2BE6A; --ink: #161A27;
+  --muted: #5B6275; --border: #DDE0E8; --green: #2E7D32; --red: #B3261E; --error: #B3261E;
+  --navy-tint: #E8EBF5; --maroon-tint: #F6E9EB; --green-tint: #E7F3E8; --red-tint: #FBEAE8; --amber-tint: #FBF1DC; --amber-text: #7A5A12;
+  --sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --serif: 'Literata', Georgia, 'Times New Roman', serif;
+  --side: 264px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); font-size: 15px; color: var(--ink); background: var(--cream); line-height: 1.55; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.01em; line-height: 1.22; }
+a { color: inherit; text-decoration: none; }
+button, select, input { font: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid rgba(185,139,42,0.65); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* ---------- top bar (mobile) ---------- */
+.topbar { background: var(--paper); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+.topbar::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 6px; background: linear-gradient(var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); pointer-events: none; }
+.topbar .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.topbar .brand img { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; }
+.topbar .brand strong { font-family: var(--serif); color: var(--navy); font-size: 14.5px; font-weight: 600; line-height: 1.25; display: block; }
+.topbar .brand span { display: block; font-size: 11.5px; color: var(--muted); }
+.signout { font-size: 13px; font-weight: 600; color: var(--maroon); border: 1.5px solid var(--border); border-radius: 999px; padding: 7px 15px; background: var(--paper); transition: background .15s, border-color .15s; }
+.signout:hover { background: var(--maroon-tint); border-color: var(--maroon); }
+.hamburger-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--navy-tint); border: 1px solid transparent; display: flex; align-items: center; justify-content: center; color: var(--navy); flex-shrink: 0; transition: background .15s; }
+.hamburger-btn:hover { background: #d9deef; }
+.hamburger-btn svg { width: 18px; height: 18px; }
+
+/* ---------- navigation drawer / sidebar ---------- */
+.nav-drawer { position: fixed; inset: 0; background: var(--navy-deep); z-index: 2000; display: flex; flex-direction: column; padding: 22px 26px 32px; transform: translateX(100%); visibility: hidden; transition: transform .4s cubic-bezier(.22,1,.36,1), visibility 0s .4s; overflow-y: auto; }
+.nav-drawer.open { transform: translateX(0); visibility: visible; transition: transform .4s cubic-bezier(.22,1,.36,1), visibility 0s 0s; }
+.nav-drawer-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 34px; gap: 12px; }
+.nav-drawer-top strong { font-family: var(--serif); font-weight: 600; color: #fff; font-size: 15.5px; line-height: 1.25; display: flex; align-items: center; gap: 12px; }
+.nav-drawer-top strong::before { content: ""; width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; background: #fff url(/assets/images/logo.png) center / cover no-repeat; }
+.nav-drawer-close { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-drawer-close:hover { background: rgba(255,255,255,0.18); }
+.nav-drawer-links { display: flex; flex-direction: column; gap: 2px; }
+.nav-drawer-links a { display: flex; align-items: center; gap: 14px; font-family: var(--serif); font-size: 22px; font-weight: 600; color: #fff; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.1); transition: color .15s; }
+.nav-drawer-links a svg { width: 22px; height: 22px; color: var(--gold-soft); flex-shrink: 0; }
+.nav-drawer-links a:hover, .nav-drawer-links a.active { color: var(--gold-soft); }
+.nav-drawer-signout { margin-top: auto; padding: 15px; border-radius: 10px; background: rgba(255,255,255,0.1); color: #fff; font-weight: 600; font-size: 14.5px; text-align: center; border: none; transition: background .15s; }
+.nav-drawer-signout:hover { background: rgba(255,255,255,0.18); }
+
+/* ---------- shared content ---------- */
+.wrap { margin: 0 auto; padding: 34px 16px 56px; }
+.welcome { margin-bottom: 22px; }
+.welcome h1 { font-size: 27px; color: var(--navy); font-weight: 700; margin-bottom: 6px; }
+.welcome p { color: var(--muted); font-size: 15px; max-width: 60ch; }
+.card { background: var(--paper); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 20px; }
+.card h2 { font-size: 17px; color: var(--navy); margin-bottom: 16px; font-weight: 600; }
+select, input { padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; color: var(--ink); width: 100%; font-size: 14.5px; min-height: 44px; transition: border-color .15s, box-shadow .15s; }
+select:hover, input:hover { border-color: #c3c8d6; }
+select:focus, input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,27,61,0.14); }
+select { appearance: none; -webkit-appearance: none; padding-right: 36px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235B6275' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+.empty-note { color: var(--muted); font-size: 15px; text-align: center; padding: 28px 16px; }
+.loading { color: var(--muted); font-size: 14.5px; text-align: center; padding: 72px 0; }
+.loading::before { content: ""; display: block; width: 26px; height: 26px; margin: 0 auto 14px; border-radius: 50%; border: 3px solid var(--navy-tint); border-top-color: var(--maroon); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* status message, shown as a toast */
+.msg { position: fixed; z-index: 3000; left: 16px; right: 16px; bottom: 20px; max-width: 460px; margin: 0 auto; padding: 13px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; display: none; box-shadow: 0 12px 32px rgba(11,19,41,0.22); border-left: 4px solid; }
+.msg.success { background: var(--green-tint); color: #1d5a21; border-color: var(--green); display: block; animation: toastIn .28s cubic-bezier(.22,1,.36,1); }
+.msg.error { background: var(--red-tint); color: #8d1d17; border-color: var(--red); display: block; animation: toastIn .28s cubic-bezier(.22,1,.36,1); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ---------- desktop: persistent sidebar ---------- */
+@media (min-width: 1000px) {
+  body { padding-left: var(--side); }
+  .topbar { display: none; }
+  .hamburger-btn, .nav-drawer-close { display: none; }
+  .nav-drawer, .nav-drawer.open { inset: 0 auto 0 0; width: var(--side); transform: none; visibility: visible; transition: none; padding: 26px 18px 24px; z-index: 20; }
+  .nav-drawer::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 6px; background: linear-gradient(to right, var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); }
+  .nav-drawer-top { padding: 0 8px; margin-bottom: 30px; }
+  .nav-drawer-links { gap: 4px; }
+  .nav-drawer-links a { font-family: var(--sans); font-size: 15px; font-weight: 500; padding: 11px 12px; border: none; border-radius: 8px; color: rgba(255,255,255,0.76); }
+  .nav-drawer-links a svg { width: 19px; height: 19px; color: rgba(255,255,255,0.55); }
+  .nav-drawer-links a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .nav-drawer-links a:hover svg { color: var(--gold-soft); }
+  .nav-drawer-links a.active { background: rgba(255,255,255,0.1); color: #fff; box-shadow: inset 3px 0 0 var(--gold-soft); }
+  .nav-drawer-links a.active svg { color: var(--gold-soft); }
+  .nav-drawer-signout { margin-right: 6px; }
+  .wrap { padding: 52px 44px 72px; }
+  .welcome h1 { font-size: 32px; }
+  .msg { left: calc(var(--side) + 24px); right: 24px; bottom: 28px; margin: 0 auto; }
+}
+
+
+.wrap { max-width: 760px; }
+
+.child-select-wrap { margin-bottom: 20px; }
+.summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+.summary-box { background: var(--paper); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+.summary-box strong { display: block; font-family: var(--serif); font-size: 22px; color: var(--navy); }
+.summary-box span { font-size: 11px; color: var(--muted); }
+.list-row { display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+.list-row:last-child { border-bottom: none; }
+.list-row .l-left { color: var(--ink); font-weight: 600; }
+.list-row .l-right { color: var(--muted); }
+.status-chip { font-size: 10.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px; text-transform: capitalize; }
+.status-chip.present { background: var(--green-tint); color: var(--green); }
+.status-chip.absent { background: var(--red-tint); color: var(--red); }
+.status-chip.late { background: var(--amber-tint); color: var(--amber-text); }
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <img src="/assets/images/logo.png" alt="logo">
+    <div><strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong><span>Parent Portal</span></div>
+  </div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+    <button class="signout" id="signOutBtn">Sign Out</button>
+  </div>
+</div>
+
+
+<div class="wrap" id="appWrap" style="display:none;">
+  <div class="welcome">
+    <h1 id="welcomeName">Welcome</h1>
+    <p>Here's how your child is doing.</p>
+  </div>
+
+  <div class="card child-select-wrap">
+    <div class="field-row" style="margin-bottom:0;">
+      <label for="childSelect">Viewing Child</label>
+      <select id="childSelect"></select>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-box"><strong id="statPresent">—</strong><span>Present Days</span></div>
+    <div class="summary-box"><strong id="statAbsent">—</strong><span>Absent Days</span></div>
+    <div class="summary-box"><strong id="statAvg">—</strong><span>Avg. Score</span></div>
+  </div>
+
+  <div class="card">
+    <h2>Recent Attendance</h2>
+    <div id="attendanceList"></div>
+  </div>
+
+  <div class="card">
+    <h2>Recent Scores</h2>
+    <div id="scoresList"></div>
+  </div>
+</div>
+
+<div id="loadingState" class="loading">Loading…</div>
+
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-top">
+    <strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong>
+    <button class="nav-drawer-close" id="drawerClose" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+  <nav class="nav-drawer-links">
+    <a href="/parent-dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>Dashboard</span></a>
+    <a href="/parent-report-card.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Report Card</span></a>
+    <a href="/parent-fees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span>Fees</span></a>
+    <a href="/parent-profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
+  </nav>
+  <button class="nav-drawer-signout" id="drawerSignOutBtn">Sign Out</button>
+</div>
+
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
+
+  let currentUser = null
+  let parentRecord = null
+  let children = []
+  let currentChild = null
+
+  function studentName(s) { return [s.surname, s.other_names].filter(Boolean).join(' ') || 'Unnamed Student' }
+
+  async function loadSchoolName() {
+    const { data } = await supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name })
+  }
+
+  async function init() {
+    loadSchoolName()
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/login.html'; return }
+    currentUser = session.user
+
+    const { data: membership } = await supabase.from('school_members').select('role').eq('user_id', currentUser.id).single()
+    if (!membership || membership.role !== 'parent') { window.location.href = '/login.html'; return }
+
+    const { data: userRow } = await supabase.from('users').select('full_name').eq('id', currentUser.id).single()
+    document.getElementById('welcomeName').textContent = 'Welcome, ' + (userRow?.full_name || 'Parent')
+
+    const { data: parent } = await supabase.from('parents').select('id').eq('user_id', currentUser.id).single()
+    if (!parent) { document.getElementById('loadingState').textContent = 'No parent record found for your account.'; return }
+    parentRecord = parent
+
+    const { data: links } = await supabase
+      .from('student_parents')
+      .select('student_id, students(id, surname, other_names, class_id, classes(name))')
+      .eq('parent_id', parentRecord.id)
+
+    children = (links || []).filter(l => l.students).map(l => l.students)
+
+    if (children.length === 0) {
+      document.getElementById('loadingState').style.display = 'none'
+      document.getElementById('appWrap').style.display = 'block'
+      document.getElementById('childSelect').innerHTML = '<option>No linked children yet</option>'
+      return
+    }
+
+    const select = document.getElementById('childSelect')
+    select.innerHTML = children.map(c => `<option value="${c.id}">${studentName(c)} — ${c.classes?.name || 'No class'}</option>`).join('')
+    select.addEventListener('change', () => loadChildData(select.value))
+
+    await loadChildData(children[0].id)
+
+    document.getElementById('loadingState').style.display = 'none'
+    document.getElementById('appWrap').style.display = 'block'
+  }
+
+  async function loadChildData(studentId) {
+    currentChild = children.find(c => c.id === studentId)
+
+    const { data: attendance } = await supabase
+      .from('attendance')
+      .select('date, status')
+      .eq('student_id', studentId)
+      .order('date', { ascending: false })
+      .limit(10)
+
+    const presentCount = (attendance || []).filter(a => a.status === 'present').length
+    const absentCount = (attendance || []).filter(a => a.status === 'absent').length
+    document.getElementById('statPresent').textContent = presentCount
+    document.getElementById('statAbsent').textContent = absentCount
+
+    const attContainer = document.getElementById('attendanceList')
+    attContainer.innerHTML = (attendance && attendance.length)
+      ? attendance.map(a => `<div class="list-row"><span class="l-left">${new Date(a.date).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })}</span><span class="status-chip ${a.status}">${a.status}</span></div>`).join('')
+      : '<p class="empty-note">No attendance records yet.</p>'
+
+    const { data: scores } = await supabase
+      .from('scores')
+      .select('score, subjects(name), assessment_types(name)')
+      .eq('student_id', studentId)
+      .order('id', { ascending: false })
+      .limit(5)
+
+    const scoresContainer = document.getElementById('scoresList')
+    if (scores && scores.length) {
+      const avg = scores.reduce((sum, s) => sum + Number(s.score || 0), 0) / scores.length
+      document.getElementById('statAvg').textContent = avg.toFixed(1)
+      scoresContainer.innerHTML = scores.map(s => `<div class="list-row"><span class="l-left">${s.subjects?.name || '—'} <span style="color:var(--muted); font-weight:400;">(${s.assessment_types?.name || ''})</span></span><span class="l-right">${s.score}</span></div>`).join('')
+    } else {
+      document.getElementById('statAvg').textContent = '—'
+      scoresContainer.innerHTML = '<p class="empty-note">No scores recorded yet.</p>'
+    }
+  }
+
+  const navDrawer = document.getElementById('navDrawer')
+  document.getElementById('hamburgerBtn').addEventListener('click', () => navDrawer.classList.add('open'))
+  document.getElementById('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
+  document.getElementById('drawerSignOutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut()
+    window.location.href = '/login.html'
+  })
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut()
+    window.location.href = '/login.html'
+  })
+
+  init()
+</script>
+
+<script>
+  // marks the current page in the navigation (display only)
+  (function () {
+    var file = location.pathname.split('/').pop();
+    document.querySelectorAll('.nav-drawer-links a').forEach(function (a) {
+      if (file && a.getAttribute('href').split('/').pop() === file) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
+    });
+  })();
+</script>
+
+</body>
+</html>

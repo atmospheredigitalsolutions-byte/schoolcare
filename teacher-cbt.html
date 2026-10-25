@@ -97,7 +97,82 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
 }
 
 
+
 .wrap { max-width: 920px; }
+.btn-primary, .btn-outline, .btn-small { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; border-radius: 8px; border: 1.5px solid transparent; transition: background .15s, border-color .15s, color .15s, transform .1s; }
+.btn-primary { width: 100%; min-height: 50px; padding: 0 22px; background: var(--navy); color: #fff; font-size: 15.5px; margin-top: 6px; }
+.btn-primary:hover:not(:disabled) { background: var(--maroon); }
+.btn-primary.auto { width: auto; margin-top: 0; }
+.btn-outline { min-height: 46px; padding: 0 20px; margin-bottom: 20px; background: #fff; color: var(--navy); border-color: var(--navy); font-size: 14.5px; }
+.btn-outline:hover { background: var(--navy); color: #fff; }
+.btn-small { min-height: 38px; padding: 0 14px; background: #fff; color: var(--navy); border-color: var(--border); font-size: 13.5px; }
+.btn-small:hover { border-color: var(--navy); background: var(--navy-tint); }
+.btn-small.danger { color: var(--red); }
+.btn-small.danger:hover { background: var(--red-tint); border-color: var(--red); }
+.btn-primary:active, .btn-outline:active, .btn-small:active { transform: scale(.98); }
+button:disabled { opacity: .55; cursor: not-allowed; }
+.field-row { margin-bottom: 18px; }
+.field-row label, .imp-foot label { display: block; font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+textarea { width: 100%; min-height: 88px; padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; color: var(--ink); font: inherit; font-size: 14.5px; resize: vertical; transition: border-color .15s, box-shadow .15s; }
+textarea:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,27,61,0.14); }
+input[type="checkbox"], input[type="radio"] { width: 20px; height: 20px; min-height: 0; padding: 0; accent-color: var(--maroon); flex-shrink: 0; }
+input[type="datetime-local"] { appearance: none; -webkit-appearance: none; }
+.two-col { display: grid; grid-template-columns: 1fr; gap: 0 16px; }
+@media (min-width: 560px) { .two-col { grid-template-columns: 1fr 1fr; } }
+.check-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin-bottom: 10px; border: 1.5px solid var(--border); border-radius: 10px; background: #fff; transition: border-color .15s, background .15s; }
+.check-row:has(input:checked) { border-color: var(--navy); background: var(--navy-tint); }
+.check-row label { margin: 0; flex: 1; font-weight: 600; font-size: 14.5px; color: var(--ink); cursor: pointer; }
+.back-link { display: inline-block; margin-bottom: 14px; color: var(--maroon); font-weight: 600; font-size: 14.5px; cursor: pointer; }
+.back-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+#examList { display: grid; gap: 12px; }
+.exam-card { padding: 18px; border: 1px solid var(--border); border-radius: 12px; background: #fff; transition: border-color .2s, box-shadow .2s, transform .2s; animation: rise .35s ease both; }
+.exam-card:hover { border-color: #c3c8d6; box-shadow: 0 10px 26px rgba(16,27,61,0.08); transform: translateY(-2px); }
+.exam-card h3 { font-size: 18px; color: var(--navy); margin-bottom: 2px; overflow-wrap: anywhere; }
+.exam-card .meta { font-size: 13.5px; color: var(--muted); margin-bottom: 12px; }
+.exam-card .stats { display: flex; gap: 18px; font-size: 14px; color: var(--muted); margin-bottom: 14px; }
+.exam-card .stats strong { color: var(--maroon); font-family: var(--serif); font-size: 17px; }
+.exam-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.question-item { padding: 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; background: #fff; }
+.question-item .qtext { font-weight: 600; margin-bottom: 10px; overflow-wrap: anywhere; white-space: pre-line; }
+.option-list { display: grid; gap: 6px; margin-bottom: 10px; }
+.option-item { padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14.5px; overflow-wrap: anywhere; }
+.option-item.correct { background: var(--green-tint); border-color: #9bc9a0; color: #1d5a21; font-weight: 600; }
+.qmarks { font-size: 13px; color: var(--muted); }
+.option-input-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.option-letter { width: 38px; height: 38px; border-radius: 50%; background: var(--navy-tint); color: var(--navy); display: grid; place-items: center; font-weight: 700; flex-shrink: 0; transition: background .2s, color .2s; }
+.option-letter.on { background: var(--green); color: #fff; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ---------- import from a file ---------- */
+.dropzone { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 30px 16px; border: 2px dashed #aeb6cd; border-radius: 12px; background: var(--navy-tint); text-align: center; cursor: pointer; transition: border-color .2s, background .2s; }
+.dropzone:hover, .dropzone.over { border-color: var(--navy); background: #dfe5f6; }
+.dropzone svg { width: 34px; height: 34px; color: var(--navy); }
+.dropzone strong { color: var(--navy); font-size: 15.5px; } .dropzone span { font-size: 13px; color: var(--muted); }
+.dz-input { display: none; }
+.import-tools { display: flex; flex-wrap: wrap; gap: 14px 22px; margin: 14px 0 4px; align-items: center; }
+.link-btn { background: none; border: none; color: var(--maroon); font-weight: 600; font-size: 14px; padding: 4px 0; }
+.link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+.import-marks { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--navy); }
+.import-marks input { width: 80px; min-height: 40px; }
+.import-status { margin-top: 12px; padding: 11px 14px; border-radius: 8px; font-size: 14px; background: var(--cream); color: var(--muted); display: none; }
+.import-status.show { display: block; } .import-status.ok { background: var(--green-tint); color: #1d5a21; } .import-status.bad { background: var(--red-tint); color: #8d1d17; }
+details.help { margin-top: 14px; border: 1px solid var(--border); border-radius: 10px; padding: 0 14px; background: #fff; }
+details.help summary { cursor: pointer; padding: 12px 0; font-weight: 600; color: var(--navy); font-size: 14.5px; }
+details.help p, details.help li { font-size: 14px; color: var(--muted); margin-bottom: 8px; } details.help ul { padding-left: 18px; margin-bottom: 8px; }
+details.help pre { background: var(--cream); border-radius: 8px; padding: 12px; font-size: 13px; overflow-x: auto; margin-bottom: 12px; font-family: ui-monospace, Menlo, Consolas, monospace; color: var(--ink); }
+.paste-box textarea { min-height: 120px; margin: 10px 0; }
+.imp-item { border: 1.5px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; background: #fff; animation: rise .3s ease both; }
+.imp-item.bad { border-color: var(--red); }
+.imp-item.skipped { opacity: .5; }
+.imp-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.imp-check { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--navy); font-size: 14.5px; }
+.imp-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+.imp-badge { background: var(--amber-tint); color: var(--amber-text); border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 600; }
+.imp-item textarea { min-height: 64px; margin-bottom: 10px; }
+.imp-foot { display: grid; grid-template-columns: 1fr 110px; gap: 12px; margin-top: 4px; }
+.imp-bar { position: sticky; bottom: 0; z-index: 5; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; background: #fff; border-top: 1px solid var(--border); padding: 12px 0 2px; margin-top: 6px; }
+.imp-sum { font-size: 14px; font-weight: 600; color: var(--navy); }
+.imp-sum span { color: var(--amber-text); }
 
 </style>
 </head>
@@ -176,6 +251,55 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
       <p class="empty-note" id="noQuestionsNote" style="display:none;">No questions added yet.</p>
     </div>
 
+    <div class="card" id="importCard">
+      <h2>Import questions from a file</h2>
+      <p style="font-size:14px; color:var(--muted); margin:-8px 0 14px;">Already prepared your questions? Upload the file and review them before they are added.</p>
+      <label class="dropzone" id="importDrop" for="importFile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <strong>Tap to choose a file, or drop it here</strong>
+        <span>PDF, Word (.docx), Excel, CSV or plain text</span>
+      </label>
+      <input type="file" id="importFile" class="dz-input" accept=".pdf,.docx,.xlsx,.xls,.csv,.txt,application/pdf">
+      <div class="import-tools">
+        <div class="import-marks"><label for="importMarks">Marks per question</label><input type="number" id="importMarks" min="0" step="0.5" value="1"></div>
+        <button type="button" class="link-btn" id="importTemplateBtn">Download CSV template</button>
+      </div>
+      <div class="import-status" id="importStatus" role="status"></div>
+
+      <details class="help">
+        <summary>How should my file look?</summary>
+        <p>The easiest layout is one question after another, numbered, with options A to D and an answer line:</p>
+        <pre>1. What is 2 + 3?
+A. 4
+B. 5
+C. 6
+D. 7
+Answer: B</pre>
+        <ul>
+          <li>Options can be on separate lines or in one line (A. 4 B. 5 C. 6 D. 7).</li>
+          <li>No answer lines? Put an answer key at the end, for example <b>ANSWERS: 1.B 2.C 3.A</b>. You can also set any answer while reviewing.</li>
+          <li>Excel and CSV files use the columns <b>Question, A, B, C, D, Answer, Marks</b> (use the template above).</li>
+          <li>Scanned pages or photos can't be read. Use a typed file, or paste the text below.</li>
+          <li>Only four options (A to D) are supported.</li>
+        </ul>
+      </details>
+      <details class="help paste-box">
+        <summary>Or paste your questions</summary>
+        <textarea id="importPaste" placeholder="Paste questions here, for example copied from WhatsApp or a document…"></textarea>
+        <button type="button" class="btn-small" id="importPasteBtn">Read pasted text</button>
+        <div style="height:12px"></div>
+      </details>
+
+      <div id="importPreview" style="margin-top:16px;"></div>
+      <div class="imp-bar" id="importBar" style="display:none;">
+        <div class="imp-sum" id="importSummary"></div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" class="btn-small" id="importClearBtn">Clear</button>
+          <button type="button" class="btn-primary auto" id="importSaveBtn">Add to exam</button>
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <h2>Add a Question</h2>
       <div class="field-row">
@@ -236,6 +360,10 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
   let assignments = []
   let currentExam = null
 
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  }
+
   function showMessage(boxId, text, type) {
     const box = document.getElementById(boxId)
     box.textContent = text
@@ -275,7 +403,7 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
     assignments = assignmentData || []
     const select = document.getElementById('assignmentSelect')
     select.innerHTML = assignments.length
-      ? assignments.map(a => `<option value="${a.id}">${a.classes?.name || '—'} · ${a.subjects?.name || '—'} · ${a.terms?.name || '—'}</option>`).join('')
+      ? assignments.map(a => `<option value="${a.id}">${escapeHtml(a.classes?.name || '—')} · ${escapeHtml(a.subjects?.name || '—')} · ${escapeHtml(a.terms?.name || '—')}</option>`).join('')
       : '<option value="">No assignments yet</option>'
 
     await loadExams()
@@ -289,7 +417,7 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
     const { data, error } = await supabase
       .from('cbt_exams')
       .select('id, title, duration_minutes, start_time, end_time, class_id, subject_id, term_id, classes(name), subjects(name), terms(name)')
-      .eq('created_by', currentUser.id)
+      .eq('created_by', teacherRecord.id)
       .order('id', { ascending: false })
 
     if (error || !data || data.length === 0) {
@@ -304,11 +432,12 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
 
     container.innerHTML = withCounts.map(exam => `
       <div class="exam-card" data-id="${exam.id}">
-        <h3>${exam.title}</h3>
-        <div class="meta">${exam.classes?.name || '—'} · ${exam.subjects?.name || '—'} · ${exam.terms?.name || '—'}</div>
+        <h3>${escapeHtml(exam.title)}</h3>
+        <div class="meta">${escapeHtml(exam.classes?.name || '—')} · ${escapeHtml(exam.subjects?.name || '—')} · ${escapeHtml(exam.terms?.name || '—')}</div>
         <div class="stats"><span><strong>${exam.questionCount}</strong> questions</span><span><strong>${exam.duration_minutes}</strong> min</span></div>
         <div class="exam-actions">
           <button class="btn-small manage-btn">Manage Questions</button>
+          <a class="btn-small" href="/teacher-cbt-results.html?exam=${exam.id}">Results</a>
           <button class="btn-small danger delete-btn">Delete</button>
         </div>
       </div>
@@ -356,7 +485,7 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
     btn.disabled = true
     btn.textContent = 'Creating…'
 
-    const { data, error } = await supabase.from('cbt_exams').insert({
+    const examPayload = {
       school_id: teacherRecord.school_id,
       subject_id: assignment.subject_id,
       class_id: assignment.class_id,
@@ -367,8 +496,10 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
       randomize_options: document.getElementById('randomizeOptions').checked,
       start_time: startVal ? new Date(startVal).toISOString() : null,
       end_time: endVal ? new Date(endVal).toISOString() : null,
-      created_by: currentUser.id
-    }).select('id, title, classes(name), subjects(name), terms(name)').single()
+      created_by: teacherRecord.id // cbt_exams.created_by points to teachers(id), not the login id
+    }
+    const examSelect = 'id, title, classes(name), subjects(name), terms(name)'
+    let { data, error } = await supabase.from('cbt_exams').insert(examPayload).select(examSelect).single()
 
     btn.disabled = false
     btn.textContent = 'Create Exam & Add Questions'
@@ -388,6 +519,7 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
     document.getElementById('optC').value = ''
     document.getElementById('optD').value = ''
     document.getElementById('qMarks').value = 1
+    importItems = []; renderImport(); document.getElementById('importStatus').className = 'import-status'
     await loadQuestions()
     showView('questions')
   }
@@ -409,9 +541,9 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
 
     container.innerHTML = data.map(q => `
       <div class="question-item" data-id="${q.id}">
-        <div class="qtext">${q.question_text}</div>
+        <div class="qtext">${escapeHtml(q.question_text)}</div>
         <div class="option-list">
-          ${['A','B','C','D'].map(letter => `<div class="option-item ${q.correct_option === letter ? 'correct' : ''}">${letter}. ${q.options?.[letter] || ''}</div>`).join('')}
+          ${['A','B','C','D'].map(letter => `<div class="option-item ${q.correct_option === letter ? 'correct' : ''}">${letter}. ${escapeHtml(q.options?.[letter] || '')}</div>`).join('')}
         </div>
         <div class="qmarks">${q.marks} mark(s) · <span class="del-q" style="color:var(--red); cursor:pointer; font-weight:600;">Delete</span></div>
       </div>
@@ -464,6 +596,289 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
     document.getElementById('qMarks').value = 1
     showMessage('questionMsgBox', 'Question added.', 'success')
     await loadQuestions()
+  })
+
+
+  // ---------- import questions from a file ----------
+  let importItems = []
+  const LIB_PDF = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
+  const LIB_PDF_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+  const LIB_DOCX = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js'
+  const LIB_SHEET = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector('script[src="' + src + '"]')) return resolve()
+      const s = document.createElement('script')
+      s.src = src; s.onload = resolve
+      s.onerror = () => reject(new Error('Could not load the helper needed to read this file. Check your internet connection and try again.'))
+      document.head.appendChild(s)
+    })
+  }
+
+  function setImportStatus(text, kind) {
+    const el = document.getElementById('importStatus')
+    el.textContent = text; el.className = 'import-status show' + (kind ? ' ' + kind : '')
+  }
+
+  async function extractPdfText(buffer) {
+    await loadScript(LIB_PDF)
+    const pdfjs = window.pdfjsLib
+    pdfjs.GlobalWorkerOptions.workerSrc = LIB_PDF_WORKER
+    const pdf = await pdfjs.getDocument({ data: buffer }).promise
+    const out = []
+    for (let p = 1; p <= pdf.numPages; p++) {
+      const page = await pdf.getPage(p)
+      const tc = await page.getTextContent()
+      const rows = []
+      tc.items.forEach(it => {
+        if (!it.str || !it.str.trim()) return
+        const y = Math.round(it.transform[5])
+        let row = rows.find(r => Math.abs(r.y - y) <= 3)
+        if (!row) { row = { y, items: [] }; rows.push(row) }
+        row.items.push({ x: it.transform[4], s: it.str })
+      })
+      rows.sort((a, b) => b.y - a.y)
+      rows.forEach(r => { r.items.sort((a, b) => a.x - b.x); out.push(r.items.map(i => i.s).join(' ').replace(/\s+/g, ' ').trim()) })
+      out.push('')
+    }
+    return out.join('\n')
+  }
+
+  async function extractDocxText(buffer) {
+    await loadScript(LIB_DOCX)
+    const r = await window.mammoth.extractRawText({ arrayBuffer: buffer })
+    return r.value
+  }
+
+  // spreadsheets: Question, A, B, C, D, Answer, Marks
+  async function extractSheetQuestions(buffer) {
+    await loadScript(LIB_SHEET)
+    const wb = window.XLSX.read(buffer, { type: 'array' })
+    const rows = window.XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' })
+    if (!rows.length) return []
+    const norm = (v) => String(v).toLowerCase().replace(/[^a-z]/g, '')
+    const header = rows[0].map(norm)
+    const find = (names) => header.findIndex(x => names.includes(x))
+    let col = { q: find(['question', 'questiontext', 'questions', 'q']), A: find(['a', 'optiona']), B: find(['b', 'optionb']), C: find(['c', 'optionc']), D: find(['d', 'optiond']), ans: find(['answer', 'correct', 'correctoption', 'correctanswer', 'key']), marks: find(['marks', 'mark', 'score']) }
+    let body = rows.slice(1)
+    if (col.q < 0 || col.A < 0) { col = { q: 0, A: 1, B: 2, C: 3, D: 4, ans: 5, marks: 6 }; body = rows }
+    return body.filter(r => String(r[col.q] || '').trim()).map(r => {
+      const options = { A: String(r[col.A] ?? '').trim(), B: String(r[col.B] ?? '').trim(), C: String(r[col.C] ?? '').trim(), D: String(r[col.D] ?? '').trim() }
+      let ans = col.ans >= 0 ? String(r[col.ans] ?? '').trim() : ''
+      let correct = null
+      if (/^[A-Da-d]$/.test(ans)) correct = ans.toUpperCase()
+      else if (/^[1-4]$/.test(ans)) correct = 'ABCD'[Number(ans) - 1]
+      else if (ans) { const hit = ['A', 'B', 'C', 'D'].find(L => options[L] && options[L].toLowerCase() === ans.toLowerCase()); if (hit) correct = hit }
+      const m = col.marks >= 0 ? parseFloat(r[col.marks]) : NaN
+      return { text: String(r[col.q]).trim(), options, correct, marks: Number.isFinite(m) ? m : null, issues: [] }
+    })
+  }
+
+  // plain text (from PDF, Word, .txt or pasted)
+  function splitInline(line) {
+    const pos = []; let from = 0
+    for (const L of ['A', 'B', 'C', 'D']) {
+      const m = new RegExp('(?:^|\\s)\\(?' + L + '[\\.\\):]\\s', 'i').exec(line.slice(from))
+      if (!m) break
+      const idx = from + m.index + (/^\s/.test(m[0]) ? 1 : 0)
+      pos.push(idx); from = idx + 1
+    }
+    if (pos.length < 2) return [line]
+    const out = []
+    if (pos[0] > 0) out.push(line.slice(0, pos[0]).trim())
+    pos.forEach((p, i) => out.push(line.slice(p, i + 1 < pos.length ? pos[i + 1] : undefined).trim()))
+    return out.filter(Boolean)
+  }
+
+  function parseQuestionsFromText(raw) {
+    const text = String(raw).replace(/\r/g, '\n').replace(/\u00a0/g, ' ').replace(/[ \t]+/g, ' ')
+    let lines = text.split('\n').map(l => l.trim()).filter(Boolean)
+
+    // answer key section at the end
+    const keyAt = lines.findIndex((l, i) => i > 0 && (/^(answers?|answer\s*key|marking\s*scheme|mark\s*scheme|memo)\s*[:\-–]?\s*$/i.test(l) || /^(answers?|answer\s*key)\s*[:\-–]\s*\d/i.test(l)))
+    const keyLines = keyAt >= 0 ? lines.slice(keyAt) : []
+    if (keyAt >= 0) lines = lines.slice(0, keyAt)
+
+    const body = []
+    lines.forEach(l => splitInline(l).forEach(x => body.push(x)))
+
+    const NUM = /^(?:q(?:uestion)?\.?\s*)?(\d{1,3})\s*[\.\):\-]\s*(.*)$/i
+    const OPT = /^\(?([A-Ea-e])[\.\):]\s*(.*)$/
+    const ANS = /^(?:correct\s*)?(?:answer|ans|key|correct\s*option|correct\s*answer)\s*[:\-–=]?\s*\(?([A-Da-d])\)?(?:[\.\)\s].*)?$/i
+    const hasNumbers = body.some(l => NUM.test(l) && !OPT.test(l))
+    const qs = []
+    let cur = null
+    const start = (num, t) => { cur = { number: num, text: t || '', options: {}, correct: null, issues: [], next: 'A', last: null, done: false }; qs.push(cur) }
+
+    for (const line of body) {
+      const a = ANS.exec(line)
+      if (a && cur) { cur.correct = a[1].toUpperCase(); cur.done = true; continue }
+      const o = OPT.exec(line)
+      if (o && cur) {
+        const L = o[1].toUpperCase()
+        if (L === cur.next && L <= 'D') {
+          let t = o[2].trim()
+          if (/^\*\s*|\s*\*$|\s*\((?:correct|ans(?:wer)?)\)$/i.test(t)) { cur.correct = L; t = t.replace(/^\*\s*|\s*\*$|\s*\((?:correct|ans(?:wer)?)\)$/ig, '').trim() }
+          cur.options[L] = t; cur.last = L; cur.next = String.fromCharCode(L.charCodeAt(0) + 1)
+          continue
+        }
+        if (L === 'E' && cur.last === 'D') { cur.issues.push('Has an option E. Only A to D are used.'); continue }
+      }
+      const n = NUM.exec(line)
+      if (n && (!cur || cur.last || cur.done || Number(n[1]) === (cur.number || 0) + 1)) { start(Number(n[1]), n[2].trim()); continue }
+      if (!cur) { if (!hasNumbers) start(null, line); continue }
+      if (cur.done || (cur.last === 'D' && /[?:]\s*$/.test(line))) { start(null, line); continue }
+      if (cur.last) cur.options[cur.last] = ((cur.options[cur.last] || '') + ' ' + line).trim()
+      else cur.text = (cur.text + ' ' + line).trim()
+    }
+
+    // apply the answer key
+    if (keyLines.length) {
+      const re = /(\d{1,3})\s*[\.\):\-–=]?\s*\(?([A-Da-d])\)?(?![A-Za-z])/g
+      const keyText = keyLines.join(' ')
+      let m
+      while ((m = re.exec(keyText))) {
+        const q = qs.find(x => x.number === Number(m[1])) || qs[Number(m[1]) - 1]
+        if (q && !q.correct) q.correct = m[2].toUpperCase()
+      }
+    }
+
+    return qs.map(q => ({
+      text: q.text, options: { A: q.options.A || '', B: q.options.B || '', C: q.options.C || '', D: q.options.D || '' },
+      correct: q.correct, marks: null, issues: q.issues
+    })).filter(q => q.text || q.options.A)
+  }
+
+  function startReview(items, sourceName) {
+    const defaultMarks = parseFloat(document.getElementById('importMarks').value)
+    const fallback = Number.isFinite(defaultMarks) ? defaultMarks : 1
+    importItems = items.map(q => ({ ...q, include: true, marks: q.marks ?? fallback }))
+    renderImport()
+    if (!importItems.length) {
+      setImportStatus("I couldn't find any questions in " + sourceName + '. Check that questions are numbered with options A to D, or use the CSV template.', 'bad')
+    } else {
+      const noAns = importItems.filter(q => !q.correct).length
+      setImportStatus('Found ' + importItems.length + ' question' + (importItems.length === 1 ? '' : 's') + ' in ' + sourceName + '.' + (noAns ? ' ' + noAns + ' still need a correct answer.' : ' Please review them, then add them to the exam.'), noAns ? '' : 'ok')
+    }
+  }
+
+  async function handleImportFile(file) {
+    const name = file.name, ext = (name.split('.').pop() || '').toLowerCase()
+    if (!['pdf', 'docx', 'xlsx', 'xls', 'csv', 'txt'].includes(ext)) {
+      setImportStatus(ext === 'doc' ? 'Old .doc files are not supported. Open it in Word and save as .docx, then upload again.' : 'That file type is not supported. Use PDF, Word (.docx), Excel, CSV or plain text.', 'bad'); return
+    }
+    setImportStatus('Reading ' + name + '…')
+    try {
+      const buffer = await file.arrayBuffer()
+      let items
+      if (ext === 'xlsx' || ext === 'xls' || ext === 'csv') {
+        items = await extractSheetQuestions(buffer)
+      } else {
+        const text = ext === 'pdf' ? await extractPdfText(buffer) : ext === 'docx' ? await extractDocxText(buffer) : new TextDecoder().decode(buffer)
+        if (text.replace(/\s/g, '').length < 30) { setImportStatus('No readable text was found. If this is a scanned or photographed page, it cannot be read. Use a typed file or paste the text instead.', 'bad'); return }
+        items = parseQuestionsFromText(text)
+      }
+      startReview(items, name)
+    } catch (err) {
+      setImportStatus('Could not read this file: ' + (err.message || err), 'bad')
+    }
+  }
+
+  function importProblems(q) {
+    const p = []
+    if (!q.text.trim()) p.push('No question text')
+    const missing = ['A', 'B', 'C', 'D'].filter(L => !q.options[L].trim())
+    if (missing.length) p.push('Missing option ' + missing.join(', '))
+    if (!q.correct) p.push('Choose the correct answer')
+    return p.concat(q.issues || [])
+  }
+
+  function renderImport() {
+    const box = document.getElementById('importPreview'), bar = document.getElementById('importBar')
+    if (!importItems.length) { box.innerHTML = ''; bar.style.display = 'none'; return }
+    bar.style.display = 'flex'
+    box.innerHTML = importItems.map((q, i) => {
+      const problems = importProblems(q)
+      return `<div class="imp-item${q.include ? '' : ' skipped'}" data-i="${i}">
+        <div class="imp-head"><label class="imp-check"><input type="checkbox" data-f="include" ${q.include ? 'checked' : ''}> Question ${i + 1}</label>
+          <div class="imp-badges">${problems.map(x => `<span class="imp-badge">${escapeHtml(x)}</span>`).join('')}</div></div>
+        <textarea data-f="text" rows="2">${escapeHtml(q.text)}</textarea>
+        ${['A', 'B', 'C', 'D'].map(L => `<div class="option-input-row"><div class="option-letter${q.correct === L ? ' on' : ''}">${L}</div><input type="text" data-f="opt${L}" value="${escapeHtml(q.options[L])}" placeholder="Option ${L}"></div>`).join('')}
+        <div class="imp-foot"><div><label>Correct answer</label><select data-f="correct"><option value="">Choose…</option>${['A', 'B', 'C', 'D'].map(L => `<option value="${L}" ${q.correct === L ? 'selected' : ''}>${L}</option>`).join('')}</select></div>
+          <div><label>Marks</label><input type="number" data-f="marks" min="0" step="0.5" value="${q.marks}"></div></div>
+      </div>`
+    }).join('')
+    updateImportSummary()
+  }
+
+  function updateImportSummary() {
+    const chosen = importItems.filter(q => q.include)
+    const bad = chosen.filter(q => importProblems(q).length).length
+    document.getElementById('importSummary').innerHTML = chosen.length + ' of ' + importItems.length + ' selected' + (bad ? ' · <span>' + bad + ' need attention</span>' : '')
+    document.getElementById('importSaveBtn').textContent = 'Add ' + chosen.length + ' to exam'
+    document.getElementById('importSaveBtn').disabled = !chosen.length
+  }
+
+  function onImportEdit(e) {
+    const item = e.target.closest('.imp-item'); if (!item) return
+    const q = importItems[Number(item.dataset.i)], f = e.target.dataset.f; if (!q || !f) return
+    if (f === 'include') { q.include = e.target.checked; item.classList.toggle('skipped', !q.include) }
+    else if (f === 'text') q.text = e.target.value
+    else if (f.startsWith('opt')) q.options[f.slice(3)] = e.target.value
+    else if (f === 'correct') { q.correct = e.target.value || null; item.querySelectorAll('.option-letter').forEach(el => el.classList.toggle('on', el.textContent === q.correct)) }
+    else if (f === 'marks') q.marks = parseFloat(e.target.value) || 0
+    if (e.type === 'change' || f === 'text' || f.startsWith('opt')) {
+      const problems = importProblems(q)
+      item.querySelector('.imp-badges').innerHTML = problems.map(x => `<span class="imp-badge">${escapeHtml(x)}</span>`).join('')
+      item.classList.remove('bad')
+    }
+    updateImportSummary()
+  }
+  document.getElementById('importPreview').addEventListener('input', onImportEdit)
+  document.getElementById('importPreview').addEventListener('change', onImportEdit)
+
+  document.getElementById('importSaveBtn').addEventListener('click', async () => {
+    const chosen = importItems.map((q, i) => ({ q, i })).filter(x => x.q.include)
+    const badOnes = chosen.filter(x => importProblems(x.q).filter(p => !/option E/.test(p)).length)
+    document.querySelectorAll('.imp-item').forEach(el => el.classList.remove('bad'))
+    if (badOnes.length) {
+      badOnes.forEach(x => document.querySelector('.imp-item[data-i="' + x.i + '"]').classList.add('bad'))
+      document.querySelector('.imp-item[data-i="' + badOnes[0].i + '"]').scrollIntoView({ behavior: 'smooth', block: 'center' })
+      showMessage('questionMsgBox', badOnes.length + ' question' + (badOnes.length === 1 ? ' needs' : 's need') + ' attention before they can be added.', 'error')
+      return
+    }
+    const btn = document.getElementById('importSaveBtn')
+    btn.disabled = true; btn.textContent = 'Adding…'
+    const rows = chosen.map(x => ({ exam_id: currentExam.id, question_text: x.q.text.trim(), options: { A: x.q.options.A.trim(), B: x.q.options.B.trim(), C: x.q.options.C.trim(), D: x.q.options.D.trim() }, correct_option: x.q.correct, marks: x.q.marks }))
+    let failed = null
+    for (let i = 0; i < rows.length && !failed; i += 100) {
+      const { error } = await supabase.from('cbt_questions').insert(rows.slice(i, i + 100))
+      if (error) failed = error
+    }
+    if (failed) { updateImportSummary(); showMessage('questionMsgBox', 'Could not add questions: ' + failed.message, 'error'); return }
+    importItems = []; renderImport()
+    setImportStatus(rows.length + ' question' + (rows.length === 1 ? '' : 's') + ' added to the exam.', 'ok')
+    showMessage('questionMsgBox', rows.length + ' question' + (rows.length === 1 ? '' : 's') + ' added.', 'success')
+    await loadQuestions()
+  })
+  document.getElementById('importClearBtn').addEventListener('click', () => { importItems = []; renderImport(); document.getElementById('importStatus').className = 'import-status' })
+
+  const importFileEl = document.getElementById('importFile'), dropEl = document.getElementById('importDrop')
+  importFileEl.addEventListener('change', async (e) => { const f = e.target.files[0]; if (f) await handleImportFile(f); e.target.value = '' })
+  ;['dragenter', 'dragover'].forEach(ev => dropEl.addEventListener(ev, (e) => { e.preventDefault(); dropEl.classList.add('over') }))
+  ;['dragleave', 'drop'].forEach(ev => dropEl.addEventListener(ev, (e) => { e.preventDefault(); dropEl.classList.remove('over') }))
+  dropEl.addEventListener('drop', async (e) => { const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) await handleImportFile(f) })
+  document.getElementById('importPasteBtn').addEventListener('click', () => {
+    const t = document.getElementById('importPaste').value
+    if (!t.trim()) { setImportStatus('Paste some questions first.', 'bad'); return }
+    startReview(parseQuestionsFromText(t), 'the pasted text')
+  })
+  document.getElementById('importTemplateBtn').addEventListener('click', () => {
+    const csv = '\ufeffQuestion,A,B,C,D,Answer,Marks\n"What is 2 + 3?",4,5,6,7,B,1\n"Which of these is a prime number?",4,6,7,9,C,1\n'
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); a.download = 'cbt-questions-template.csv'
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000)
   })
 
   const navDrawer = document.getElementById('navDrawer')

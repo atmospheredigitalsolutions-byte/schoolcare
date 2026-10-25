@@ -66,8 +66,8 @@ input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rg
   <div id="message" class="message"></div>
   <form id="loginForm">
     <div class="field">
-      <label for="email">Email address</label>
-      <input type="email" id="email" required>
+      <label for="email">Email, phone number or admission number</label>
+      <input type="text" id="email" autocomplete="username" autocapitalize="none" spellcheck="false" required>
     </div>
     <div class="field">
       <label for="password">Password</label>
@@ -82,6 +82,20 @@ input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rg
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
   const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
+
+  // Phone numbers and admission numbers are turned into a hidden login email.
+  // IMPORTANT: this must be the same as LOGIN_DOMAIN in the Netlify environment variables.
+  const LOGIN_DOMAIN = 'alhaqqschools.netlify.app'
+  function toLoginEmail(value) {
+    const v = value.trim()
+    if (v.includes('@')) return v
+    if (/^[\d\s+\-()]+$/.test(v)) {
+      let d = v.replace(/\D/g, '')
+      if (d.length === 11 && d.startsWith('0')) d = '234' + d.slice(1)
+      return 'p' + d + '@' + LOGIN_DOMAIN
+    }
+    return 's-' + v.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') + '@' + LOGIN_DOMAIN
+  }
 
   const messageEl = document.getElementById('message')
   const submitBtn = document.getElementById('submitBtn')
@@ -106,7 +120,7 @@ input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rg
     submitBtn.textContent = 'Signing in…'
 
     try {
-      const email = document.getElementById('email').value.trim()
+      const email = toLoginEmail(document.getElementById('email').value)
       const password = document.getElementById('password').value
 
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password })
@@ -133,14 +147,20 @@ input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rg
 
       const redirects = {
         teacher: '/teacher-dashboard.html',
-        student: '/student/dashboard.html',
-        parent: '/parent/dashboard.html'
+        student: '/student-dashboard.html',
+        parent: '/parent-dashboard.html'
       }
 
       const destination = redirects[membership.role]
       if (!destination) {
         await supabase.auth.signOut()
         throw new Error('Admin accounts should sign in from the admin login page.')
+      }
+
+      // Accounts created by the school start with a temporary password that must be replaced
+      if (signInData.user.user_metadata && signInData.user.user_metadata.must_change_password) {
+        window.location.href = '/change-password.html'
+        return
       }
 
       window.location.href = destination

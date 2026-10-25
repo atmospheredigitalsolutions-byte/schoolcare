@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#101B3D" />
+<title>CBT Exams — Student</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500..700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F1F2F6; --paper: #FFFFFF; --gold: #B98B2A; --gold-soft: #E2BE6A; --ink: #161A27;
+  --muted: #5B6275; --border: #DDE0E8; --green: #2E7D32; --red: #B3261E; --error: #B3261E;
+  --navy-tint: #E8EBF5; --maroon-tint: #F6E9EB; --green-tint: #E7F3E8; --red-tint: #FBEAE8; --amber-tint: #FBF1DC; --amber-text: #7A5A12;
+  --sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --serif: 'Literata', Georgia, 'Times New Roman', serif;
+  --side: 264px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); font-size: 15px; color: var(--ink); background: var(--cream); line-height: 1.55; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.01em; line-height: 1.22; }
+a { color: inherit; text-decoration: none; }
+button, select, input { font: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid rgba(185,139,42,0.65); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* ---------- top bar (mobile) ---------- */
+.topbar { background: var(--paper); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+.topbar::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 6px; background: linear-gradient(var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); pointer-events: none; }
+.topbar .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.topbar .brand img { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; }
+.topbar .brand strong { font-family: var(--serif); color: var(--navy); font-size: 14.5px; font-weight: 600; line-height: 1.25; display: block; }
+.topbar .brand span { display: block; font-size: 11.5px; color: var(--muted); }
+.signout { font-size: 13px; font-weight: 600; color: var(--maroon); border: 1.5px solid var(--border); border-radius: 999px; padding: 7px 15px; background: var(--paper); transition: background .15s, border-color .15s; }
+.signout:hover { background: var(--maroon-tint); border-color: var(--maroon); }
+.hamburger-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--navy-tint); border: 1px solid transparent; display: flex; align-items: center; justify-content: center; color: var(--navy); flex-shrink: 0; transition: background .15s; }
+.hamburger-btn:hover { background: #d9deef; }
+.hamburger-btn svg { width: 18px; height: 18px; }
+
+/* ---------- navigation drawer / sidebar ---------- */
+.nav-drawer { position: fixed; inset: 0; background: var(--navy-deep); z-index: 2000; display: flex; flex-direction: column; padding: 22px 26px 32px; transform: translateX(100%); visibility: hidden; transition: transform .4s cubic-bezier(.22,1,.36,1), visibility 0s .4s; overflow-y: auto; }
+.nav-drawer.open { transform: translateX(0); visibility: visible; transition: transform .4s cubic-bezier(.22,1,.36,1), visibility 0s 0s; }
+.nav-drawer-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 34px; gap: 12px; }
+.nav-drawer-top strong { font-family: var(--serif); font-weight: 600; color: #fff; font-size: 15.5px; line-height: 1.25; display: flex; align-items: center; gap: 12px; }
+.nav-drawer-top strong::before { content: ""; width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; background: #fff url(/assets/images/logo.png) center / cover no-repeat; }
+.nav-drawer-close { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-drawer-close:hover { background: rgba(255,255,255,0.18); }
+.nav-drawer-links { display: flex; flex-direction: column; gap: 2px; }
+.nav-drawer-links a { display: flex; align-items: center; gap: 14px; font-family: var(--serif); font-size: 22px; font-weight: 600; color: #fff; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.1); transition: color .15s; }
+.nav-drawer-links a svg { width: 22px; height: 22px; color: var(--gold-soft); flex-shrink: 0; }
+.nav-drawer-links a:hover, .nav-drawer-links a.active { color: var(--gold-soft); }
+.nav-drawer-signout { margin-top: auto; padding: 15px; border-radius: 10px; background: rgba(255,255,255,0.1); color: #fff; font-weight: 600; font-size: 14.5px; text-align: center; border: none; transition: background .15s; }
+.nav-drawer-signout:hover { background: rgba(255,255,255,0.18); }
+
+/* ---------- shared content ---------- */
+.wrap { margin: 0 auto; padding: 34px 16px 56px; }
+.welcome { margin-bottom: 22px; }
+.welcome h1 { font-size: 27px; color: var(--navy); font-weight: 700; margin-bottom: 6px; }
+.welcome p { color: var(--muted); font-size: 15px; max-width: 60ch; }
+.card { background: var(--paper); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 20px; }
+.card h2 { font-size: 17px; color: var(--navy); margin-bottom: 16px; font-weight: 600; }
+select, input { padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; color: var(--ink); width: 100%; font-size: 14.5px; min-height: 44px; transition: border-color .15s, box-shadow .15s; }
+select:hover, input:hover { border-color: #c3c8d6; }
+select:focus, input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,27,61,0.14); }
+select { appearance: none; -webkit-appearance: none; padding-right: 36px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235B6275' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+.empty-note { color: var(--muted); font-size: 15px; text-align: center; padding: 28px 16px; }
+.loading { color: var(--muted); font-size: 14.5px; text-align: center; padding: 72px 0; }
+.loading::before { content: ""; display: block; width: 26px; height: 26px; margin: 0 auto 14px; border-radius: 50%; border: 3px solid var(--navy-tint); border-top-color: var(--maroon); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* status message, shown as a toast */
+.msg { position: fixed; z-index: 3000; left: 16px; right: 16px; bottom: 20px; max-width: 460px; margin: 0 auto; padding: 13px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; display: none; box-shadow: 0 12px 32px rgba(11,19,41,0.22); border-left: 4px solid; }
+.msg.success { background: var(--green-tint); color: #1d5a21; border-color: var(--green); display: block; animation: toastIn .28s cubic-bezier(.22,1,.36,1); }
+.msg.error { background: var(--red-tint); color: #8d1d17; border-color: var(--red); display: block; animation: toastIn .28s cubic-bezier(.22,1,.36,1); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ---------- desktop: persistent sidebar ---------- */
+@media (min-width: 1000px) {
+  body { padding-left: var(--side); }
+  .topbar { display: none; }
+  .hamburger-btn, .nav-drawer-close { display: none; }
+  .nav-drawer, .nav-drawer.open { inset: 0 auto 0 0; width: var(--side); transform: none; visibility: visible; transition: none; padding: 26px 18px 24px; z-index: 20; }
+  .nav-drawer::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 6px; background: linear-gradient(to right, var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); }
+  .nav-drawer-top { padding: 0 8px; margin-bottom: 30px; }
+  .nav-drawer-links { gap: 4px; }
+  .nav-drawer-links a { font-family: var(--sans); font-size: 15px; font-weight: 500; padding: 11px 12px; border: none; border-radius: 8px; color: rgba(255,255,255,0.76); }
+  .nav-drawer-links a svg { width: 19px; height: 19px; color: rgba(255,255,255,0.55); }
+  .nav-drawer-links a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .nav-drawer-links a:hover svg { color: var(--gold-soft); }
+  .nav-drawer-links a.active { background: rgba(255,255,255,0.1); color: #fff; box-shadow: inset 3px 0 0 var(--gold-soft); }
+  .nav-drawer-links a.active svg { color: var(--gold-soft); }
+  .nav-drawer-signout { margin-right: 6px; }
+  .wrap { padding: 52px 44px 72px; }
+  .welcome h1 { font-size: 32px; }
+  .msg { left: calc(var(--side) + 24px); right: 24px; bottom: 28px; margin: 0 auto; }
+}
+
+
+
+
+.wrap { max-width: 980px; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheetUp { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes pop { 0% { transform: scale(.6); opacity: 0; } 70% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(179,38,30,0.45); } 50% { box-shadow: 0 0 0 10px rgba(179,38,30,0); } }
+[hidden] { display: none !important; }
+button { font: inherit; cursor: pointer; }
+button:disabled { opacity: .55; cursor: not-allowed; }
+.btn-primary, .btn-ghost, .btn-small, .btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; border-radius: 8px; border: 1.5px solid transparent; transition: background .15s, border-color .15s, color .15s, transform .1s; }
+.btn-primary { min-height: 48px; padding: 0 22px; background: var(--navy); color: #fff; font-size: 15px; }
+.btn-primary:hover:not(:disabled) { background: var(--maroon); }
+.btn-ghost { min-height: 46px; padding: 0 20px; background: #fff; color: var(--navy); border-color: var(--border); font-size: 14.5px; }
+.btn-ghost:hover:not(:disabled) { border-color: var(--navy); background: var(--navy-tint); }
+.btn-small { min-height: 38px; padding: 0 14px; background: #fff; color: var(--navy); border-color: var(--border); font-size: 13.5px; }
+.btn-small:hover { border-color: var(--navy); background: var(--navy-tint); }
+.btn-danger { min-height: 46px; padding: 0 20px; background: var(--red); color: #fff; }
+.btn-primary:active, .btn-ghost:active, .btn-small:active { transform: scale(.98); }
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin: 18px 0 20px; }
+.tab { position: relative; padding: 12px 16px; font-weight: 600; font-size: 14.5px; color: var(--muted); background: none; border: none; transition: color .15s; }
+.tab::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 3px; border-radius: 3px 3px 0 0; background: var(--maroon); transform: scaleX(0); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+.tab.on { color: var(--navy); } .tab.on::after { transform: scaleX(1); } .tab:hover { color: var(--navy); }
+.modal-overlay { position: fixed; inset: 0; background: rgba(11,19,41,0.6); backdrop-filter: blur(2px); z-index: 2500; display: none; align-items: flex-end; justify-content: center; }
+.modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
+.modal { background: #fff; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; border-radius: 18px 18px 0 0; border-top: 5px solid var(--gold); padding: 24px 24px 28px; }
+.modal-overlay.open .modal { animation: sheetUp .3s cubic-bezier(.22,1,.36,1); }
+.modal h2 { font-size: 21px; color: var(--navy); margin-bottom: 8px; } .modal p, .modal li { font-size: 14.5px; color: var(--muted); }
+.modal ul { padding-left: 18px; margin: 10px 0 16px; display: grid; gap: 6px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-top: 16px; }
+@media (min-width: 640px) { .modal-overlay { align-items: center; padding: 20px; } .modal { border-radius: 16px; } }
+@media (max-width: 639px) { .modal { padding-bottom: 88px; } }
+.badge { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.badge.open { background: var(--green-tint); color: #1d5a21; } .badge.in_progress { background: var(--amber-tint); color: var(--amber-text); }
+.badge.expired, .badge.closed { background: var(--red-tint); color: #8d1d17; } .badge.upcoming { background: var(--navy-tint); color: var(--navy); } .badge.completed { background: var(--green-tint); color: #1d5a21; }
+.ring { --p: 0; --col: var(--green); position: relative; flex-shrink: 0; width: 68px; height: 68px; border-radius: 50%; background: conic-gradient(var(--col) calc(var(--p) * 1%), var(--navy-tint) 0); display: grid; place-items: center; }
+.ring::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: #fff; }
+.ring b { position: relative; font-family: var(--serif); font-size: 15px; color: var(--navy); }
+.ring.mid { --col: #d98a1f; } .ring.low { --col: var(--red); }
+
+.exam-grid { display: grid; gap: 14px; }
+.sec-title { font-size: 15px; color: var(--muted); font-family: var(--sans); font-weight: 700; margin: 22px 0 10px; }
+.sec-title:first-child { margin-top: 0; }
+.xcard { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 18px; display: grid; gap: 12px; animation: rise .4s ease both; transition: border-color .2s, box-shadow .2s, transform .2s; }
+.xcard:hover { border-color: #c3c8d6; box-shadow: 0 10px 26px rgba(16,27,61,0.08); transform: translateY(-2px); }
+.xcard-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.xcard h3 { font-size: 18px; color: var(--navy); overflow-wrap: anywhere; } .xcard .meta { font-size: 13.5px; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13.5px; color: var(--muted); }
+.facts b { color: var(--navy); }
+.xcard-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.xcard-foot small { color: var(--muted); font-size: 13px; }
+.rcard { display: flex; align-items: center; gap: 16px; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 16px; animation: rise .4s ease both; }
+.rcard .grow { flex: 1; min-width: 0; } .rcard h3 { font-size: 17px; color: var(--navy); } .rcard .meta { font-size: 13px; color: var(--muted); }
+
+/* exam runner: distraction-free */
+body.focus { padding-left: 0; }
+body.focus .nav-drawer, body.focus .topbar { display: none; }
+.run-head { position: sticky; top: 0; z-index: 30; display: flex; justify-content: space-between; align-items: center; gap: 12px; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; margin-bottom: 12px; }
+.run-head h2 { font-size: 17px; color: var(--navy); overflow-wrap: anywhere; } .run-head span { font-size: 13px; color: var(--muted); }
+.timer { font-family: var(--serif); font-weight: 700; font-size: 22px; color: var(--navy); background: var(--navy-tint); border-radius: 10px; padding: 6px 14px; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.timer.warn { background: var(--amber-tint); color: var(--amber-text); } .timer.crit { background: var(--red-tint); color: var(--red); animation: pulse 1s infinite; }
+.run-progress { height: 5px; background: var(--navy-tint); border-radius: 5px; overflow: hidden; margin-bottom: 16px; }
+.run-progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--maroon), var(--gold)); transition: width .4s ease; }
+.run-grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 900px) { .run-grid { grid-template-columns: minmax(0, 1fr) 280px; align-items: start; } .navcard { position: sticky; top: 100px; } }
+.qcard { padding: 22px; }
+.q-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.q-top .qn { font-weight: 700; color: var(--maroon); font-size: 14px; } .q-top .marks { color: var(--muted); font-size: 13px; margin-left: 8px; font-weight: 500; }
+.flag { background: #fff; border: 1.5px solid var(--border); border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 600; color: var(--muted); transition: all .15s; }
+.flag.on { background: var(--amber-tint); border-color: #e0c98c; color: var(--amber-text); }
+.q-text { font-size: 18px; line-height: 1.55; color: var(--ink); margin-bottom: 18px; white-space: pre-line; overflow-wrap: anywhere; font-family: var(--serif); }
+.opts { display: grid; gap: 10px; }
+.opt { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 14px; min-height: 56px; background: #fff; border: 2px solid var(--border); border-radius: 12px; transition: border-color .15s, background .15s, transform .1s; font-size: 16px; color: var(--ink); }
+.opt:hover { border-color: var(--navy); } .opt:active { transform: scale(.99); }
+.opt .l { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--navy-tint); color: var(--navy); font-weight: 700; flex-shrink: 0; transition: all .15s; }
+.opt.sel { border-color: var(--navy); background: var(--navy-tint); } .opt.sel .l { background: var(--navy); color: #fff; }
+.opt span:last-child { overflow-wrap: anywhere; }
+.q-nav { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 20px; }
+.save-state { font-size: 12.5px; color: var(--muted); }
+.navcard { padding: 18px; } .navcard h3 { font-size: 16px; color: var(--navy); margin-bottom: 12px; }
+.qgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; margin-bottom: 14px; }
+.qdot { height: 40px; border-radius: 8px; border: 1.5px solid var(--border); background: #fff; font-weight: 700; font-size: 14px; color: var(--muted); position: relative; transition: all .15s; }
+.qdot.ans { background: var(--navy); border-color: var(--navy); color: #fff; } .qdot.cur { outline: 3px solid rgba(185,139,42,0.7); outline-offset: 1px; }
+.qdot.fl::after { content: ""; position: absolute; top: -4px; right: -4px; width: 11px; height: 11px; border-radius: 50%; background: var(--gold); border: 2px solid #fff; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+.legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.navcard .btn-primary { width: 100%; }
+
+/* result */
+.done-card { text-align: center; padding: 40px 22px; max-width: 560px; margin: 24px auto; }
+.done-ring { --p: 0; --col: var(--green); width: 150px; height: 150px; margin: 0 auto 18px; position: relative; border-radius: 50%; background: conic-gradient(var(--col) calc(var(--p) * 1%), var(--navy-tint) 0); display: grid; place-items: center; animation: pop .6s cubic-bezier(.22,1,.36,1) both; }
+.done-ring::before { content: ""; position: absolute; inset: 12px; border-radius: 50%; background: #fff; }
+.done-ring b { position: relative; font-family: var(--serif); font-size: 34px; color: var(--navy); }
+.done-ring.mid { --col: #d98a1f; } .done-ring.low { --col: var(--red); }
+.done-card h2 { font-size: 24px; color: var(--navy); margin-bottom: 6px; } .done-card p { color: var(--muted); }
+.done-stats { display: flex; justify-content: center; gap: 28px; margin: 18px 0 24px; flex-wrap: wrap; }
+.done-stats div strong { display: block; font-family: var(--serif); font-size: 24px; color: var(--maroon); } .done-stats div span { font-size: 13px; color: var(--muted); }
+.rev { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+.rev.ok { border-left: 5px solid var(--green); } .rev.no { border-left: 5px solid var(--red); } .rev.skip { border-left: 5px solid #c3c8d6; }
+.rev .rq { font-weight: 600; margin-bottom: 8px; white-space: pre-line; overflow-wrap: anywhere; } .rev .rs { font-size: 14px; color: var(--muted); } .rev .rs b { color: var(--ink); }
+.rev .tag { float: right; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; } .rev.ok .tag { background: var(--green-tint); color: #1d5a21; } .rev.no .tag { background: var(--red-tint); color: #8d1d17; } .rev.skip .tag { background: var(--cream); color: var(--muted); }
+.back { display: inline-block; margin-bottom: 14px; color: var(--maroon); font-weight: 600; cursor: pointer; background: none; border: none; font-size: 14.5px; padding: 0; }
+.empty-note { padding: 36px 16px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <img src="/assets/images/logo.png" alt="logo">
+    <div><strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong><span>Student Portal</span></div>
+  </div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+    <button class="signout" id="signOutBtn">Sign Out</button>
+  </div>
+</div>
+
+
+<div class="wrap" id="appWrap" style="display:none;">
+
+  <div id="viewList">
+    <div class="welcome"><h1>CBT Exams</h1><p id="studentLine">Computer-based tests for your class.</p></div>
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab on" data-tab="exams" role="tab">Exams</button>
+      <button type="button" class="tab" data-tab="results" role="tab">My results</button>
+    </div>
+    <div id="tabExams"></div>
+    <div id="tabResults" hidden></div>
+  </div>
+
+  <div id="viewRun" hidden>
+    <div class="run-head"><div><h2 id="runTitle"></h2><span id="runMeta"></span></div><div class="timer" id="runTimer">--:--</div></div>
+    <div class="run-progress"><i id="runBar"></i></div>
+    <div class="run-grid">
+      <div class="card qcard">
+        <div class="q-top"><div><span class="qn" id="qNum"></span><span class="marks" id="qMarks"></span></div><button type="button" class="flag" id="flagBtn">Flag for review</button></div>
+        <p class="q-text" id="qText"></p>
+        <div class="opts" id="qOptions"></div>
+        <div class="q-nav"><button type="button" class="btn-ghost" id="prevBtn">Previous</button><span class="save-state" id="saveState"></span><button type="button" class="btn-primary" id="nextBtn">Next</button></div>
+      </div>
+      <aside class="card navcard">
+        <h3>Questions</h3>
+        <div class="qgrid" id="qGrid"></div>
+        <div class="legend"><span><i style="background:var(--navy)"></i>Answered</span><span><i style="border:1.5px solid var(--border)"></i>Not answered</span><span><i style="background:var(--gold)"></i>Flagged</span></div>
+        <button type="button" class="btn-primary" id="submitBtn">Submit exam</button>
+      </aside>
+    </div>
+  </div>
+
+  <div id="viewDone" hidden>
+    <div class="card done-card">
+      <div class="done-ring" id="doneRing"><b id="donePct">0%</b></div>
+      <h2 id="doneTitle">Exam submitted</h2>
+      <p id="doneSub"></p>
+      <div class="done-stats"><div><strong id="doneScore">0</strong><span>Score</span></div><div><strong id="doneCorrect">0</strong><span>Correct</span></div><div><strong id="doneTotal">0</strong><span>Out of</span></div></div>
+      <button type="button" class="btn-primary" id="doneBack">Back to exams</button>
+    </div>
+  </div>
+
+  <div id="viewReview" hidden>
+    <button type="button" class="back" id="reviewBack">&larr; Back to my results</button>
+    <div class="welcome"><h1 id="reviewTitle">Review</h1><p id="reviewSub"></p></div>
+    <div id="reviewList" style="margin-top:18px;"></div>
+  </div>
+</div>
+
+<div id="loadingState" class="loading">Loading your exams…</div>
+<div id="msgBox" class="msg"></div>
+
+<div class="modal-overlay" id="startModal" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+  <div class="modal">
+    <h2 id="startTitle">Start exam?</h2>
+    <p id="startInfo"></p>
+    <ul>
+      <li>The timer starts as soon as you begin and cannot be paused.</li>
+      <li>Your answers are saved as you go. If your connection drops, reopen the exam to continue.</li>
+      <li>When time runs out, the exam is submitted automatically.</li>
+      <li>You can only take this exam once.</li>
+    </ul>
+    <div class="modal-actions"><button type="button" class="btn-ghost" id="startCancel">Not yet</button><button type="button" class="btn-primary" id="startGo">Start now</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="submitModal" role="dialog" aria-modal="true" aria-labelledby="submitTitle">
+  <div class="modal">
+    <h2 id="submitTitle">Submit your exam?</h2>
+    <p id="submitInfo"></p>
+    <div class="modal-actions"><button type="button" class="btn-ghost" id="submitCancel">Keep working</button><button type="button" class="btn-primary" id="submitGo">Submit</button></div>
+  </div>
+</div>
+
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-top">
+    <strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong>
+    <button class="nav-drawer-close" id="drawerClose" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+  <nav class="nav-drawer-links">
+    <a href="/student-dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>Dashboard</span></a>
+    <a href="/student-cbt.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>CBT Exams</span></a>
+    <a href="/student-profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
+  </nav>
+  <button class="nav-drawer-signout" id="drawerSignOutBtn">Sign Out</button>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
+
+
+  const here = location.pathname.replace(/\.html$/, '').split('/').pop()
+  document.querySelectorAll('.nav-drawer-links a').forEach(a => a.classList.toggle('active', a.getAttribute('href').replace(/\.html$/, '').split('/').pop() === here))
+  let exams = [], results = [], startExamId = null
+  let run = null   // { attemptId, exam, qs[], idx, flagged:Set, endsAt, timer, pending:{}, saving, dirtyTimer, submitting }
+  const GRACE_MS = 0
+
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  const fmtDT = (iso) => iso ? new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : ''
+  const fmtD = (iso) => iso ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : ''
+  const num = (n) => (Math.round(Number(n) * 100) / 100).toString()
+  const pctOf = (s, t) => t > 0 ? Math.round((Number(s) / Number(t)) * 100) : 0
+  const tone = (p) => p >= 70 ? '' : p >= 50 ? 'mid' : 'low'
+  const $ = (id) => document.getElementById(id)
+
+  function showMessage(text, type) {
+    const box = $('msgBox'); box.textContent = text; box.className = 'msg ' + type
+    clearTimeout(showMessage._t); showMessage._t = setTimeout(() => { box.className = 'msg' }, 5000)
+  }
+  function rpcError(error) { return (error && error.message) ? error.message.replace(/^.*?:\s*/, m => m.length > 40 ? '' : m) : 'Something went wrong.' }
+
+  async function loadSchoolName() {
+    const { data } = await supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name })
+  }
+
+  function showView(name) {
+    ;['viewList', 'viewRun', 'viewDone', 'viewReview'].forEach(v => { $(v).hidden = v !== name })
+    document.body.classList.toggle('focus', name === 'viewRun')
+    window.scrollTo({ top: 0 })
+  }
+  function setTab(name) {
+    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === name))
+    $('tabExams').hidden = name !== 'exams'; $('tabResults').hidden = name !== 'results'
+  }
+
+  // ---------- lists ----------
+  async function loadExams() {
+    const { data, error } = await supabase.rpc('list_my_cbt_exams')
+    if (error) { showMessage('Could not load exams: ' + error.message, 'error'); exams = []; return }
+    exams = data || []
+  }
+  async function loadResults() {
+    const { data, error } = await supabase.rpc('get_my_cbt_results')
+    if (error) { showMessage('Could not load results: ' + error.message, 'error'); results = []; return }
+    results = data || []
+  }
+
+  function examCard(e) {
+    const label = { open: 'Open', in_progress: 'In progress', expired: 'Time ended', closed: 'Closed', upcoming: 'Upcoming', completed: 'Completed' }[e.r_status]
+    const pct = pctOf(e.r_score, e.r_total)
+    let action = ''
+    if (e.r_status === 'open') action = `<button type="button" class="btn-primary" data-start="${esc(e.r_exam_id)}">Start exam</button>`
+    else if (e.r_status === 'in_progress') action = `<button type="button" class="btn-primary" data-start="${esc(e.r_exam_id)}">Continue exam</button>`
+    else if (e.r_status === 'expired') action = `<button type="button" class="btn-primary" data-start="${esc(e.r_exam_id)}">Submit my answers</button>`
+    else if (e.r_status === 'upcoming') action = `<small>Opens ${esc(fmtDT(e.r_start))}</small>`
+    else if (e.r_status === 'closed') action = `<small>Closed ${esc(fmtDT(e.r_end))}</small>`
+    else action = `<small>Score <b>${num(e.r_score)}</b> / ${num(e.r_total)} (${pct}%)</small>`
+    return `<div class="xcard"><div class="xcard-top"><div><h3>${esc(e.r_title)}</h3><div class="meta">${esc(e.r_subject || '')}${e.r_term ? ' · ' + esc(e.r_term) : ''}</div></div><span class="badge ${esc(e.r_status)}">${label}</span></div>
+      <div class="facts"><span><b>${e.r_duration}</b> min</span><span><b>${e.r_questions}</b> questions</span><span><b>${num(e.r_total)}</b> marks</span>${e.r_end && e.r_status === 'open' ? `<span>Closes <b>${esc(fmtDT(e.r_end))}</b></span>` : ''}</div>
+      <div class="xcard-foot">${action}</div></div>`
+  }
+  function renderExams() {
+    const box = $('tabExams')
+    if (!exams.length) { box.innerHTML = '<p class="empty-note">No exams have been set for your class yet.</p>'; return }
+    const group = (title, list) => list.length ? `<h3 class="sec-title">${title}</h3><div class="exam-grid">${list.map(examCard).join('')}</div>` : ''
+    box.innerHTML =
+      group('Available now', exams.filter(e => ['open', 'in_progress', 'expired'].includes(e.r_status))) +
+      group('Coming up', exams.filter(e => e.r_status === 'upcoming')) +
+      group('Completed', exams.filter(e => e.r_status === 'completed')) +
+      group('Closed', exams.filter(e => e.r_status === 'closed'))
+  }
+  function renderResults() {
+    const box = $('tabResults')
+    if (!results.length) { box.innerHTML = '<p class="empty-note">You have not completed any exams yet.</p>'; return }
+    box.innerHTML = '<div class="exam-grid">' + results.map(r => {
+      const p = pctOf(r.r_score, r.r_total)
+      return `<div class="rcard"><div class="ring ${tone(p)}" style="--p:${p}"><b>${p}%</b></div>
+        <div class="grow"><h3>${esc(r.r_title)}</h3><div class="meta">${esc(r.r_subject || '')}${r.r_term ? ' · ' + esc(r.r_term) : ''} · ${esc(fmtD(r.r_submitted_at))}</div>
+        <div class="meta"><b>${num(r.r_score)}</b> / ${num(r.r_total)} marks · ${r.r_correct} of ${r.r_questions} correct</div></div>
+        <button type="button" class="btn-small" data-review="${esc(r.r_attempt_id)}" data-title="${esc(r.r_title)}">Review</button></div>`
+    }).join('') + '</div>'
+  }
+
+  // ---------- starting ----------
+  function openStart(examId) {
+    const e = exams.find(x => x.r_exam_id === examId); if (!e) return
+    startExamId = examId
+    if (e.r_status === 'in_progress' || e.r_status === 'expired') { beginAttempt(); return }
+    $('startTitle').textContent = e.r_title
+    $('startInfo').textContent = e.r_duration + ' minutes · ' + e.r_questions + ' questions · ' + num(e.r_total) + ' marks'
+    $('startModal').classList.add('open')
+  }
+  async function beginAttempt() {
+    $('startModal').classList.remove('open')
+    const btn = $('startGo'); btn.disabled = true
+    const { data, error } = await supabase.rpc('start_cbt_attempt', { p_exam: startExamId })
+    btn.disabled = false
+    if (error || !data || !data.length) { showMessage(rpcError(error) || 'Could not start the exam.', 'error'); await refreshLists(); return }
+    await openRunner(data[0].r_attempt_id, exams.find(x => x.r_exam_id === startExamId))
+  }
+
+  async function openRunner(attemptId, exam) {
+    const { data, error } = await supabase.rpc('get_attempt_questions', { p_attempt: attemptId })
+    if (error) {
+      // time already over: send whatever was saved
+      if (/time for this exam has ended/i.test(error.message)) { await finishAttempt(attemptId, true, true); return }
+      showMessage(rpcError(error), 'error'); await refreshLists(); return
+    }
+    if (!data || !data.length) { showMessage('This exam has no questions.', 'error'); return }
+    let local = {}
+    try { local = JSON.parse(localStorage.getItem('cbt_ans_' + attemptId) || '{}') } catch (e) {}
+    const qs = data.map(q => ({ id: q.r_question_id, text: q.r_text, options: q.r_options || {}, marks: q.r_marks, order: q.r_order, selected: q.r_saved || local[q.r_question_id] || null }))
+    run = { attemptId, exam, qs, idx: 0, flagged: new Set(), endsAt: performance.now() + data[0].r_remaining * 1000, timer: null, pending: {}, saving: false, dirtyTimer: null, submitting: false }
+    qs.forEach(q => { if (q.selected && !data.find(d => d.r_question_id === q.id).r_saved) run.pending[q.id] = q.selected })
+    $('runTitle').textContent = data[0].r_title
+    $('runMeta').textContent = exam ? [exam.r_subject, exam.r_term].filter(Boolean).join(' · ') : ''
+    showView('viewRun')
+    renderQuestion(); renderGrid(); tick()
+    run.timer = setInterval(tick, 250)
+    if (Object.keys(run.pending).length) flushSave()
+  }
+
+  function tick() {
+    if (!run) return
+    const left = Math.max(0, Math.ceil((run.endsAt - performance.now()) / 1000))
+    const m = Math.floor(left / 60), s = left % 60
+    const el = $('runTimer'); el.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0')
+    el.classList.toggle('warn', left <= 300 && left > 60); el.classList.toggle('crit', left <= 60)
+    if (left <= 0 && !run.submitting) finishAttempt(run.attemptId, true, false)
+  }
+
+  function answeredCount() { return run.qs.filter(q => q.selected).length }
+  function renderQuestion() {
+    const q = run.qs[run.idx]
+    $('qNum').textContent = 'Question ' + (run.idx + 1) + ' of ' + run.qs.length
+    $('qMarks').textContent = num(q.marks) + (Number(q.marks) === 1 ? ' mark' : ' marks')
+    $('qText').textContent = q.text
+    $('qOptions').innerHTML = q.order.map((letter, i) => `<button type="button" class="opt${q.selected === letter ? ' sel' : ''}" data-letter="${letter}"><span class="l">${'ABCD'[i]}</span><span>${esc(q.options[letter] || '')}</span></button>`).join('')
+    $('flagBtn').classList.toggle('on', run.flagged.has(q.id)); $('flagBtn').textContent = run.flagged.has(q.id) ? 'Flagged' : 'Flag for review'
+    $('prevBtn').disabled = run.idx === 0
+    $('nextBtn').textContent = run.idx === run.qs.length - 1 ? 'Review answers' : 'Next'
+    $('runBar').style.width = Math.round(answeredCount() / run.qs.length * 100) + '%'
+    document.querySelectorAll('.qdot').forEach((d, i) => d.classList.toggle('cur', i === run.idx))
+  }
+  function renderGrid() {
+    $('qGrid').innerHTML = run.qs.map((q, i) => `<button type="button" class="qdot${q.selected ? ' ans' : ''}${run.flagged.has(q.id) ? ' fl' : ''}${i === run.idx ? ' cur' : ''}" data-i="${i}" aria-label="Question ${i + 1}">${i + 1}</button>`).join('')
+  }
+  function go(i) { run.idx = Math.max(0, Math.min(run.qs.length - 1, i)); renderQuestion() }
+
+  function choose(letter) {
+    const q = run.qs[run.idx]
+    q.selected = q.selected === letter ? null : letter
+    if (q.selected) run.pending[q.id] = q.selected; else delete run.pending[q.id]
+    persistLocal(); renderQuestion(); renderGrid()
+    if (q.selected) { $('saveState').textContent = 'Saving…'; clearTimeout(run.dirtyTimer); run.dirtyTimer = setTimeout(flushSave, 700) }
+  }
+  function persistLocal() {
+    try { const o = {}; run.qs.forEach(q => { if (q.selected) o[q.id] = q.selected }); localStorage.setItem('cbt_ans_' + run.attemptId, JSON.stringify(o)) } catch (e) {}
+  }
+  async function flushSave() {
+    if (!run || run.saving || !Object.keys(run.pending).length) return
+    run.saving = true
+    const batch = { ...run.pending }
+    const { error } = await supabase.rpc('save_cbt_answers', { p_attempt: run.attemptId, p_answers: batch })
+    if (!run) return
+    run.saving = false
+    if (error) { $('saveState').textContent = 'Not saved yet. Check your connection.'; clearTimeout(run.dirtyTimer); run.dirtyTimer = setTimeout(flushSave, 4000); return }
+    Object.keys(batch).forEach(k => { if (run.pending[k] === batch[k]) delete run.pending[k] })
+    $('saveState').textContent = Object.keys(run.pending).length ? 'Saving…' : 'All answers saved'
+    if (Object.keys(run.pending).length) flushSave()
+  }
+
+  // ---------- submitting ----------
+  function openSubmit() {
+    const total = run.qs.length, done = answeredCount(), left = total - done
+    $('submitInfo').textContent = left ? 'You have answered ' + done + ' of ' + total + ' questions. ' + left + ' unanswered question' + (left === 1 ? ' will' : 's will') + ' score zero.' : 'You have answered all ' + total + ' questions.'
+    $('submitModal').classList.add('open')
+  }
+  async function finishAttempt(attemptId, auto, lateOnly) {
+    if (run && run.submitting) return
+    if (run) run.submitting = true
+    $('submitModal').classList.remove('open')
+    const answers = {}
+    if (run && !lateOnly) run.qs.forEach(q => { if (q.selected) answers[q.id] = q.selected })
+    if (run) clearInterval(run.timer)
+    const { data, error } = await supabase.rpc('submit_cbt_attempt', { p_attempt: attemptId, p_answers: answers, p_auto: !!auto })
+    if (error || !data || !data.length) {
+      if (run) { run.submitting = false; run.timer = setInterval(tick, 250) }
+      showMessage('Could not submit: ' + rpcError(error) + ' Your answers are saved. Try again.', 'error'); return
+    }
+    const r = data[0], p = pctOf(r.r_score, r.r_total)
+    try { localStorage.removeItem('cbt_ans_' + attemptId) } catch (e) {}
+    run = null
+    $('doneTitle').textContent = auto ? 'Time is up. Exam submitted' : 'Exam submitted'
+    $('doneSub').textContent = p >= 50 ? 'Well done for completing your exam.' : 'Thank you for completing your exam.'
+    $('doneRing').className = 'done-ring ' + tone(p); $('doneRing').style.setProperty('--p', p)
+    $('donePct').textContent = p + '%'
+    $('doneScore').textContent = num(r.r_score); $('doneCorrect').textContent = r.r_correct + '/' + r.r_questions; $('doneTotal').textContent = num(r.r_total)
+    showView('viewDone')
+    await refreshLists()
+  }
+
+  // ---------- review ----------
+  async function openReview(attemptId, title) {
+    const { data, error } = await supabase.rpc('get_attempt_review', { p_attempt: attemptId })
+    if (error) { showMessage(rpcError(error), 'error'); return }
+    $('reviewTitle').textContent = title
+    const right = (data || []).filter(q => q.r_is_correct).length
+    $('reviewSub').textContent = right + ' of ' + (data || []).length + ' correct. The correct options are not shown.'
+    $('reviewList').innerHTML = (data || []).map((q, i) => {
+      const sel = q.r_selected, cls = !sel ? 'skip' : q.r_is_correct ? 'ok' : 'no'
+      return `<div class="rev ${cls}"><span class="tag">${!sel ? 'Not answered' : q.r_is_correct ? 'Correct' : 'Wrong'}</span><div class="rq">${i + 1}. ${esc(q.r_text)}</div><div class="rs">${sel ? 'Your answer: <b>' + esc((q.r_options || {})[sel] || sel) + '</b>' : 'You did not answer this question.'}</div></div>`
+    }).join('')
+    showView('viewReview')
+  }
+
+  async function refreshLists() { await Promise.all([loadExams(), loadResults()]); renderExams(); renderResults() }
+
+  // ---------- events ----------
+  document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)))
+  $('tabExams').addEventListener('click', (e) => { const b = e.target.closest('[data-start]'); if (b) openStart(b.dataset.start) })
+  $('tabResults').addEventListener('click', (e) => { const b = e.target.closest('[data-review]'); if (b) openReview(b.dataset.review, b.dataset.title) })
+  $('startCancel').addEventListener('click', () => $('startModal').classList.remove('open'))
+  $('startGo').addEventListener('click', beginAttempt)
+  $('submitCancel').addEventListener('click', () => $('submitModal').classList.remove('open'))
+  $('submitGo').addEventListener('click', () => finishAttempt(run.attemptId, false, false))
+  $('submitBtn').addEventListener('click', openSubmit)
+  $('prevBtn').addEventListener('click', () => go(run.idx - 1))
+  $('nextBtn').addEventListener('click', () => { if (run.idx === run.qs.length - 1) openSubmit(); else go(run.idx + 1) })
+  $('flagBtn').addEventListener('click', () => { const id = run.qs[run.idx].id; run.flagged.has(id) ? run.flagged.delete(id) : run.flagged.add(id); renderQuestion(); renderGrid() })
+  $('qOptions').addEventListener('click', (e) => { const b = e.target.closest('[data-letter]'); if (b) choose(b.dataset.letter) })
+  $('qGrid').addEventListener('click', (e) => { const b = e.target.closest('[data-i]'); if (b) go(Number(b.dataset.i)) })
+  $('doneBack').addEventListener('click', () => { showView('viewList'); setTab('exams') })
+  $('reviewBack').addEventListener('click', () => { showView('viewList'); setTab('results') })
+  document.addEventListener('keydown', (e) => {
+    if (!run || $('viewRun').hidden || document.querySelector('.modal-overlay.open')) return
+    const k = e.key.toLowerCase()
+    if ('abcd'.includes(k) && k.length === 1) { const letter = run.qs[run.idx].order['abcd'.indexOf(k)]; if (letter) choose(letter) }
+    else if (e.key === 'ArrowRight') go(run.idx + 1)
+    else if (e.key === 'ArrowLeft') go(run.idx - 1)
+  })
+  window.addEventListener('beforeunload', (e) => { if (run && !run.submitting) { e.preventDefault(); e.returnValue = '' } })
+  window.addEventListener('online', () => { if (run) flushSave() })
+
+  async function init() {
+    loadSchoolName()
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/login.html'; return }
+
+    const { data: profile } = await supabase.rpc('my_student_profile')
+    const me = profile && profile[0]
+    if (!me) { $('loadingState').textContent = 'Your account is not linked to a student record yet. Please contact the school office.'; return }
+    $('studentLine').textContent = [me.r_name, me.r_class].filter(Boolean).join(' · ') || 'Computer-based tests for your class.'
+
+    await refreshLists()
+    setTab('exams')
+    $('loadingState').style.display = 'none'
+    $('appWrap').style.display = 'block'
+  }
+
+  $('signOutBtn').addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href = '/login.html' })
+  const navDrawer = $('navDrawer')
+  $('hamburgerBtn').addEventListener('click', () => navDrawer.classList.add('open'))
+  $('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
+  $('drawerSignOutBtn').addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href = '/login.html' })
+
+  init()
+
+</script>
+</body>
+</html>

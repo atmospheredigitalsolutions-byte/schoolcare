@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#101B3D" />
+<title>Check your application</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500..700&display=swap" rel="stylesheet">
+<style>
+
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F1F2F6; --paper: #FFFFFF; --gold: #B98B2A; --gold-soft: #E2BE6A; --ink: #161A27;
+  --muted: #5B6275; --border: #DDE0E8; --green: #2E7D32; --red: #B3261E; --error: #B3261E;
+  --navy-tint: #E8EBF5; --maroon-tint: #F6E9EB; --green-tint: #E7F3E8; --red-tint: #FBEAE8; --amber-tint: #FBF1DC; --amber-text: #7A5A12;
+  --sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --serif: 'Literata', Georgia, 'Times New Roman', serif;
+  --side: 264px;
+}
+html { -webkit-text-size-adjust: 100%; }
+h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.01em; line-height: 1.22; }
+a { color: inherit; text-decoration: none; }
+button, select, input { font: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid rgba(185,139,42,0.65); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+body { font-family: var(--sans); color: var(--ink); background-color: var(--navy); background-image: repeating-linear-gradient(to bottom, transparent 0 35px, rgba(255,255,255,0.055) 35px 36px); line-height: 1.55; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; position: relative; overflow-x: hidden; }
+body::before { content: ""; position: fixed; top: 0; bottom: 0; left: max(18px, 9vw); width: 4px; border-left: 1px solid rgba(226,190,106,0.55); border-right: 1px solid rgba(226,190,106,0.55); pointer-events: none; }
+a { color: var(--maroon); font-weight: 600; text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.card { position: relative; width: 100%; max-width: 420px; background: var(--paper); border: none; border-radius: 14px; padding: 44px 34px 32px; margin: 0; box-shadow: 0 28px 64px rgba(0,0,0,0.38); overflow: hidden; animation: rise .5s cubic-bezier(.22,1,.36,1); }
+.card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 8px; background: linear-gradient(var(--maroon) 0 3px, transparent 3px 5px, var(--gold) 5px 8px); }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.brand { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+.brand img { width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0; }
+.brand span { font-family: var(--serif); font-weight: 600; font-size: 16.5px; line-height: 1.25; color: var(--navy); }
+h1 { font-size: 28px; color: var(--navy); font-weight: 700; margin-bottom: 6px; }
+.card > p { color: var(--muted); font-size: 15px; margin-bottom: 26px; }
+label { display: block; font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.field { margin-bottom: 18px; }
+input { width: 100%; padding: 12px 14px; min-height: 48px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 15.5px; background: #fff; color: var(--ink); transition: border-color .15s, box-shadow .15s; }
+input:hover { border-color: #c3c8d6; }
+input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,27,61,0.14); }
+.btn-submit { width: 100%; padding: 14px; min-height: 50px; border: none; border-radius: 8px; background: var(--maroon); color: #fff; font-weight: 700; font-size: 15.5px; cursor: pointer; margin-top: 4px; transition: background .18s ease; }
+.btn-submit:hover { background: var(--maroon-dark); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.message { padding: 12px 14px; border-radius: 8px; font-size: 14px; margin-bottom: 18px; display: none; border-left: 4px solid var(--error); }
+.message.error { background: var(--red-tint); color: #8d1d17; display: block; }
+.message.pending { background: var(--amber-tint); color: var(--amber-text); display: block; border-left-color: var(--gold); }
+.signup-link { text-align: center; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 14px; }
+.back-link { text-align: center; margin-top: 12px; font-size: 13.5px; color: var(--muted); }
+@media (max-width: 480px) { body { padding: 16px; } .card { padding: 40px 24px 26px; } }
+
+.pw-wrap { position: relative; } .pw-wrap input { padding-right: 72px; }
+.pw-toggle { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: none; color: var(--maroon); font-weight: 600; font-size: 13px; padding: 8px; cursor: pointer; }
+.strength { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin: 4px 0 6px; }
+.strength i { height: 5px; border-radius: 3px; background: var(--border); transition: background .3s; }
+.strength[data-s="1"] i:nth-child(-n+1) { background: var(--red); } .strength[data-s="2"] i:nth-child(-n+2) { background: #d98a1f; }
+.strength[data-s="3"] i:nth-child(-n+3) { background: #7aa32c; } .strength[data-s="4"] i { background: var(--green); }
+.hint { font-size: 12.5px; color: var(--muted); margin-bottom: 16px; min-height: 18px; }
+.note { background: var(--amber-tint); border-left: 4px solid var(--gold); border-radius: 8px; padding: 12px 14px; font-size: 14px; color: var(--amber-text); margin-bottom: 20px; }
+
+.card { max-width: 460px; }
+.result { display: none; margin-top: 22px; border-radius: 12px; padding: 20px; text-align: center; animation: rise .4s ease both; }
+.result.show { display: block; }
+.result.pending { background: var(--amber-tint); } .result.admitted { background: var(--green-tint); } .result.rejected { background: var(--red-tint); }
+.result .big { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.result p { font-size: 14.5px; color: var(--ink); margin: 0 0 6px; }
+.result .adm { display: inline-block; margin-top: 8px; padding: 6px 14px; background: #fff; border-radius: 8px; font-weight: 700; color: var(--navy); }
+.steps { list-style: none; display: flex; justify-content: space-between; gap: 6px; margin: 0 0 14px; padding: 0; }
+.steps li { flex: 1; text-align: center; font-size: 12px; font-weight: 600; color: var(--muted); position: relative; }
+.steps li::before { content: ""; display: block; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 3px solid var(--border); margin: 0 auto 6px; position: relative; z-index: 1; }
+.steps li::after { content: ""; position: absolute; top: 6px; left: 50%; width: 100%; height: 3px; background: var(--border); }
+.steps li:last-child::after { display: none; }
+.steps li.on { color: var(--navy); } .steps li.on::before { background: var(--navy); border-color: var(--navy); } .steps li.on::after { background: var(--navy); }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">
+    <img src="/assets/images/logo.png" alt="School logo">
+    <span class="js-school-name">Al-Haqq Nur &amp; Pry School</span>
+  </div>
+    <h1>Check your application</h1>
+    <p>Enter the reference number you received when you applied, and the phone number you gave.</p>
+    <div id="message" class="message"></div>
+    <form id="statusForm" novalidate>
+      <div class="field"><label for="ref">Application reference</label><input type="text" id="ref" placeholder="APP-2026-0001" autocapitalize="characters" autocomplete="off" required></div>
+      <div class="field"><label for="phone">Parent or guardian phone number</label><input type="tel" id="phone" autocomplete="tel" inputmode="tel" required></div>
+      <button type="submit" class="btn-submit" id="submitBtn">Check status</button>
+    </form>
+
+    <div class="result" id="result" role="status">
+      <ol class="steps" id="steps"><li class="on">Received</li><li id="stReview">In review</li><li id="stDecision">Decision</li></ol>
+      <div class="big" id="resTitle"></div>
+      <p id="resText"></p>
+      <span class="adm" id="resAdm" hidden></span>
+    </div>
+    <div class="admin-link"><a href="/enroll.html">New application</a> &nbsp;·&nbsp; <a href="/index.html">Back to website</a></div>
+  </div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
+  const $ = (id) => document.getElementById(id)
+
+  supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    .then(({ data }) => { if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name }) })
+
+  const fromUrl = new URLSearchParams(location.search).get('ref'); if (fromUrl) $('ref').value = fromUrl
+
+  $('statusForm').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    $('message').className = 'message'; $('result').className = 'result'
+    const ref = $('ref').value.trim(), phone = $('phone').value.trim()
+    if (!ref || phone.replace(/\D/g, '').length < 10) { $('message').textContent = 'Please enter your reference and a valid phone number.'; $('message').className = 'message error'; return }
+    $('submitBtn').disabled = true; $('submitBtn').textContent = 'Checking…'
+    const { data, error } = await supabase.rpc('check_application_status', { p_ref: ref, p_phone: phone })
+    $('submitBtn').disabled = false; $('submitBtn').textContent = 'Check status'
+    if (error) { $('message').textContent = 'Something went wrong. Please try again.'; $('message').className = 'message error'; return }
+    const r = data && data[0]
+    if (!r) { $('message').textContent = 'We could not find an application with that reference and phone number. Please check both and try again.'; $('message').className = 'message error'; return }
+
+    const name = r.r_name || 'your child'
+    $('resAdm').hidden = true
+    $('stReview').className = 'on'; $('stDecision').className = ''
+    if (r.r_status === 'admitted') {
+      $('result').className = 'result show admitted'; $('stDecision').className = 'on'
+      $('resTitle').textContent = 'Admission offered'
+      $('resText').textContent = 'Congratulations. ' + name + ' has been admitted' + (r.r_class ? ' to ' + r.r_class : '') + '. The school will share your sign-in details for the parent and student portals.'
+      if (r.r_admission_no) { $('resAdm').textContent = 'Admission number: ' + r.r_admission_no; $('resAdm').hidden = false }
+    } else if (r.r_status === 'rejected') {
+      $('result').className = 'result show rejected'; $('stDecision').className = 'on'
+      $('resTitle').textContent = 'Not successful this time'
+      $('resText').textContent = 'The school was unable to offer ' + name + ' a place. Please contact the school office to talk it through.'
+    } else {
+      $('result').className = 'result show pending'; $('stReview').className = ''
+      $('resTitle').textContent = 'Under review'
+      $('resText').textContent = 'Your application for ' + name + ' has been received and is waiting for the school to review it. Check again in a few days.'
+    }
+  })
+</script>
+</body>
+</html>
