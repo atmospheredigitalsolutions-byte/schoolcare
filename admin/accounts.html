@@ -297,9 +297,13 @@ input:disabled { background: var(--cream); color: var(--muted); cursor: not-allo
 
   async function load() {
     const { data: students, error } = await supabase.from('students')
-      .select('id, surname, other_names, admission_number, user_id, class_id, classes(name)')
+      .select('id, surname, other_names, admission_number, user_id, class_id')
       .eq('school_id', schoolId).eq('admission_status', 'admitted')
     if (error) { showMessage('Could not load students: ' + error.message, 'error'); people = []; return }
+    // class names are looked up separately so a second link between students and classes can never break this page
+    const { data: classRows } = await supabase.from('classes').select('id, name')
+    const className = {}; (classRows || []).forEach(c => { className[c.id] = c.name })
+    students.forEach(s => { s.classes = className[s.class_id] ? { name: className[s.class_id] } : null })
     const parentOf = {}
     for (let i = 0; i < students.length; i += 150) {
       const ids = students.slice(i, i + 150).map(s => s.id)

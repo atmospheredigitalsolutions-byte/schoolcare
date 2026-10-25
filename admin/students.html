@@ -240,10 +240,13 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
 
     const { data } = await supabase
       .from('students')
-      .select('id, surname, other_names, date_of_birth, gender, admission_number, admission_status, photo_url, classes(name)')
+      .select('id, surname, other_names, date_of_birth, gender, admission_number, admission_status, photo_url, class_id')
       .eq('school_id', schoolId)
 
-    allStudents = data || []
+    // class names are looked up separately so a second link between students and classes can never break this page
+    const { data: classRows } = await supabase.from('classes').select('id, name')
+    const className = {}; (classRows || []).forEach(c => { className[c.id] = c.name })
+    allStudents = (data || []).map(s => ({ ...s, classes: className[s.class_id] ? { name: className[s.class_id] } : null }))
     renderList()
 
     document.getElementById('statusFilter').addEventListener('change', renderList)
