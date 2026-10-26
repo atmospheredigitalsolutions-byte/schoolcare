@@ -185,6 +185,15 @@ table.res td.n { font-variant-numeric: tabular-nums; } table.res td.pos { font-w
   .topbar, .nav-drawer, .head-actions, .pass-row, .back, .msg { display: none !important; } body { padding-left: 0 !important; background: #fff; }
   .panel, .stat { break-inside: avoid; } .wrap { padding: 0 !important; max-width: none; } table.res th { background: #eee !important; color: #000 !important; }
 }
+.modal.wide { max-width: 760px; }
+.mk-item { border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+.mk-q { font-weight: 600; margin-bottom: 6px; white-space: pre-line; overflow-wrap: anywhere; } .mk-q small { color: var(--muted); font-weight: 500; margin-left: 6px; }
+.mk-model { font-size: 13.5px; color: var(--muted); border-left: 4px solid #b78bc4; padding: 6px 10px; margin-bottom: 8px; background: var(--cream); border-radius: 4px; white-space: pre-line; overflow-wrap: anywhere; }
+.mk-ans { background: #fff; border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 12px; white-space: pre-line; margin-bottom: 8px; overflow-wrap: anywhere; font-size: 14.5px; }
+.mk-ai { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; background: #f3e9f5; border-radius: 8px; padding: 8px 12px; font-size: 13.5px; color: #4a1f57; margin-bottom: 8px; }
+.mk-row { display: grid; grid-template-columns: 120px 1fr; gap: 10px; align-items: start; } @media (max-width: 560px) { .mk-row { grid-template-columns: 1fr; } }
+.mk-row label { display: block; font-size: 12.5px; font-weight: 600; color: var(--navy); margin-bottom: 4px; } .mk-row textarea { min-height: 60px; }
+.btn-primary.auto { width: auto; margin-top: 0; }
 </style>
 </head>
 <body>
@@ -218,10 +227,16 @@ table.res td.n { font-variant-numeric: tabular-nums; } table.res td.pos { font-w
     </div>
     <div class="stat-grid" id="dStats"></div>
 
+    <div class="panel" id="dMarkBanner" hidden>
+      <h2>Written answers to mark <small id="dMarkCount"></small></h2>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:12px">Objective questions are already marked. Written answers need marks. The AI can suggest marks and feedback; you decide what is final.</p>
+      <div class="head-actions"><button type="button" class="btn-ghost" id="aiAllBtn">Ask AI to suggest marks</button><button type="button" class="btn-primary auto" id="acceptAiBtn">Accept all AI marks</button></div>
+    </div>
+
     <div class="panel"><h2>Score distribution <small>Number of students in each band</small></h2><div class="dist" id="dDist"></div></div>
 
     <div class="panel"><h2>Results <span class="pass-row"><label for="passMark">Pass mark</label><input type="number" id="passMark" min="0" max="100" value="50"><span>%</span></span></h2>
-      <div class="table-wrap"><table class="res"><thead><tr><th>Pos.</th><th>Student</th><th>Adm. no.</th><th>Score</th><th>%</th><th>Time</th><th>Result</th></tr></thead><tbody id="dRows"></tbody></table></div>
+      <div class="table-wrap"><table class="res"><thead><tr><th>Pos.</th><th>Student</th><th>Adm. no.</th><th>Score</th><th>%</th><th>Time</th><th>Result</th><th>Marking</th></tr></thead><tbody id="dRows"></tbody></table></div>
       <p class="empty-note" id="dNone" hidden>No one has submitted this exam yet.</p>
     </div>
 
@@ -233,6 +248,15 @@ table.res td.n { font-variant-numeric: tabular-nums; } table.res td.pos { font-w
 
 <div id="loadingState" class="loading">Loading results…</div>
 <div id="msgBox" class="msg"></div>
+
+<div class="modal-overlay" id="markModal" role="dialog" aria-modal="true" aria-labelledby="markTitle">
+  <div class="modal wide">
+    <h2 id="markTitle">Mark answers</h2>
+    <p class="sub" id="markSub"></p>
+    <div id="markBody"></div>
+    <div class="modal-actions"><button type="button" class="btn-ghost" id="markAi">Suggest with AI</button><button type="button" class="btn-ghost" id="markClose">Close</button><button type="button" class="btn-primary auto" id="markSave">Save marks</button></div>
+  </div>
+</div>
 
 <div class="nav-drawer" id="navDrawer">
   <div class="nav-drawer-top">
@@ -315,13 +339,24 @@ table.res td.n { font-variant-numeric: tabular-nums; } table.res td.pos { font-w
     const exam = exams.find(e => e.id === id); if (!exam) return
     $('loadingState').style.display = 'block'; $('loadingState').textContent = 'Loading results…'
     try {
-      const [attempts, questions, students] = await Promise.all([
-        fetchAll(() => supabase.from('cbt_attempts').select('id, student_id, started_at, submitted_at, auto_submitted, score').eq('exam_id', id)),
-        fetchAll(() => supabase.from('cbt_questions').select('id, question_text, marks').eq('exam_id', id)),
-        fetchAll(() => supabase.from('students').select('id, surname, other_names, admission_number, admission_status').eq('class_id', exam.class_id))
-      ])
-      const ids = attempts.map(a => a.id)
-      const answers = ids.length ? await fetchAll(() => supabase.from('cbt_answers').select('attempt_id, question_id, is_correct').in('attempt_id', ids)) : []
+      const colsNew = { a: 'id, student_id, started_at, submitted_at, auto_submitted, score, marking_status', q: 'id, question_text, marks, question_type, model_answer', x: 'id, attempt_id, question_id, is_correct, answer_text, awarded_marks, teacher_feedback, ai_marks, ai_feedback' }
+      const colsOld = { a: 'id, student_id, started_at, submitted_at, auto_submitted, score', q: 'id, question_text, marks', x: 'attempt_id, question_id, is_correct' }
+      const loadSet = async (cols) => {
+        const [att, qs, sts] = await Promise.all([
+          fetchAll(() => supabase.from('cbt_attempts').select(cols.a).eq('exam_id', id)),
+          fetchAll(() => supabase.from('cbt_questions').select(cols.q).eq('exam_id', id)),
+          fetchAll(() => supabase.from('students').select('id, surname, other_names, admission_number, admission_status').eq('class_id', exam.class_id))
+        ])
+        const attIds = att.map(x => x.id)
+        const ans = attIds.length ? await fetchAll(() => supabase.from('cbt_answers').select(cols.x).in('attempt_id', attIds)) : []
+        return [att, qs, sts, ans]
+      }
+      let attempts, questions, students, answers
+      try { [attempts, questions, students, answers] = await loadSet(colsNew) }
+      catch (err) {
+        if (!/marking_status|question_type|model_answer|answer_text|awarded_marks|ai_marks|teacher_feedback|ai_feedback/i.test(err.message || '')) throw err
+        ;[attempts, questions, students, answers] = await loadSet(colsOld)
+      }
       const known = new Set(students.map(s => s.id))
       const extraIds = attempts.map(a => a.student_id).filter(x => x && !known.has(x))
       if (extraIds.length) { const more = await fetchAll(() => supabase.from('students').select('id, surname, other_names, admission_number, admission_status').in('id', extraIds)); students.push(...more) }
@@ -338,7 +373,7 @@ table.res td.n { font-variant-numeric: tabular-nums; } table.res td.pos { font-w
       const s = byStudent.get(a.student_id) || {}
       const pct = d.total ? Number(a.score || 0) / d.total * 100 : 0
       const mins = a.started_at ? (new Date(a.submitted_at) - new Date(a.started_at)) / 60000 : null
-      return { a, name: nameOf(s), adm: s.admission_number || '', score: Number(a.score || 0), pct, mins, over: mins !== null && mins > d.exam.duration_minutes + 2.5, pass: pct >= pass }
+      return { a, name: nameOf(s), adm: s.admission_number || '', score: Number(a.score || 0), pct, mins, over: mins !== null && mins > d.exam.duration_minutes + 2.5, pass: pct >= pass, pending: a.marking_status === 'pending' }
     }).sort((x, y) => y.score - x.score || x.name.localeCompare(y.name))
     let pos = 0, last = null
     rows.forEach((r, i) => { if (r.score !== last) { pos = i + 1; last = r.score } r.pos = pos })
@@ -347,6 +382,7 @@ table.res td.n { font-variant-numeric: tabular-nums; } table.res td.pos { font-w
 
   function renderDetail() {
     const d = detail, rows = computeRows()
+    const hasTheory = d.questions.some(q => q.question_type === 'theory')
     $('dTitle').textContent = d.exam.title
     $('dMeta').textContent = [d.exam.classes?.name, d.exam.subjects?.name, d.exam.terms?.name].filter(Boolean).join(' · ') + ' · ' + d.exam.duration_minutes + ' min · ' + num(d.total) + ' marks'
     const classStudents = d.students.filter(s => s.admission_status === 'admitted' || d.attempts.some(a => a.student_id === s.id))
@@ -360,6 +396,9 @@ table.res td.n { font-variant-numeric: tabular-nums; } table.res td.pos { font-w
     ]
     $('dStats').innerHTML = stats.map(s => `<div class="stat${s[2] ? ' hl' : ''}"><strong>${s[0]}</strong><span>${s[1]}</span></div>`).join('')
 
+    const pendingRows = rows.filter(r => r.pending)
+    $('dMarkBanner').hidden = !pendingRows.length
+    $('dMarkCount').textContent = pendingRows.length + ' student' + (pendingRows.length === 1 ? '' : 's')
     const bands = Array.from({ length: 10 }, (_, i) => ({ label: i === 9 ? '90–100%' : (i * 10) + '–' + (i * 10 + 9) + '%', n: 0 }))
     rows.forEach(r => { bands[Math.min(9, Math.floor(r.pct / 10))].n++ })
     const mx = Math.max(1, ...bands.map(b => b.n))
@@ -368,7 +407,7 @@ table.res td.n { font-variant-numeric: tabular-nums; } table.res td.pos { font-w
     $('dNone').hidden = rows.length > 0
     $('dRows').innerHTML = rows.map(r => `<tr><td class="pos">${r.pos}</td><td>${esc(r.name)}</td><td>${esc(r.adm)}</td><td class="n">${num(r.score)} / ${num(d.total)}</td><td class="n">${Math.round(r.pct)}%</td>
       <td class="n">${r.mins === null ? '—' : Math.round(r.mins) + ' min'}${r.a.auto_submitted ? ' <span class="pill warn">auto</span>' : ''}${r.over ? ' <span class="pill fail">over time</span>' : ''}</td>
-      <td><span class="pill ${r.pass ? 'pass' : 'fail'}">${r.pass ? 'Pass' : 'Fail'}</span></td></tr>`).join('')
+      <td><span class="pill ${r.pass ? 'pass' : 'fail'}">${r.pass ? 'Pass' : 'Fail'}</span></td><td>${hasTheory ? `<button type="button" class="btn-small" data-mark="${esc(r.a.id)}">${r.pending ? 'Mark' : 'Marked'}</button>` : '—'}</td></tr>`).join('')
 
     const submittedIds = new Set(rows.map(r => r.a.student_id))
     const waiting = classStudents.filter(s => !submittedIds.has(s.id)).sort((a, b) => nameOf(a).localeCompare(nameOf(b)))
@@ -379,10 +418,15 @@ table.res td.n { font-variant-numeric: tabular-nums; } table.res td.pos { font-w
     const done = new Set(d.attempts.filter(a => a.submitted_at).map(a => a.id))
     $('dItems').innerHTML = d.questions.map((q, i) => {
       const asked = d.answers.filter(x => x.question_id === q.id && done.has(x.attempt_id))
-      const right = asked.filter(x => x.is_correct).length
-      const pct = rows.length ? Math.round(right / rows.length * 100) : 0
+      let pct = 0
+      if (q.question_type === 'theory') {
+        const marked = asked.filter(x => x.awarded_marks !== null && x.awarded_marks !== undefined)
+        pct = marked.length && Number(q.marks) ? Math.round(marked.reduce((s, x) => s + Number(x.awarded_marks), 0) / marked.length / Number(q.marks) * 100) : 0
+      } else {
+        pct = rows.length ? Math.round(asked.filter(x => x.is_correct).length / rows.length * 100) : 0
+      }
       const kind = pct < 40 ? 'hard' : pct < 70 ? 'mid' : ''
-      return `<div class="item"><p>${i + 1}. ${esc(q.question_text)}</p><div class="bar ${kind}"><i style="width:${pct}%"></i></div><b>${rows.length ? pct + '%' : '—'}</b></div>`
+      return `<div class="item"><p>${i + 1}. ${q.question_type === 'theory' ? '<span class="pill warn">Theory</span> ' : ''}${esc(q.question_text)}</p><div class="bar ${kind}"><i style="width:${pct}%"></i></div><b>${rows.length ? pct + '%' : '—'}</b></div>`
     }).join('')
   }
   $('passMark').addEventListener('input', () => { if (detail) renderDetail() })
@@ -390,8 +434,8 @@ table.res td.n { font-variant-numeric: tabular-nums; } table.res td.pos { font-w
   $('csvBtn').addEventListener('click', () => {
     const rows = computeRows(); if (!rows.length) { showMessage('Nothing to export yet.', 'error'); return }
     const cell = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"'
-    const lines = [['Position', 'Student', 'Admission no.', 'Score', 'Total', 'Percent', 'Minutes taken', 'Submitted at', 'Auto submitted']]
-      .concat(rows.map(r => [r.pos, r.name, r.adm, num(r.score), num(detail.total), Math.round(r.pct), r.mins === null ? '' : Math.round(r.mins), r.a.submitted_at, r.a.auto_submitted ? 'yes' : 'no']))
+    const lines = [['Position', 'Student', 'Admission no.', 'Score', 'Total', 'Percent', 'Minutes taken', 'Submitted at', 'Auto submitted', 'Marking']]
+      .concat(rows.map(r => [r.pos, r.name, r.adm, num(r.score), num(detail.total), Math.round(r.pct), r.mins === null ? '' : Math.round(r.mins), r.a.submitted_at, r.a.auto_submitted ? 'yes' : 'no', r.pending ? 'needs marking' : 'complete']))
     const a = document.createElement('a')
     a.href = URL.createObjectURL(new Blob(['\ufeff' + lines.map(l => l.map(cell).join(',')).join('\n')], { type: 'text/csv;charset=utf-8' }))
     a.download = (detail.exam.title || 'cbt-results').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') + '-results.csv'
@@ -400,6 +444,103 @@ table.res td.n { font-variant-numeric: tabular-nums; } table.res td.pos { font-w
   $('printBtn').addEventListener('click', () => window.print())
   $('detailBack').addEventListener('click', async () => { detail = null; history.replaceState(null, '', location.pathname); await loadExamList(); renderExamList(); showView('list') })
   $('examList').addEventListener('click', (e) => { const c = e.target.closest('.ecard'); if (c) { history.replaceState(null, '', '?exam=' + c.dataset.id); openExam(c.dataset.id) } })
+
+  // ---------- marking written answers ----------
+  let markingAttempt = null
+  async function callGrade(attemptId) {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) throw new Error('Please sign in again.')
+    const res = await fetch('/.netlify/functions/grade-theory', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + session.access_token }, body: JSON.stringify({ attemptId }) })
+    const body = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(body.error || 'The AI request failed (' + res.status + ').')
+    return body
+  }
+  const reloadDetail = async () => { const id = detail.exam.id; await openExam(id) }
+
+  function openMarking(attemptId) {
+    const d = detail, a = d.attempts.find(x => x.id === attemptId); if (!a) return
+    const s = d.students.find(x => x.id === a.student_id) || {}
+    markingAttempt = attemptId
+    $('markTitle').textContent = 'Mark: ' + nameOf(s)
+    $('markSub').textContent = 'Give each written answer a mark up to its maximum. Leave a box empty to mark it later.'
+    $('markBody').innerHTML = d.questions.filter(q => q.question_type === 'theory').map((q, i) => {
+      const ans = d.answers.find(x => x.attempt_id === attemptId && x.question_id === q.id)
+      const text = ans && ans.answer_text ? ans.answer_text : ''
+      const hasAi = ans && ans.ai_marks !== null && ans.ai_marks !== undefined
+      return `<div class="mk-item" ${ans && text ? 'data-aid="' + esc(ans.id) + '" data-max="' + esc(q.marks) + '"' : ''}>
+        <div class="mk-q">${i + 1}. ${esc(q.question_text)}<small>(${num(q.marks)} marks)</small></div>
+        ${q.model_answer ? '<div class="mk-model"><b>Marking guide:</b> ' + esc(q.model_answer) + '</div>' : ''}
+        ${text ? '<div class="mk-ans">' + esc(text) + '</div>' : '<div class="mk-ans" style="color:var(--muted)">No answer was written (0 marks).</div>'}
+        ${text && hasAi ? '<div class="mk-ai"><span>AI suggests <b>' + num(ans.ai_marks) + ' / ' + num(q.marks) + '</b>' + (ans.ai_feedback ? ': ' + esc(ans.ai_feedback) : '') + '</span><button type="button" class="btn-small" data-useai="1">Use these</button></div>' : ''}
+        ${text ? `<div class="mk-row"><div><label>Marks</label><input type="number" data-f="marks" min="0" max="${esc(q.marks)}" step="0.5" value="${ans.awarded_marks === null || ans.awarded_marks === undefined ? '' : esc(ans.awarded_marks)}" data-ai="${hasAi ? esc(ans.ai_marks) : ''}" data-aifb="${hasAi ? esc(ans.ai_feedback || '') : ''}"></div><div><label>Feedback to the pupil (optional)</label><textarea data-f="feedback" placeholder="A short comment…">${esc(ans.teacher_feedback || '')}</textarea></div></div>` : ''}
+      </div>`
+    }).join('')
+    $('markModal').classList.add('open')
+  }
+  $('dRows').addEventListener('click', (e) => { const b = e.target.closest('[data-mark]'); if (b) openMarking(b.dataset.mark) })
+  $('markBody').addEventListener('click', (e) => {
+    if (!e.target.closest('[data-useai]')) return
+    const item = e.target.closest('.mk-item'), m = item.querySelector('[data-f="marks"]'), f = item.querySelector('[data-f="feedback"]')
+    m.value = m.dataset.ai; if (!f.value.trim()) f.value = m.dataset.aifb
+  })
+  $('markClose').addEventListener('click', () => $('markModal').classList.remove('open'))
+  $('markModal').addEventListener('click', (e) => { if (e.target.id === 'markModal') $('markModal').classList.remove('open') })
+  $('markSave').addEventListener('click', async () => {
+    const btn = $('markSave'); btn.disabled = true; btn.textContent = 'Saving…'
+    let failed = null, saved = 0
+    for (const el of document.querySelectorAll('#markBody .mk-item[data-aid]')) {
+      const v = el.querySelector('[data-f="marks"]').value
+      if (v === '') continue
+      if (Number(v) > Number(el.dataset.max)) { failed = { message: 'A mark is higher than the question allows (' + el.dataset.max + ').' }; break }
+      const { error } = await supabase.rpc('mark_theory_answer', { p_answer: el.dataset.aid, p_marks: Number(v), p_feedback: el.querySelector('[data-f="feedback"]').value })
+      if (error) { failed = error; break }
+      saved++
+    }
+    btn.disabled = false; btn.textContent = 'Save marks'
+    if (failed) { showMessage(failed.message, 'error'); return }
+    $('markModal').classList.remove('open')
+    showMessage(saved ? 'Marks saved.' : 'Nothing to save.', saved ? 'success' : 'error')
+    if (saved) await reloadDetail()
+  })
+  $('markAi').addEventListener('click', async () => {
+    const btn = $('markAi'); btn.disabled = true; btn.textContent = 'Asking AI…'
+    try {
+      const r = await callGrade(markingAttempt)
+      if (r.ok === false) showMessage(r.reason || 'AI marking is not available.', 'error')
+      else { const id = markingAttempt; await reloadDetail(); openMarking(id); showMessage('AI suggestions added. Review them before saving.', 'success') }
+    } catch (err) { showMessage(err.message, 'error') }
+    btn.disabled = false; btn.textContent = 'Suggest with AI'
+  })
+  $('aiAllBtn').addEventListener('click', async () => {
+    const todo = computeRows().filter(r => r.pending), btn = $('aiAllBtn')
+    if (!todo.length) return
+    btn.disabled = true
+    try {
+      for (let i = 0; i < todo.length; i++) {
+        btn.textContent = 'Asking AI… ' + (i + 1) + ' of ' + todo.length
+        const r = await callGrade(todo[i].a.id)
+        if (r.ok === false) { showMessage(r.reason || 'AI marking is not available.', 'error'); btn.disabled = false; btn.textContent = 'Ask AI to suggest marks'; return }
+      }
+      await reloadDetail(); showMessage('AI suggestions are ready. Open each student to review, or accept them all.', 'success')
+    } catch (err) { showMessage(err.message, 'error') }
+    btn.disabled = false; btn.textContent = 'Ask AI to suggest marks'
+  })
+  $('acceptAiBtn').addEventListener('click', async () => {
+    const theory = new Set(detail.questions.filter(q => q.question_type === 'theory').map(q => q.id))
+    const submitted = new Set(detail.attempts.filter(a => a.submitted_at).map(a => a.id))
+    const todo = detail.answers.filter(x => theory.has(x.question_id) && submitted.has(x.attempt_id) && (x.awarded_marks === null || x.awarded_marks === undefined) && x.ai_marks !== null && x.ai_marks !== undefined)
+    if (!todo.length) { showMessage('There are no AI suggestions to accept yet. Use "Ask AI to suggest marks" first.', 'error'); return }
+    if (!confirm('Accept the AI marks for ' + todo.length + ' written answer' + (todo.length === 1 ? '' : 's') + '? You can still change any of them afterwards.')) return
+    const btn = $('acceptAiBtn'); btn.disabled = true; btn.textContent = 'Saving…'
+    let done = 0
+    for (const x of todo) {
+      const { error } = await supabase.rpc('mark_theory_answer', { p_answer: x.id, p_marks: Number(x.ai_marks), p_feedback: x.ai_feedback || null })
+      if (error) { showMessage(error.message, 'error'); break }
+      done++
+    }
+    btn.disabled = false; btn.textContent = 'Accept all AI marks'
+    if (done) { showMessage(done + ' answer' + (done === 1 ? '' : 's') + ' marked.', 'success'); await reloadDetail() }
+  })
 
   async function init() {
     loadSchoolName()

@@ -202,6 +202,10 @@ body.focus .nav-drawer, body.focus .topbar { display: none; }
 .rev .tag { float: right; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; } .rev.ok .tag { background: var(--green-tint); color: #1d5a21; } .rev.no .tag { background: var(--red-tint); color: #8d1d17; } .rev.skip .tag { background: var(--cream); color: var(--muted); }
 .back { display: inline-block; margin-bottom: 14px; color: var(--maroon); font-weight: 600; cursor: pointer; background: none; border: none; font-size: 14.5px; padding: 0; }
 .empty-note { padding: 36px 16px; }
+.theory-box { width: 100%; min-height: 220px; padding: 14px; border: 2px solid var(--border); border-radius: 12px; font: inherit; font-size: 16px; line-height: 1.6; resize: vertical; background: #fff; color: var(--ink); transition: border-color .15s, box-shadow .15s; }
+.theory-box:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,27,61,0.14); }
+.theory-meta { display: flex; justify-content: space-between; gap: 10px; font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+.rev .rs b { color: var(--ink); }
 </style>
 </head>
 <body>
@@ -369,7 +373,7 @@ body.focus .nav-drawer, body.focus .topbar { display: none; }
     else if (e.r_status === 'expired') action = `<button type="button" class="btn-primary" data-start="${esc(e.r_exam_id)}">Submit my answers</button>`
     else if (e.r_status === 'upcoming') action = `<small>Opens ${esc(fmtDT(e.r_start))}</small>`
     else if (e.r_status === 'closed') action = `<small>Closed ${esc(fmtDT(e.r_end))}</small>`
-    else action = `<small>Score <b>${num(e.r_score)}</b> / ${num(e.r_total)} (${pct}%)</small>`
+    else action = `<small>Score <b>${num(e.r_score)}</b> / ${num(e.r_total)} (${pct}%)${e.r_pending ? ' · marking in progress' : ''}</small>`
     return `<div class="xcard"><div class="xcard-top"><div><h3>${esc(e.r_title)}</h3><div class="meta">${esc(e.r_subject || '')}${e.r_term ? ' · ' + esc(e.r_term) : ''}</div></div><span class="badge ${esc(e.r_status)}">${label}</span></div>
       <div class="facts"><span><b>${e.r_duration}</b> min</span><span><b>${e.r_questions}</b> questions</span><span><b>${num(e.r_total)}</b> marks</span>${e.r_end && e.r_status === 'open' ? `<span>Closes <b>${esc(fmtDT(e.r_end))}</b></span>` : ''}</div>
       <div class="xcard-foot">${action}</div></div>`
@@ -391,7 +395,7 @@ body.focus .nav-drawer, body.focus .topbar { display: none; }
       const p = pctOf(r.r_score, r.r_total)
       return `<div class="rcard"><div class="ring ${tone(p)}" style="--p:${p}"><b>${p}%</b></div>
         <div class="grow"><h3>${esc(r.r_title)}</h3><div class="meta">${esc(r.r_subject || '')}${r.r_term ? ' · ' + esc(r.r_term) : ''} · ${esc(fmtD(r.r_submitted_at))}</div>
-        <div class="meta"><b>${num(r.r_score)}</b> / ${num(r.r_total)} marks · ${r.r_correct} of ${r.r_questions} correct</div></div>
+        <div class="meta"><b>${num(r.r_score)}</b> / ${num(r.r_total)} marks${r.r_questions ? ' · ' + r.r_correct + ' of ' + r.r_questions + ' objective correct' : ''}${r.r_pending ? ' · <b>marking in progress</b>' : ''}</div></div>
         <button type="button" class="btn-small" data-review="${esc(r.r_attempt_id)}" data-title="${esc(r.r_title)}">Review</button></div>`
     }).join('') + '</div>'
   }
@@ -424,7 +428,7 @@ body.focus .nav-drawer, body.focus .topbar { display: none; }
     if (!data || !data.length) { showMessage('This exam has no questions.', 'error'); return }
     let local = {}
     try { local = JSON.parse(localStorage.getItem('cbt_ans_' + attemptId) || '{}') } catch (e) {}
-    const qs = data.map(q => ({ id: q.r_question_id, text: q.r_text, options: q.r_options || {}, marks: q.r_marks, order: q.r_order, selected: q.r_saved || local[q.r_question_id] || null }))
+    const qs = data.map(q => ({ id: q.r_question_id, text: q.r_text, options: q.r_options || {}, marks: q.r_marks, order: q.r_order || [], type: q.r_type || 'objective', selected: q.r_saved || local[q.r_question_id] || null }))
     run = { attemptId, exam, qs, idx: 0, flagged: new Set(), endsAt: performance.now() + data[0].r_remaining * 1000, timer: null, pending: {}, saving: false, dirtyTimer: null, submitting: false }
     qs.forEach(q => { if (q.selected && !data.find(d => d.r_question_id === q.id).r_saved) run.pending[q.id] = q.selected })
     $('runTitle').textContent = data[0].r_title
@@ -450,7 +454,11 @@ body.focus .nav-drawer, body.focus .topbar { display: none; }
     $('qNum').textContent = 'Question ' + (run.idx + 1) + ' of ' + run.qs.length
     $('qMarks').textContent = num(q.marks) + (Number(q.marks) === 1 ? ' mark' : ' marks')
     $('qText').textContent = q.text
-    $('qOptions').innerHTML = q.order.map((letter, i) => `<button type="button" class="opt${q.selected === letter ? ' sel' : ''}" data-letter="${letter}"><span class="l">${'ABCD'[i]}</span><span>${esc(q.options[letter] || '')}</span></button>`).join('')
+    if (q.type === 'theory') {
+      $('qOptions').innerHTML = `<textarea id="theoryBox" class="theory-box" maxlength="8000" placeholder="Write your answer here…">${esc(q.selected || '')}</textarea><div class="theory-meta"><span id="theoryCount">${(q.selected || '').length} / 8000</span><span>Your teacher will mark this answer.</span></div>`
+    } else {
+      $('qOptions').innerHTML = q.order.map((letter, i) => `<button type="button" class="opt${q.selected === letter ? ' sel' : ''}" data-letter="${letter}"><span class="l">${'ABCD'[i]}</span><span>${esc(q.options[letter] || '')}</span></button>`).join('')
+    }
     $('flagBtn').classList.toggle('on', run.flagged.has(q.id)); $('flagBtn').textContent = run.flagged.has(q.id) ? 'Flagged' : 'Flag for review'
     $('prevBtn').disabled = run.idx === 0
     $('nextBtn').textContent = run.idx === run.qs.length - 1 ? 'Review answers' : 'Next'
@@ -507,10 +515,11 @@ body.focus .nav-drawer, body.focus .topbar { display: none; }
     try { localStorage.removeItem('cbt_ans_' + attemptId) } catch (e) {}
     run = null
     $('doneTitle').textContent = auto ? 'Time is up. Exam submitted' : 'Exam submitted'
-    $('doneSub').textContent = p >= 50 ? 'Well done for completing your exam.' : 'Thank you for completing your exam.'
+    $('doneSub').textContent = r.r_pending ? 'Your written answers are with your teacher for marking. Your final score will update once they are marked.' : (p >= 50 ? 'Well done for completing your exam.' : 'Thank you for completing your exam.')
+    if (r.r_theory > 0) requestAiMarking(attemptId)
     $('doneRing').className = 'done-ring ' + tone(p); $('doneRing').style.setProperty('--p', p)
     $('donePct').textContent = p + '%'
-    $('doneScore').textContent = num(r.r_score); $('doneCorrect').textContent = r.r_correct + '/' + r.r_questions; $('doneTotal').textContent = num(r.r_total)
+    $('doneScore').textContent = num(r.r_score) + (r.r_pending ? '*' : ''); $('doneCorrect').textContent = r.r_questions ? r.r_correct + '/' + r.r_questions : '—'; $('doneTotal').textContent = num(r.r_total)
     showView('viewDone')
     await refreshLists()
   }
@@ -520,13 +529,32 @@ body.focus .nav-drawer, body.focus .topbar { display: none; }
     const { data, error } = await supabase.rpc('get_attempt_review', { p_attempt: attemptId })
     if (error) { showMessage(rpcError(error), 'error'); return }
     $('reviewTitle').textContent = title
-    const right = (data || []).filter(q => q.r_is_correct).length
-    $('reviewSub').textContent = right + ' of ' + (data || []).length + ' correct. The correct options are not shown.'
-    $('reviewList').innerHTML = (data || []).map((q, i) => {
+    const list = data || []
+    const obj = list.filter(q => q.r_type !== 'theory'), th = list.filter(q => q.r_type === 'theory')
+    const right = obj.filter(q => q.r_is_correct).length
+    const waiting = th.filter(q => q.r_answer_text && (q.r_awarded === null || q.r_awarded === undefined)).length
+    $('reviewSub').textContent = (obj.length ? right + ' of ' + obj.length + ' objective questions correct. ' : '') +
+      (th.length ? (waiting ? waiting + ' written answer' + (waiting === 1 ? ' is' : 's are') + ' waiting to be marked. ' : 'Your written answers have been marked. ') : '') + 'The correct options are not shown.'
+    $('reviewList').innerHTML = list.map((q, i) => {
+      if (q.r_type === 'theory') {
+        const answered = !!q.r_answer_text, marked = q.r_awarded !== null && q.r_awarded !== undefined
+        const cls = !answered ? 'skip' : marked ? (Number(q.r_awarded) >= Number(q.r_marks) * 0.5 ? 'ok' : 'no') : 'skip'
+        const tag = !answered ? 'Not answered' : marked ? num(q.r_awarded) + ' / ' + num(q.r_marks) : 'Awaiting marking'
+        return `<div class="rev ${cls}"><span class="tag">${tag}</span><div class="rq">${i + 1}. ${esc(q.r_text)}</div><div class="rs">${answered ? '<b>Your answer:</b><br>' + esc(q.r_answer_text).replace(/\n/g, '<br>') : 'You did not answer this question.'}</div>${q.r_feedback ? '<div class="rs" style="margin-top:8px"><b>Teacher:</b> ' + esc(q.r_feedback) + '</div>' : ''}</div>`
+      }
       const sel = q.r_selected, cls = !sel ? 'skip' : q.r_is_correct ? 'ok' : 'no'
       return `<div class="rev ${cls}"><span class="tag">${!sel ? 'Not answered' : q.r_is_correct ? 'Correct' : 'Wrong'}</span><div class="rq">${i + 1}. ${esc(q.r_text)}</div><div class="rs">${sel ? 'Your answer: <b>' + esc((q.r_options || {})[sel] || sel) + '</b>' : 'You did not answer this question.'}</div></div>`
     }).join('')
     showView('viewReview')
+  }
+
+  // asks the school's AI helper to suggest marks for written answers (the teacher still decides). Silent if it is not set up.
+  async function requestAiMarking(attemptId) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+      await fetch('/.netlify/functions/grade-theory', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + session.access_token }, body: JSON.stringify({ attemptId }) })
+    } catch (e) { /* not set up, or offline: marking by the teacher still works */ }
   }
 
   async function refreshLists() { await Promise.all([loadExams(), loadResults()]); renderExams(); renderResults() }
@@ -543,12 +571,24 @@ body.focus .nav-drawer, body.focus .topbar { display: none; }
   $('prevBtn').addEventListener('click', () => go(run.idx - 1))
   $('nextBtn').addEventListener('click', () => { if (run.idx === run.qs.length - 1) openSubmit(); else go(run.idx + 1) })
   $('flagBtn').addEventListener('click', () => { const id = run.qs[run.idx].id; run.flagged.has(id) ? run.flagged.delete(id) : run.flagged.add(id); renderQuestion(); renderGrid() })
+  $('qOptions').addEventListener('input', (e) => {
+    if (e.target.id !== 'theoryBox' || !run) return
+    const q = run.qs[run.idx], v = e.target.value
+    q.selected = v.trim() ? v : null
+    run.pending[q.id] = v.trim() ? v : ''
+    persistLocal(); renderGrid()
+    $('runBar').style.width = Math.round(answeredCount() / run.qs.length * 100) + '%'
+    $('theoryCount').textContent = v.length + ' / 8000'
+    $('saveState').textContent = 'Saving…'
+    clearTimeout(run.dirtyTimer); run.dirtyTimer = setTimeout(flushSave, 1200)
+  })
   $('qOptions').addEventListener('click', (e) => { const b = e.target.closest('[data-letter]'); if (b) choose(b.dataset.letter) })
   $('qGrid').addEventListener('click', (e) => { const b = e.target.closest('[data-i]'); if (b) go(Number(b.dataset.i)) })
   $('doneBack').addEventListener('click', () => { showView('viewList'); setTab('exams') })
   $('reviewBack').addEventListener('click', () => { showView('viewList'); setTab('results') })
   document.addEventListener('keydown', (e) => {
     if (!run || $('viewRun').hidden || document.querySelector('.modal-overlay.open')) return
+    if (run.qs[run.idx].type === 'theory') return
     const k = e.key.toLowerCase()
     if ('abcd'.includes(k) && k.length === 1) { const letter = run.qs[run.idx].order['abcd'.indexOf(k)]; if (letter) choose(letter) }
     else if (e.key === 'ArrowRight') go(run.idx + 1)

@@ -173,6 +173,17 @@ details.help pre { background: var(--cream); border-radius: 8px; padding: 12px; 
 .imp-bar { position: sticky; bottom: 0; z-index: 5; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; background: #fff; border-top: 1px solid var(--border); padding: 12px 0 2px; margin-top: 6px; }
 .imp-sum { font-size: 14px; font-weight: 600; color: var(--navy); }
 .imp-sum span { color: var(--amber-text); }
+.type-switch { display: flex; gap: 8px; flex-wrap: wrap; }
+.type-switch button { flex: 1 1 160px; min-height: 46px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; color: var(--navy); font-weight: 700; font-size: 14.5px; transition: all .15s; cursor: pointer; }
+.type-switch button:hover { border-color: var(--navy); }
+.type-switch button.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+.tbadge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-right: 8px; }
+.tbadge.obj { background: var(--navy-tint); color: var(--navy); } .tbadge.theory { background: #f3e9f5; color: #6b2a7a; }
+.model-box { margin: 8px 0 10px; padding: 10px 12px; background: var(--cream); border-left: 4px solid #b78bc4; border-radius: 6px; font-size: 13.5px; color: var(--muted); white-space: pre-line; overflow-wrap: anywhere; }
+.model-box b { color: var(--ink); }
+.imp-type { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--navy); }
+.imp-type select { width: auto; min-height: 36px; padding: 4px 28px 4px 10px; font-size: 13.5px; }
+.import-marks.two { display: flex; flex-wrap: wrap; gap: 8px 20px; }
 
 </style>
 </head>
@@ -261,14 +272,14 @@ details.help pre { background: var(--cream); border-radius: 8px; padding: 12px; 
       </label>
       <input type="file" id="importFile" class="dz-input" accept=".pdf,.docx,.xlsx,.xls,.csv,.txt,application/pdf">
       <div class="import-tools">
-        <div class="import-marks"><label for="importMarks">Marks per question</label><input type="number" id="importMarks" min="0" step="0.5" value="1"></div>
+        <div class="import-marks two"><span class="import-marks"><label for="importMarks">Marks per objective</label><input type="number" id="importMarks" min="0" step="0.5" value="1"></span><span class="import-marks"><label for="importTheoryMarks">Marks per theory</label><input type="number" id="importTheoryMarks" min="0" step="0.5" value="5"></span></div>
         <button type="button" class="link-btn" id="importTemplateBtn">Download CSV template</button>
       </div>
       <div class="import-status" id="importStatus" role="status"></div>
 
       <details class="help">
         <summary>How should my file look?</summary>
-        <p>The easiest layout is one question after another, numbered, with options A to D and an answer line:</p>
+        <p>One question after another, numbered. For objective questions add options A to D and an answer line:</p>
         <pre>1. What is 2 + 3?
 A. 4
 B. 5
@@ -280,7 +291,9 @@ Answer: B</pre>
           <li>No answer lines? Put an answer key at the end, for example <b>ANSWERS: 1.B 2.C 3.A</b>. You can also set any answer while reviewing.</li>
           <li>Excel and CSV files use the columns <b>Question, A, B, C, D, Answer, Marks</b> (use the template above).</li>
           <li>Scanned pages or photos can't be read. Use a typed file, or paste the text below.</li>
-          <li>Only four options (A to D) are supported.</li>
+          <li>Theory questions need no options. Write the question, numbered, and put the marks at the end like <b>(5 marks)</b>. A line starting <b>Answer:</b> or <b>Marking guide:</b> after a question becomes its marking guide.</li>
+          <li>You can mix both kinds. A heading such as <b>SECTION B: THEORY</b> makes everything after it theory.</li>
+          <li>Objective questions only support four options (A to D).</li>
         </ul>
       </details>
       <details class="help paste-box">
@@ -303,14 +316,22 @@ Answer: B</pre>
     <div class="card">
       <h2>Add a Question</h2>
       <div class="field-row">
+        <label>Question type</label>
+        <div class="type-switch" id="typeSwitch">
+          <button type="button" class="on" data-type="objective">Objective (options A to D)</button>
+          <button type="button" data-type="theory">Theory (written answer)</button>
+        </div>
+        <input type="hidden" id="qType" value="objective">
+      </div>
+      <div class="field-row">
         <label for="qText">Question</label>
         <textarea id="qText" placeholder="Type the question here…"></textarea>
       </div>
-      <div class="option-input-row"><div class="option-letter">A</div><input type="text" id="optA" placeholder="Option A"></div>
-      <div class="option-input-row"><div class="option-letter">B</div><input type="text" id="optB" placeholder="Option B"></div>
-      <div class="option-input-row"><div class="option-letter">C</div><input type="text" id="optC" placeholder="Option C"></div>
-      <div class="option-input-row"><div class="option-letter">D</div><input type="text" id="optD" placeholder="Option D"></div>
-      <div class="two-col">
+      <div id="objectiveFields">
+        <div class="option-input-row"><div class="option-letter">A</div><input type="text" id="optA" placeholder="Option A"></div>
+        <div class="option-input-row"><div class="option-letter">B</div><input type="text" id="optB" placeholder="Option B"></div>
+        <div class="option-input-row"><div class="option-letter">C</div><input type="text" id="optC" placeholder="Option C"></div>
+        <div class="option-input-row"><div class="option-letter">D</div><input type="text" id="optD" placeholder="Option D"></div>
         <div class="field-row">
           <label for="correctOption">Correct Option</label>
           <select id="correctOption">
@@ -320,10 +341,17 @@ Answer: B</pre>
             <option value="D">D</option>
           </select>
         </div>
+      </div>
+      <div id="theoryFields" hidden>
         <div class="field-row">
-          <label for="qMarks">Marks</label>
-          <input type="number" id="qMarks" min="0" step="0.5" value="1">
+          <label for="qModel">Marking guide <span class="opt" style="font-weight:400;color:var(--muted)">(optional)</span></label>
+          <textarea id="qModel" placeholder="The key points a good answer should contain…"></textarea>
+          <span class="hint" style="font-size:12.5px;color:var(--muted)">Only you and the school see this. It helps you mark, and helps the AI suggest marks.</span>
         </div>
+      </div>
+      <div class="field-row">
+        <label for="qMarks">Marks</label>
+        <input type="number" id="qMarks" min="0" step="0.5" value="1">
       </div>
       <button class="btn-primary" id="addQuestionBtn">Add Question</button>
     </div>
@@ -527,10 +555,14 @@ Answer: B</pre>
   async function loadQuestions() {
     const container = document.getElementById('questionList')
     const note = document.getElementById('noQuestionsNote')
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('cbt_questions')
-      .select('id, question_text, options, correct_option, marks')
+      .select('id, question_text, options, correct_option, marks, question_type, model_answer')
       .eq('exam_id', currentExam.id)
+    if (error) {
+      // the written-answer upgrade has not been installed yet
+      ;({ data, error } = await supabase.from('cbt_questions').select('id, question_text, options, correct_option, marks').eq('exam_id', currentExam.id))
+    }
 
     if (error || !data || data.length === 0) {
       container.innerHTML = ''
@@ -539,15 +571,17 @@ Answer: B</pre>
     }
     note.style.display = 'none'
 
-    container.innerHTML = data.map(q => `
+    container.innerHTML = data.map(q => {
+      const theory = q.question_type === 'theory'
+      return `
       <div class="question-item" data-id="${q.id}">
-        <div class="qtext">${escapeHtml(q.question_text)}</div>
-        <div class="option-list">
-          ${['A','B','C','D'].map(letter => `<div class="option-item ${q.correct_option === letter ? 'correct' : ''}">${letter}. ${escapeHtml(q.options?.[letter] || '')}</div>`).join('')}
-        </div>
+        <div class="qtext"><span class="tbadge ${theory ? 'theory' : 'obj'}">${theory ? 'Theory' : 'Objective'}</span>${escapeHtml(q.question_text)}</div>
+        ${theory
+          ? (q.model_answer ? `<div class="model-box"><b>Marking guide:</b> ${escapeHtml(q.model_answer)}</div>` : '')
+          : `<div class="option-list">${['A','B','C','D'].map(letter => `<div class="option-item ${q.correct_option === letter ? 'correct' : ''}">${letter}. ${escapeHtml(q.options?.[letter] || '')}</div>`).join('')}</div>`}
         <div class="qmarks">${q.marks} mark(s) · <span class="del-q" style="color:var(--red); cursor:pointer; font-weight:600;">Delete</span></div>
-      </div>
-    `).join('')
+      </div>`
+    }).join('')
 
     container.querySelectorAll('.question-item').forEach(item => {
       item.querySelector('.del-q').addEventListener('click', async () => {
@@ -557,49 +591,57 @@ Answer: B</pre>
     })
   }
 
+  // objective / theory switch in the "Add a Question" card
+  function setQuestionType(type) {
+    document.getElementById('qType').value = type
+    document.querySelectorAll('#typeSwitch button').forEach(b => b.classList.toggle('on', b.dataset.type === type))
+    document.getElementById('objectiveFields').hidden = type !== 'objective'
+    document.getElementById('theoryFields').hidden = type !== 'theory'
+    document.getElementById('qMarks').value = type === 'theory' ? 5 : 1
+  }
+  document.getElementById('typeSwitch').addEventListener('click', (e) => { const b = e.target.closest('[data-type]'); if (b) setQuestionType(b.dataset.type) })
+
   document.getElementById('addQuestionBtn').addEventListener('click', async () => {
     const btn = document.getElementById('addQuestionBtn')
+    const type = document.getElementById('qType').value
     const text = document.getElementById('qText').value.trim()
-    const optA = document.getElementById('optA').value.trim()
-    const optB = document.getElementById('optB').value.trim()
-    const optC = document.getElementById('optC').value.trim()
-    const optD = document.getElementById('optD').value.trim()
-    const correct = document.getElementById('correctOption').value
     const marks = parseFloat(document.getElementById('qMarks').value)
+    let row
 
-    if (!text || !optA || !optB || !optC || !optD) {
-      showMessage('questionMsgBox', 'Please fill in the question and all four options.', 'error')
-      return
+    if (!text) { showMessage('questionMsgBox', 'Please type the question.', 'error'); return }
+    if (!Number.isFinite(marks) || marks < 0) { showMessage('questionMsgBox', 'Please enter the marks.', 'error'); return }
+
+    if (type === 'theory') {
+      row = { exam_id: currentExam.id, question_text: text, question_type: 'theory', options: null, correct_option: null, model_answer: document.getElementById('qModel').value.trim() || null, marks }
+    } else {
+      const optA = document.getElementById('optA').value.trim()
+      const optB = document.getElementById('optB').value.trim()
+      const optC = document.getElementById('optC').value.trim()
+      const optD = document.getElementById('optD').value.trim()
+      if (!optA || !optB || !optC || !optD) { showMessage('questionMsgBox', 'Please fill in all four options.', 'error'); return }
+      row = { exam_id: currentExam.id, question_text: text, question_type: 'objective', options: { A: optA, B: optB, C: optC, D: optD }, correct_option: document.getElementById('correctOption').value, marks }
     }
 
     btn.disabled = true
     btn.textContent = 'Adding…'
-
-    const { error } = await supabase.from('cbt_questions').insert({
-      exam_id: currentExam.id,
-      question_text: text,
-      options: { A: optA, B: optB, C: optC, D: optD },
-      correct_option: correct,
-      marks: marks
-    })
-
+    let { error } = await supabase.from('cbt_questions').insert(row)
+    if (error && type === 'objective' && /question_type/i.test(error.message)) {
+      delete row.question_type
+      ;({ error } = await supabase.from('cbt_questions').insert(row))
+    }
     btn.disabled = false
     btn.textContent = 'Add Question'
 
-    if (error) { showMessage('questionMsgBox', 'Could not add question: ' + error.message, 'error'); return }
+    if (error) { showMessage('questionMsgBox', /question_type|model_answer/i.test(error.message) ? 'Theory questions need the database upgrade (cbt-theory.sql) first.' : 'Could not add question: ' + error.message, 'error'); return }
 
-    document.getElementById('qText').value = ''
-    document.getElementById('optA').value = ''
-    document.getElementById('optB').value = ''
-    document.getElementById('optC').value = ''
-    document.getElementById('optD').value = ''
-    document.getElementById('qMarks').value = 1
+    ;['qText', 'optA', 'optB', 'optC', 'optD', 'qModel'].forEach(id => { document.getElementById(id).value = '' })
+    document.getElementById('qMarks').value = type === 'theory' ? 5 : 1
     showMessage('questionMsgBox', 'Question added.', 'success')
     await loadQuestions()
   })
 
 
-  // ---------- import questions from a file ----------
+  // ---------- import questions from a file (objective and theory) ----------
   let importItems = []
   const LIB_PDF = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
   const LIB_PDF_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
@@ -651,7 +693,7 @@ Answer: B</pre>
     return r.value
   }
 
-  // spreadsheets: Question, A, B, C, D, Answer, Marks
+  // spreadsheets: Question, A, B, C, D, Answer, Marks. No options means a theory question and "Answer" is its marking guide.
   async function extractSheetQuestions(buffer) {
     await loadScript(LIB_SHEET)
     const wb = window.XLSX.read(buffer, { type: 'array' })
@@ -660,18 +702,23 @@ Answer: B</pre>
     const norm = (v) => String(v).toLowerCase().replace(/[^a-z]/g, '')
     const header = rows[0].map(norm)
     const find = (names) => header.findIndex(x => names.includes(x))
-    let col = { q: find(['question', 'questiontext', 'questions', 'q']), A: find(['a', 'optiona']), B: find(['b', 'optionb']), C: find(['c', 'optionc']), D: find(['d', 'optiond']), ans: find(['answer', 'correct', 'correctoption', 'correctanswer', 'key']), marks: find(['marks', 'mark', 'score']) }
+    let col = { q: find(['question', 'questiontext', 'questions', 'q']), A: find(['a', 'optiona']), B: find(['b', 'optionb']), C: find(['c', 'optionc']), D: find(['d', 'optiond']), ans: find(['answer', 'correct', 'correctoption', 'correctanswer', 'key', 'markingguide', 'modelanswer']), marks: find(['marks', 'mark', 'score']), type: find(['type', 'questiontype']) }
     let body = rows.slice(1)
-    if (col.q < 0 || col.A < 0) { col = { q: 0, A: 1, B: 2, C: 3, D: 4, ans: 5, marks: 6 }; body = rows }
+    if (col.q < 0 || col.A < 0) { col = { q: 0, A: 1, B: 2, C: 3, D: 4, ans: 5, marks: 6, type: -1 }; body = rows }
     return body.filter(r => String(r[col.q] || '').trim()).map(r => {
       const options = { A: String(r[col.A] ?? '').trim(), B: String(r[col.B] ?? '').trim(), C: String(r[col.C] ?? '').trim(), D: String(r[col.D] ?? '').trim() }
-      let ans = col.ans >= 0 ? String(r[col.ans] ?? '').trim() : ''
+      const ans = col.ans >= 0 ? String(r[col.ans] ?? '').trim() : ''
+      const m = col.marks >= 0 ? parseFloat(r[col.marks]) : NaN
+      const typeCell = col.type >= 0 ? String(r[col.type]).toLowerCase() : ''
+      const hasOptions = ['A', 'B', 'C', 'D'].some(L => options[L])
+      if (typeCell.includes('theory') || typeCell.includes('essay') || !hasOptions) {
+        return { type: 'theory', text: String(r[col.q]).trim(), options: { A: '', B: '', C: '', D: '' }, correct: null, model: ans, marks: Number.isFinite(m) ? m : null, issues: [] }
+      }
       let correct = null
       if (/^[A-Da-d]$/.test(ans)) correct = ans.toUpperCase()
       else if (/^[1-4]$/.test(ans)) correct = 'ABCD'[Number(ans) - 1]
       else if (ans) { const hit = ['A', 'B', 'C', 'D'].find(L => options[L] && options[L].toLowerCase() === ans.toLowerCase()); if (hit) correct = hit }
-      const m = col.marks >= 0 ? parseFloat(r[col.marks]) : NaN
-      return { text: String(r[col.q]).trim(), options, correct, marks: Number.isFinite(m) ? m : null, issues: [] }
+      return { type: 'objective', text: String(r[col.q]).trim(), options, correct, model: '', marks: Number.isFinite(m) ? m : null, issues: [] }
     })
   }
 
@@ -695,7 +742,7 @@ Answer: B</pre>
     const text = String(raw).replace(/\r/g, '\n').replace(/\u00a0/g, ' ').replace(/[ \t]+/g, ' ')
     let lines = text.split('\n').map(l => l.trim()).filter(Boolean)
 
-    // answer key section at the end
+    // answer key / marking scheme at the end
     const keyAt = lines.findIndex((l, i) => i > 0 && (/^(answers?|answer\s*key|marking\s*scheme|mark\s*scheme|memo)\s*[:\-–]?\s*$/i.test(l) || /^(answers?|answer\s*key)\s*[:\-–]\s*\d/i.test(l)))
     const keyLines = keyAt >= 0 ? lines.slice(keyAt) : []
     if (keyAt >= 0) lines = lines.slice(0, keyAt)
@@ -705,61 +752,88 @@ Answer: B</pre>
 
     const NUM = /^(?:q(?:uestion)?\.?\s*)?(\d{1,3})\s*[\.\):\-]\s*(.*)$/i
     const OPT = /^\(?([A-Ea-e])[\.\):]\s*(.*)$/
-    const ANS = /^(?:correct\s*)?(?:answer|ans|key|correct\s*option|correct\s*answer)\s*[:\-–=]?\s*\(?([A-Da-d])\)?(?:[\.\)\s].*)?$/i
+    const ANS_LETTER = /^(?:correct\s*)?(?:answer|ans|key|correct\s*option|correct\s*answer)\s*[:\-–=]?\s*\(?([A-Da-d])\)?(?:[\.\)\s].*)?$/i
+    const MODEL = /^(?:model\s*answer|marking\s*(?:guide|scheme)|answer|ans)\s*[:\-–=]\s*(.+)$/i
+    const H_THEORY = /^(?:section\s*[a-z0-9]+\s*[:\-–.]*\s*)?(?:theory|essay|written)(?:\s+(?:questions?|section|part))?\s*[:\-–.]*\s*(?:\(.*\)|answer.*)?$/i
+    const H_OBJ = /^(?:section\s*[a-z0-9]+\s*[:\-–.]*\s*)?(?:objectives?|multiple\s*choice|obj)(?:\s+(?:questions?|section|part|test))?\s*[:\-–.]*\s*(?:\(.*\)|answer.*)?$/i
+    const MARKS_RE = /\s*[\(\[]\s*(\d+(?:\.\d+)?)\s*marks?\s*[\)\]]\s*$/i
     const hasNumbers = body.some(l => NUM.test(l) && !OPT.test(l))
+
     const qs = []
-    let cur = null
-    const start = (num, t) => { cur = { number: num, text: t || '', options: {}, correct: null, issues: [], next: 'A', last: null, done: false }; qs.push(cur) }
+    let cur = null, mode = 'auto'
+    const start = (num, t) => { cur = { number: num, stem: t || '', raw: [t || ''], options: {}, correct: null, model: '', inModel: false, next: 'A', last: null, done: false, forceTheory: mode === 'theory', issues: [] }; qs.push(cur) }
 
     for (const line of body) {
-      const a = ANS.exec(line)
-      if (a && cur) { cur.correct = a[1].toUpperCase(); cur.done = true; continue }
+      if (line.length <= 70 && !NUM.test(line)) {
+        if (H_THEORY.test(line)) { mode = 'theory'; continue }
+        if (H_OBJ.test(line)) { mode = 'objective'; continue }
+      }
+      if (mode !== 'theory') {
+        const a = ANS_LETTER.exec(line)
+        if (a && cur && Object.keys(cur.options).length >= 2) { cur.correct = a[1].toUpperCase(); cur.done = true; continue }
+      }
+      const m = MODEL.exec(line)
+      if (m && cur && (mode === 'theory' || Object.keys(cur.options).length < 2)) { cur.model = m[1].trim(); cur.inModel = true; continue }
+
       const o = OPT.exec(line)
-      if (o && cur) {
+      if (mode !== 'theory' && o && cur && !cur.inModel) {
         const L = o[1].toUpperCase()
         if (L === cur.next && L <= 'D') {
           let t = o[2].trim()
           if (/^\*\s*|\s*\*$|\s*\((?:correct|ans(?:wer)?)\)$/i.test(t)) { cur.correct = L; t = t.replace(/^\*\s*|\s*\*$|\s*\((?:correct|ans(?:wer)?)\)$/ig, '').trim() }
-          cur.options[L] = t; cur.last = L; cur.next = String.fromCharCode(L.charCodeAt(0) + 1)
+          cur.options[L] = t; cur.last = L; cur.next = String.fromCharCode(L.charCodeAt(0) + 1); cur.raw.push(line)
           continue
         }
         if (L === 'E' && cur.last === 'D') { cur.issues.push('Has an option E. Only A to D are used.'); continue }
       }
       const n = NUM.exec(line)
-      if (n && (!cur || cur.last || cur.done || Number(n[1]) === (cur.number || 0) + 1)) { start(Number(n[1]), n[2].trim()); continue }
+      if (n && (!cur || cur.last || cur.done || cur.inModel || mode === 'theory' || Number(n[1]) === (cur.number || 0) + 1)) { start(Number(n[1]), n[2].trim()); continue }
       if (!cur) { if (!hasNumbers) start(null, line); continue }
+      if (cur.inModel) { cur.model = (cur.model + ' ' + line).trim(); continue }
       if (cur.done || (cur.last === 'D' && /[?:]\s*$/.test(line))) { start(null, line); continue }
-      if (cur.last) cur.options[cur.last] = ((cur.options[cur.last] || '') + ' ' + line).trim()
-      else cur.text = (cur.text + ' ' + line).trim()
+      if (cur.last && !cur.forceTheory) { cur.options[cur.last] = ((cur.options[cur.last] || '') + ' ' + line).trim(); cur.raw.push(line) }
+      else { cur.stem = (cur.stem + ' ' + line).trim(); cur.raw.push(line) }
     }
 
-    // apply the answer key
+    // answer key / marking scheme
     if (keyLines.length) {
-      const re = /(\d{1,3})\s*[\.\):\-–=]?\s*\(?([A-Da-d])\)?(?![A-Za-z])/g
       const keyText = keyLines.join(' ')
+      const re = /(\d{1,3})\s*[\.\):\-–=]?\s*\(?([A-Da-d])\)?(?![A-Za-z])/g
       let m
       while ((m = re.exec(keyText))) {
         const q = qs.find(x => x.number === Number(m[1])) || qs[Number(m[1]) - 1]
-        if (q && !q.correct) q.correct = m[2].toUpperCase()
+        if (q && !q.correct && !q.forceTheory && ['A', 'B', 'C', 'D'].every(L => q.options[L])) q.correct = m[2].toUpperCase()
       }
+      const guide = {}; let kn = null
+      keyLines.slice(1).forEach(l => { const nm = NUM.exec(l); if (nm) { kn = Number(nm[1]); guide[kn] = nm[2] } else if (kn !== null) guide[kn] += ' ' + l })
+      qs.forEach(q => { if ((q.forceTheory || !['A', 'B', 'C', 'D'].every(L => q.options[L])) && !q.model && guide[q.number] && guide[q.number].trim().length > 3) q.model = guide[q.number].trim() })
     }
 
-    return qs.map(q => ({
-      text: q.text, options: { A: q.options.A || '', B: q.options.B || '', C: q.options.C || '', D: q.options.D || '' },
-      correct: q.correct, marks: null, issues: q.issues
-    })).filter(q => q.text || q.options.A)
+    return qs.map(q => {
+      const isTheory = q.forceTheory || !['A', 'B', 'C', 'D'].every(L => q.options[L])
+      let marks = null
+      if (isTheory) {
+        let t = q.raw.join('\n').trim()
+        const mm = MARKS_RE.exec(t); if (mm) { marks = parseFloat(mm[1]); t = t.replace(MARKS_RE, '') }
+        return { type: 'theory', text: t.trim(), options: { A: '', B: '', C: '', D: '' }, correct: null, model: q.model || '', marks, issues: q.issues }
+      }
+      let t = q.stem
+      const mm = MARKS_RE.exec(t); if (mm) { marks = parseFloat(mm[1]); t = t.replace(MARKS_RE, '') }
+      return { type: 'objective', text: t.trim(), options: { A: q.options.A || '', B: q.options.B || '', C: q.options.C || '', D: q.options.D || '' }, correct: q.correct, model: '', marks, issues: q.issues }
+    }).filter(q => q.text)
   }
 
   function startReview(items, sourceName) {
-    const defaultMarks = parseFloat(document.getElementById('importMarks').value)
-    const fallback = Number.isFinite(defaultMarks) ? defaultMarks : 1
-    importItems = items.map(q => ({ ...q, include: true, marks: q.marks ?? fallback }))
+    const dm = parseFloat(document.getElementById('importMarks').value), tm = parseFloat(document.getElementById('importTheoryMarks').value)
+    const objMarks = Number.isFinite(dm) ? dm : 1, theoryMarks = Number.isFinite(tm) ? tm : 5
+    importItems = items.map(q => ({ ...q, include: true, marks: q.marks ?? (q.type === 'theory' ? theoryMarks : objMarks) }))
     renderImport()
     if (!importItems.length) {
-      setImportStatus("I couldn't find any questions in " + sourceName + '. Check that questions are numbered with options A to D, or use the CSV template.', 'bad')
+      setImportStatus("I couldn't find any questions in " + sourceName + '. Check that questions are numbered, or use the CSV template.', 'bad')
     } else {
-      const noAns = importItems.filter(q => !q.correct).length
-      setImportStatus('Found ' + importItems.length + ' question' + (importItems.length === 1 ? '' : 's') + ' in ' + sourceName + '.' + (noAns ? ' ' + noAns + ' still need a correct answer.' : ' Please review them, then add them to the exam.'), noAns ? '' : 'ok')
+      const obj = importItems.filter(q => q.type === 'objective').length, th = importItems.length - obj
+      const noAns = importItems.filter(q => q.type === 'objective' && !q.correct).length
+      setImportStatus('Found ' + importItems.length + ' question' + (importItems.length === 1 ? '' : 's') + ' in ' + sourceName + ' (' + obj + ' objective, ' + th + ' theory).' + (noAns ? ' ' + noAns + ' objective question' + (noAns === 1 ? ' still needs' : 's still need') + ' a correct answer.' : ' Review them, then add them to the exam.'), noAns ? '' : 'ok')
     }
   }
 
@@ -785,27 +859,34 @@ Answer: B</pre>
     }
   }
 
+  // problems that stop a question being added
   function importProblems(q) {
     const p = []
     if (!q.text.trim()) p.push('No question text')
-    const missing = ['A', 'B', 'C', 'D'].filter(L => !q.options[L].trim())
-    if (missing.length) p.push('Missing option ' + missing.join(', '))
-    if (!q.correct) p.push('Choose the correct answer')
-    return p.concat(q.issues || [])
+    if (q.type === 'objective') {
+      const missing = ['A', 'B', 'C', 'D'].filter(L => !q.options[L].trim())
+      if (missing.length) p.push('Missing option ' + missing.join(', '))
+      if (!q.correct) p.push('Choose the correct answer')
+    }
+    return p
   }
+  const importNotes = (q) => (q.issues || []).concat(q.type === 'theory' && !(q.model || '').trim() ? ['No marking guide yet (optional)'] : [])
 
   function renderImport() {
     const box = document.getElementById('importPreview'), bar = document.getElementById('importBar')
     if (!importItems.length) { box.innerHTML = ''; bar.style.display = 'none'; return }
     bar.style.display = 'flex'
     box.innerHTML = importItems.map((q, i) => {
-      const problems = importProblems(q)
+      const bad = importProblems(q), notes = importNotes(q)
       return `<div class="imp-item${q.include ? '' : ' skipped'}" data-i="${i}">
         <div class="imp-head"><label class="imp-check"><input type="checkbox" data-f="include" ${q.include ? 'checked' : ''}> Question ${i + 1}</label>
-          <div class="imp-badges">${problems.map(x => `<span class="imp-badge">${escapeHtml(x)}</span>`).join('')}</div></div>
-        <textarea data-f="text" rows="2">${escapeHtml(q.text)}</textarea>
-        ${['A', 'B', 'C', 'D'].map(L => `<div class="option-input-row"><div class="option-letter${q.correct === L ? ' on' : ''}">${L}</div><input type="text" data-f="opt${L}" value="${escapeHtml(q.options[L])}" placeholder="Option ${L}"></div>`).join('')}
-        <div class="imp-foot"><div><label>Correct answer</label><select data-f="correct"><option value="">Choose…</option>${['A', 'B', 'C', 'D'].map(L => `<option value="${L}" ${q.correct === L ? 'selected' : ''}>${L}</option>`).join('')}</select></div>
+          <div class="imp-type"><span>Type</span><select data-f="type"><option value="objective" ${q.type === 'objective' ? 'selected' : ''}>Objective</option><option value="theory" ${q.type === 'theory' ? 'selected' : ''}>Theory</option></select></div></div>
+        <div class="imp-badges">${bad.map(x => `<span class="imp-badge">${escapeHtml(x)}</span>`).join('')}${notes.map(x => `<span class="imp-badge" style="background:var(--navy-tint);color:var(--navy)">${escapeHtml(x)}</span>`).join('')}</div>
+        <textarea data-f="text" rows="${q.type === 'theory' ? 3 : 2}" style="margin-top:8px">${escapeHtml(q.text)}</textarea>
+        ${q.type === 'theory'
+          ? `<label style="font-size:13px;font-weight:600;color:var(--navy)">Marking guide (optional)</label><textarea data-f="model" rows="2" placeholder="Key points a good answer should contain…">${escapeHtml(q.model || '')}</textarea>`
+          : `${['A', 'B', 'C', 'D'].map(L => `<div class="option-input-row"><div class="option-letter${q.correct === L ? ' on' : ''}">${L}</div><input type="text" data-f="opt${L}" value="${escapeHtml(q.options[L])}" placeholder="Option ${L}"></div>`).join('')}`}
+        <div class="imp-foot">${q.type === 'objective' ? `<div><label>Correct answer</label><select data-f="correct"><option value="">Choose…</option>${['A', 'B', 'C', 'D'].map(L => `<option value="${L}" ${q.correct === L ? 'selected' : ''}>${L}</option>`).join('')}</select></div>` : '<div></div>'}
           <div><label>Marks</label><input type="number" data-f="marks" min="0" step="0.5" value="${q.marks}"></div></div>
       </div>`
     }).join('')
@@ -823,14 +904,15 @@ Answer: B</pre>
   function onImportEdit(e) {
     const item = e.target.closest('.imp-item'); if (!item) return
     const q = importItems[Number(item.dataset.i)], f = e.target.dataset.f; if (!q || !f) return
+    if (f === 'type') { q.type = e.target.value; if (q.type === 'theory' && Number(q.marks) === 1) q.marks = 5; renderImport(); return }
     if (f === 'include') { q.include = e.target.checked; item.classList.toggle('skipped', !q.include) }
     else if (f === 'text') q.text = e.target.value
+    else if (f === 'model') q.model = e.target.value
     else if (f.startsWith('opt')) q.options[f.slice(3)] = e.target.value
     else if (f === 'correct') { q.correct = e.target.value || null; item.querySelectorAll('.option-letter').forEach(el => el.classList.toggle('on', el.textContent === q.correct)) }
     else if (f === 'marks') q.marks = parseFloat(e.target.value) || 0
     if (e.type === 'change' || f === 'text' || f.startsWith('opt')) {
-      const problems = importProblems(q)
-      item.querySelector('.imp-badges').innerHTML = problems.map(x => `<span class="imp-badge">${escapeHtml(x)}</span>`).join('')
+      item.querySelector('.imp-badges').innerHTML = importProblems(q).map(x => `<span class="imp-badge">${escapeHtml(x)}</span>`).join('') + importNotes(q).map(x => `<span class="imp-badge" style="background:var(--navy-tint);color:var(--navy)">${escapeHtml(x)}</span>`).join('')
       item.classList.remove('bad')
     }
     updateImportSummary()
@@ -840,7 +922,7 @@ Answer: B</pre>
 
   document.getElementById('importSaveBtn').addEventListener('click', async () => {
     const chosen = importItems.map((q, i) => ({ q, i })).filter(x => x.q.include)
-    const badOnes = chosen.filter(x => importProblems(x.q).filter(p => !/option E/.test(p)).length)
+    const badOnes = chosen.filter(x => importProblems(x.q).length)
     document.querySelectorAll('.imp-item').forEach(el => el.classList.remove('bad'))
     if (badOnes.length) {
       badOnes.forEach(x => document.querySelector('.imp-item[data-i="' + x.i + '"]').classList.add('bad'))
@@ -850,13 +932,15 @@ Answer: B</pre>
     }
     const btn = document.getElementById('importSaveBtn')
     btn.disabled = true; btn.textContent = 'Adding…'
-    const rows = chosen.map(x => ({ exam_id: currentExam.id, question_text: x.q.text.trim(), options: { A: x.q.options.A.trim(), B: x.q.options.B.trim(), C: x.q.options.C.trim(), D: x.q.options.D.trim() }, correct_option: x.q.correct, marks: x.q.marks }))
+    const rows = chosen.map(x => x.q.type === 'theory'
+      ? { exam_id: currentExam.id, question_text: x.q.text.trim(), question_type: 'theory', options: null, correct_option: null, model_answer: (x.q.model || '').trim() || null, marks: x.q.marks }
+      : { exam_id: currentExam.id, question_text: x.q.text.trim(), question_type: 'objective', options: { A: x.q.options.A.trim(), B: x.q.options.B.trim(), C: x.q.options.C.trim(), D: x.q.options.D.trim() }, correct_option: x.q.correct, marks: x.q.marks })
     let failed = null
     for (let i = 0; i < rows.length && !failed; i += 100) {
       const { error } = await supabase.from('cbt_questions').insert(rows.slice(i, i + 100))
       if (error) failed = error
     }
-    if (failed) { updateImportSummary(); showMessage('questionMsgBox', 'Could not add questions: ' + failed.message, 'error'); return }
+    if (failed) { updateImportSummary(); showMessage('questionMsgBox', /question_type|model_answer/i.test(failed.message) ? 'Theory questions need the database upgrade (cbt-theory.sql) first.' : 'Could not add questions: ' + failed.message, 'error'); return }
     importItems = []; renderImport()
     setImportStatus(rows.length + ' question' + (rows.length === 1 ? '' : 's') + ' added to the exam.', 'ok')
     showMessage('questionMsgBox', rows.length + ' question' + (rows.length === 1 ? '' : 's') + ' added.', 'success')
@@ -875,7 +959,7 @@ Answer: B</pre>
     startReview(parseQuestionsFromText(t), 'the pasted text')
   })
   document.getElementById('importTemplateBtn').addEventListener('click', () => {
-    const csv = '\ufeffQuestion,A,B,C,D,Answer,Marks\n"What is 2 + 3?",4,5,6,7,B,1\n"Which of these is a prime number?",4,6,7,9,C,1\n'
+    const csv = '\ufeffQuestion,A,B,C,D,Answer,Marks\n"What is 2 + 3?",4,5,6,7,B,1\n"Explain why plants need sunlight.",,,,,"Plants use sunlight to make their own food (photosynthesis).",5\n'
     const a = document.createElement('a')
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); a.download = 'cbt-questions-template.csv'
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000)
