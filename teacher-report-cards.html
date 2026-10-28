@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Report Cards — Teacher Portal</title>
+<meta name="theme-color" content="#101B3D" />
+<title>Report Cards — Teacher</title>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500..700&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -97,30 +98,98 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
 }
 
 
-.wrap { max-width: 920px; }
-select, textarea { padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: #fff; color: var(--ink); width: 100%; }
 
-.student-pick { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
-.student-pick:last-child { border-bottom: none; }
-.student-pick .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--cream); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--muted); overflow: hidden; flex-shrink: 0; }
-.student-pick .avatar img { width: 100%; height: 100%; object-fit: cover; }
-.student-pick .name { font-size: 14.5px; font-weight: 600; }
+.wrap { max-width: 980px; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheetUp { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes pop { 0% { transform: scale(.6); opacity: 0; } 70% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(179,38,30,0.45); } 50% { box-shadow: 0 0 0 10px rgba(179,38,30,0); } }
+[hidden] { display: none !important; }
+button { font: inherit; cursor: pointer; }
+button:disabled { opacity: .55; cursor: not-allowed; }
+.btn-primary, .btn-ghost, .btn-small, .btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; border-radius: 8px; border: 1.5px solid transparent; transition: background .15s, border-color .15s, color .15s, transform .1s; }
+.btn-primary { min-height: 48px; padding: 0 22px; background: var(--navy); color: #fff; font-size: 15px; }
+.btn-primary:hover:not(:disabled) { background: var(--maroon); }
+.btn-ghost { min-height: 46px; padding: 0 20px; background: #fff; color: var(--navy); border-color: var(--border); font-size: 14.5px; }
+.btn-ghost:hover:not(:disabled) { border-color: var(--navy); background: var(--navy-tint); }
+.btn-small { min-height: 38px; padding: 0 14px; background: #fff; color: var(--navy); border-color: var(--border); font-size: 13.5px; }
+.btn-small:hover { border-color: var(--navy); background: var(--navy-tint); }
+.btn-danger { min-height: 46px; padding: 0 20px; background: var(--red); color: #fff; }
+.btn-primary:active, .btn-ghost:active, .btn-small:active { transform: scale(.98); }
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin: 18px 0 20px; }
+.tab { position: relative; padding: 12px 16px; font-weight: 600; font-size: 14.5px; color: var(--muted); background: none; border: none; transition: color .15s; }
+.tab::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 3px; border-radius: 3px 3px 0 0; background: var(--maroon); transform: scaleX(0); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+.tab.on { color: var(--navy); } .tab.on::after { transform: scaleX(1); } .tab:hover { color: var(--navy); }
+.modal-overlay { position: fixed; inset: 0; background: rgba(11,19,41,0.6); backdrop-filter: blur(2px); z-index: 2500; display: none; align-items: flex-end; justify-content: center; }
+.modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
+.modal { background: #fff; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; border-radius: 18px 18px 0 0; border-top: 5px solid var(--gold); padding: 24px 24px 28px; }
+.modal-overlay.open .modal { animation: sheetUp .3s cubic-bezier(.22,1,.36,1); }
+.modal h2 { font-size: 21px; color: var(--navy); margin-bottom: 8px; } .modal p, .modal li { font-size: 14.5px; color: var(--muted); }
+.modal ul { padding-left: 18px; margin: 10px 0 16px; display: grid; gap: 6px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-top: 16px; }
+@media (min-width: 640px) { .modal-overlay { align-items: center; padding: 20px; } .modal { border-radius: 16px; } }
+@media (max-width: 639px) { .modal { padding-bottom: 88px; } }
+.badge { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.badge.open { background: var(--green-tint); color: #1d5a21; } .badge.in_progress { background: var(--amber-tint); color: var(--amber-text); }
+.badge.expired, .badge.closed { background: var(--red-tint); color: #8d1d17; } .badge.upcoming { background: var(--navy-tint); color: var(--navy); } .badge.completed { background: var(--green-tint); color: #1d5a21; }
+.ring { --p: 0; --col: var(--green); position: relative; flex-shrink: 0; width: 68px; height: 68px; border-radius: 50%; background: conic-gradient(var(--col) calc(var(--p) * 1%), var(--navy-tint) 0); display: grid; place-items: center; }
+.ring::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: #fff; }
+.ring b { position: relative; font-family: var(--serif); font-size: 15px; color: var(--navy); }
+.ring.mid { --col: #d98a1f; } .ring.low { --col: var(--red); }
 
-.summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
-.summary-box { background: var(--cream); border-radius: 12px; padding: 14px; text-align: center; }
-.summary-box strong { display: block; font-family: 'Fraunces', serif; font-size: 20px; color: var(--navy); }
-.summary-box span { font-size: 11px; color: var(--muted); }
 
-.subject-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-.subject-row:last-child { border-bottom: none; }
-.subject-row .sname { font-weight: 600; }
-.subject-row .stot { color: var(--maroon); font-weight: 700; }
+.wrap { max-width: 980px; }
+.ctl { display: grid; gap: 12px; padding: 16px 20px; margin-bottom: 14px; } @media (min-width: 640px) { .ctl { grid-template-columns: 1fr 1fr; } }
+.ctl label { display: block; font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.prow { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 18px; border-bottom: 1px solid var(--border); background: #fff; }
+.plist { background: #fff; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; } .plist .prow:last-child { border-bottom: none; }
+.prow h3 { font-size: 16px; color: var(--navy); } .prow small { color: var(--muted); font-size: 13px; display: block; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.tag { padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; } .tag.ok { background: var(--green-tint); color: #1d5a21; } .tag.no { background: var(--amber-tint); color: var(--amber-text); } .tag.info { background: var(--navy-tint); color: var(--navy); }
+.back { display: inline-block; margin-bottom: 14px; color: var(--maroon); font-weight: 600; cursor: pointer; background: none; border: none; font-size: 14.5px; padding: 0; }
+.panel { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 16px; }
+.panel h2 { font-size: 18px; color: var(--navy); margin-bottom: 4px; } .panel .sub { font-size: 13.5px; color: var(--muted); margin-bottom: 14px; }
+.att { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; } .att label { display: block; font-size: 12.5px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+.rate-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px dotted #c3c8d6; } .rate-row:last-child { border-bottom: none; }
+.rate-row > span { font-size: 14.5px; font-weight: 600; }
+.pills { display: flex; gap: 6px; } .pills button { width: 40px; height: 40px; border-radius: 10px; border: 1.5px solid var(--border); background: #fff; font-weight: 700; color: var(--muted); transition: all .12s; }
+.pills button:hover { border-color: var(--navy); } .pills button.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+.cols2 { display: grid; gap: 16px; } @media (min-width: 860px) { .cols2 { grid-template-columns: 1fr 1fr; } }
+textarea { width: 100%; min-height: 96px; padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 8px; font: inherit; font-size: 14.5px; resize: vertical; }
+textarea:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,27,61,0.14); }
+.sugg { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; } .sugg button { border: 1px solid var(--border); background: var(--cream); border-radius: 999px; padding: 5px 12px; font-size: 12.5px; color: var(--navy); }
+.sugg button:hover { border-color: var(--navy); background: var(--navy-tint); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; margin: 4px 0 20px; }
+.empty-note { padding: 36px 16px; }
 
-.att-row { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
-.att-pill { padding: 8px 14px; border-radius: 999px; font-size: 12.5px; font-weight: 600; background: var(--cream); color: var(--navy); }
-.btn-save:disabled { opacity: 0.6; }
-.btn-save:hover:not(:disabled) { background: var(--maroon-dark); }
-.back-link { font-size: 13.5px; color: var(--maroon); font-weight: 600; margin-bottom: 14px; display: inline-block; }
+.rc-scroll { overflow-x: auto; }
+.rc { background: #fff; border: 2px solid #1c2440; padding: 18px 20px; max-width: 920px; min-width: 640px; margin: 0 auto; font-size: 12.5px; color: #111; font-family: Arial, Helvetica, sans-serif; line-height: 1.35; }
+.rc-head { text-align: center; border-bottom: 3px double #1c2440; padding-bottom: 10px; margin-bottom: 10px; }
+.rc-head h1 { font-size: 20px; margin: 0; color: #101B3D; letter-spacing: .02em; }
+.rc-head h2 { font-size: 13.5px; margin: 5px 0 0; letter-spacing: .05em; color: #6E1F2B; }
+.rc-info { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 22px; margin: 8px 0 10px; }
+.rc-info div { border-bottom: 1px dotted #777; padding: 2px 0; } .rc-info b { display: inline-block; min-width: 96px; }
+.rc h3 { font-size: 12.5px; margin: 12px 0 4px; background: #eceef6; padding: 4px 8px; color: #101B3D; }
+.rc-t { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.rc-t th, .rc-t td { border: 1px solid #444; padding: 3px 5px; text-align: center; }
+.rc-t thead th { background: #f3f4f8; font-weight: 700; }
+.rc-t .l { text-align: left; } .rc-t td.subj { text-align: left; white-space: nowrap; } .rc-t td.rem { text-align: left; }
+.rc-t tfoot td { font-weight: 700; background: #f3f4f8; }
+.rc-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+.rc-att { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; align-items: start; }
+.rc-dates div { border-bottom: 1px dotted #777; margin-bottom: 8px; padding: 2px 0; }
+.rate td { height: 20px; font-weight: 700; color: #101B3D; }
+.rc-scale { font-size: 11px; margin-top: 4px; color: #333; }
+.rc-sum { display: flex; flex-wrap: wrap; gap: 8px 30px; margin: 10px 0 4px; font-weight: 700; }
+.rc-line { border-bottom: 1px solid #444; min-height: 24px; padding: 3px 0; margin: 0 0 8px; }
+.rc-line.sig { display: flex; justify-content: space-between; gap: 20px; border: none; padding: 0; }
+.rc-line.sig span { flex: 1; border-bottom: 1px solid #444; min-height: 22px; display: block; padding: 2px 0; }
+.rc-line b { font-weight: 700; }
+.rc-pub { text-align: center; font-size: 11px; color: #6E1F2B; margin: 6px 0 0; }
+.rc-page { page-break-after: always; padding: 10px; }
+@page { size: A4; margin: 10mm; }
+@media print { .rc { border-width: 1.5px; min-width: 0; max-width: none; } .rc-page:last-child { page-break-after: auto; } }
 </style>
 </head>
 <body>
@@ -140,48 +209,41 @@ select, textarea { padding: 12px 14px; border: 1.5px solid var(--border); border
 
 
 <div class="wrap" id="appWrap" style="display:none;">
-  <div class="welcome">
-    <h1>Report Cards</h1>
-    <p>Write termly comments and preview each student's report card.</p>
+  <div id="viewList">
+    <div class="welcome"><h1>Report Cards</h1><p>Scores come from the broadsheet. Add attendance, ratings and your comment for each pupil.</p></div>
+    <div class="card ctl">
+      <div><label for="classSel">Class</label><select id="classSel"></select></div>
+      <div><label for="termSel">Term</label><select id="termSel"></select></div>
+    </div>
+    <div class="plist" id="plist"></div>
+    <p class="empty-note" id="noClass" hidden>You are not the class teacher of any class yet. Ask the school office to set you as class teacher (Academics page).</p>
   </div>
 
-  <div class="card" id="pickerCard">
-    <div class="field-row" style="margin-bottom:16px;">
-      <label for="classSelect">Class &amp; Term</label>
-      <select id="classSelect"></select>
-    </div>
-    <h2>Select a Student</h2>
-    <div id="studentList"></div>
-  </div>
+  <div id="viewOne" hidden>
+    <button type="button" class="back" id="backBtn">&larr; All pupils</button>
+    <div class="welcome"><h1 id="oneName"></h1><p id="oneMeta"></p></div>
 
-  <div id="detailCard" class="card" style="display:none;">
-    <a class="back-link" id="backLink">← Back to list</a>
-    <h2 id="detailName"></h2>
-
-    <div id="msgBox" class="msg"></div>
-
-    <div class="summary-grid">
-      <div class="summary-box"><strong id="sumTotal">—</strong><span>Total Score</span></div>
-      <div class="summary-box"><strong id="sumAverage">—</strong><span>Average</span></div>
-      <div class="summary-box"><strong id="sumSubjects">—</strong><span>Subjects Recorded</span></div>
+    <div class="panel"><h2>Attendance</h2><p class="sub">Counted from the attendance records. Change a number only if it is wrong. Leave it empty to use the count.</p>
+      <div class="att"><div><label for="attOpened">Times school opened</label><input type="number" id="attOpened" min="0"></div><div><label for="attPresent">Times present</label><input type="number" id="attPresent" min="0"></div><div><label for="attPunctual">Times punctual</label><input type="number" id="attPunctual" min="0"></div></div>
     </div>
 
-    <h2>Attendance This Term</h2>
-    <div class="att-row" id="attRow"></div>
-
-    <h2>Scores by Subject</h2>
-    <div id="subjectList" style="margin-bottom: 20px;"></div>
-
-    <div class="field-row">
-      <label for="teacherComment">Teacher's Comment</label>
-      <textarea id="teacherComment" placeholder="Write your comment for this student's term…"></textarea>
+    <div class="cols2">
+      <div class="panel"><h2>Psychomotor skills</h2><p class="sub">5 Excellent · 4 Good · 3 Fair · 2 Poor · 1 Very poor</p><div id="psyBox"></div></div>
+      <div class="panel"><h2>Affective areas</h2><p class="sub">5 Excellent · 4 Good · 3 Fair · 2 Poor · 1 Very poor</p><div id="affBox"></div></div>
     </div>
-    <button class="btn-save" id="saveCommentBtn">Save Comment</button>
+
+    <div class="panel"><h2>Class teacher's comment</h2>
+      <textarea id="comment" maxlength="300" placeholder="Write a short comment about this pupil's term…"></textarea>
+      <div class="sugg" id="sugg"></div>
+    </div>
+
+    <div class="actions"><button type="button" class="btn-ghost" id="previewBtn">Preview card</button><button type="button" class="btn-ghost" id="saveBtn">Save</button><button type="button" class="btn-primary" id="saveNextBtn">Save and next pupil</button></div>
+    <div class="rc-scroll" id="preview" hidden></div>
   </div>
 </div>
 
 <div id="loadingState" class="loading">Loading…</div>
-
+<div id="msgBox" class="msg"></div>
 
 <div class="nav-drawer" id="navDrawer">
   <div class="nav-drawer-top">
@@ -193,8 +255,9 @@ select, textarea { padding: 12px 14px; border: 1.5px solid var(--border); border
   <nav class="nav-drawer-links">
     <a href="/teacher-dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>Dashboard</span></a>
     <a href="/teacher-students.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
-    <a href="/teacher-report-cards.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Reports</span></a>
-    <a href="/teacher-cbt.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span>CBT</span></a>
+    <a href="/teacher-broadsheet.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg><span>Broadsheet</span></a>
+    <a href="/teacher-report-cards.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg><span>Report Cards</span></a>
+    <a href="/teacher-cbt.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>CBT Exams</span></a>
     <a href="/teacher-profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
   </nav>
   <button class="nav-drawer-signout" id="drawerSignOutBtn">Sign Out</button>
@@ -204,226 +267,191 @@ select, textarea { padding: 12px 14px; border: 1.5px solid var(--border); border
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
   const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
 
-  let currentUser = null
-  let combos = []
-  let roster = []
-  let currentCombo = null
-  let currentStudent = null
-  let existingReportCard = null
+  const here = location.pathname.replace(/\.html$/, '').split('/').pop()
+  document.querySelectorAll('.nav-drawer-links a').forEach(a => a.classList.toggle('active', a.getAttribute('href').replace(/\.html$/, '').split('/').pop() === here))
 
-  function studentName(s) { return [s.surname, s.other_names].filter(Boolean).join(' ') || 'Unnamed Student' }
-  function initials(s) { return ((s.surname || '')[0] || '') + ((s.other_names || '')[0] || '') }
+  const $ = (id) => document.getElementById(id)
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  const num = (n) => (n === null || n === undefined || n === '') ? '' : String(Math.round(Number(n) * 10) / 10)
+  const nameOf = (s) => [s.surname, s.other_names].filter(Boolean).join(' ') || 'Unnamed student'
   function showMessage(text, type) {
-    const box = document.getElementById('msgBox')
-    box.textContent = text
-    box.className = 'msg ' + type
-    setTimeout(() => { box.className = 'msg' }, 4000)
+    const box = $('msgBox'); box.textContent = text; box.className = 'msg ' + type
+    clearTimeout(showMessage._t); showMessage._t = setTimeout(() => { box.className = 'msg' }, 5000)
+  }
+  supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    .then(({ data }) => { if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name }) })
+  const goLogin = () => { window.location.href = '/login.html' }
+  $('signOutBtn').addEventListener('click', async () => { await supabase.auth.signOut(); goLogin() })
+  const navDrawer = $('navDrawer')
+  $('hamburgerBtn').addEventListener('click', () => navDrawer.classList.add('open'))
+  $('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
+  $('drawerSignOutBtn').addEventListener('click', async () => { await supabase.auth.signOut(); goLogin() })
+  function todayTerm(terms) {
+    const today = new Date().toISOString().slice(0, 10)
+    const run = terms.find(t => t.start_date && t.end_date && t.start_date <= today && today <= t.end_date)
+    if (run) return run
+    return terms.slice().sort((a, b) => String(b.start_date || '').localeCompare(String(a.start_date || '')))[0] || null
   }
 
-  async function loadSchoolName() {
-    const { data } = await supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
-    if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name })
+  const RC_PSY = ['Hand writing', 'Verbal fluency', 'Games', 'Sports', 'Handling tools', 'Drawing & painting', 'Musical skills']
+  const RC_AFF = ['Punctuality', 'Neatness', 'Politeness', 'Honesty', 'Co-operation with others', 'Leadership', 'Helping others', 'Emotional stability', 'Health', 'Attitude to work', 'Attentiveness', 'Perseverance', 'Speaking/Handwriting']
+  const rcEsc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  const rcNum = (n) => (n === null || n === undefined || n === '') ? '' : String(Math.round(Number(n) * 10) / 10)
+  const rcDate = (d) => d ? new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '...........................'
+  const rcOrd = (n) => { if (n === null || n === undefined || n === '') return ''; n = Number(n); const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]) }
+
+  function rcRatings(title, list, values) {
+    const cols = [5, 4, 3, 2, 1]
+    return `<table class="rc-t rate"><thead><tr><th class="l">${title}</th>${cols.map(n => `<th style="width:28px">${n}</th>`).join('')}</tr></thead><tbody>${list.map(k => `<tr><td class="l">${rcEsc(k)}</td>${cols.map(n => `<td>${Number(values[k]) === n ? '&#10003;' : ''}</td>`).join('')}</tr>`).join('')}</tbody></table>`
   }
+
+  function reportCardHtml(rc) {
+    const m = rc.maxima, t = rc.totals, a = rc.attendance, subs = rc.subjects || [], st = rc.student, tm = rc.term
+    const n = subs.length
+    const sum = (k) => subs.reduce((s, x) => s + Number(x[k] || 0), 0)
+    const rows = subs.map(s => `<tr><td class="subj">${rcEsc(s.name)}</td><td>${rcNum(m.test)}</td><td>${rcNum(s.test)}</td><td>${rcNum(m.exam)}</td><td>${rcNum(s.exam)}</td><td>${rcNum(m.total)}</td><td><b>${rcNum(s.total)}</b></td><td>${rcNum(s.class_average)}</td><td>${rcOrd(s.position)}</td><td class="rem">${rcEsc(s.remark)}</td></tr>`).join('')
+    return `<div class="rc">
+      <div class="rc-head"><h1>${rcEsc(rc.school)}</h1><h2>CONTINUOUS ASSESSMENT FOR ${rcEsc((tm.name || '').toUpperCase())}${tm.session ? ' &middot; ' + rcEsc(tm.session) + ' SESSION' : ''}</h2></div>
+      <div class="rc-info"><div><b>Name:</b> ${rcEsc(st.name)}</div><div><b>Class:</b> ${rcEsc(st.class_name || '')}</div><div><b>Admission No.:</b> ${rcEsc(st.admission_number || '')}</div><div><b>Pupils in class:</b> ${rcEsc(t.pupils ?? '')}</div></div>
+
+      <h3>1. ATTENDANCE</h3>
+      <div class="rc-att"><table class="rc-t"><tbody>
+        <tr><td class="l">No. of times school opened</td><td style="width:80px">${rcEsc(a.opened ?? '')}</td></tr>
+        <tr><td class="l">No. of times present</td><td>${rcEsc(a.present ?? '')}</td></tr>
+        <tr><td class="l">No. of times punctual</td><td>${rcEsc(a.punctual ?? '')}</td></tr></tbody></table>
+        <div class="rc-dates"><div><b>School closed on:</b> ${rcDate(a.closed_on)}</div><div><b>Next term begins on:</b> ${rcDate(a.next_term_begins)}</div></div></div>
+
+      <h3>2. COGNITIVE ABILITY</h3>
+      <div class="rc-scroll"><table class="rc-t"><thead>
+        <tr><th rowspan="2" class="l">Subject</th><th colspan="2">1st Half</th><th colspan="2">2nd Half</th><th colspan="2">Final Result</th><th rowspan="2">Class<br>Average</th><th rowspan="2">Position</th><th rowspan="2" class="l">Teacher's<br>Remarks</th></tr>
+        <tr><th>Marks<br>Obtainable</th><th>Marks<br>Obtained</th><th>Marks<br>Obtainable</th><th>Marks<br>Obtained</th><th>Marks<br>Obtainable</th><th>Marks<br>Obtained</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="10">No scores have been entered yet.</td></tr>'}</tbody>
+        <tfoot><tr><td class="l">TOTAL</td><td>${rcNum(n * m.test)}</td><td>${rcNum(sum('test'))}</td><td>${rcNum(n * m.exam)}</td><td>${rcNum(sum('exam'))}</td><td>${rcNum(n * m.total)}</td><td>${rcNum(t.obtained)}</td><td></td><td></td><td></td></tr></tfoot></table></div>
+      <div class="rc-sum"><span>Percentage: ${t.percentage === null || t.percentage === undefined ? '' : rcNum(t.percentage) + '%'}</span><span>Position in class: ${rcOrd(t.position)} of ${rcEsc(t.pupils ?? '')}</span></div>
+
+      <div class="rc-two"><div><h3>3. PSYCHOMOTOR SKILLS</h3>${rcRatings('Skill', RC_PSY, rc.psychomotor || {})}</div><div><h3>4. AFFECTIVE AREAS</h3>${rcRatings('Area', RC_AFF, rc.affective || {})}</div></div>
+      <div class="rc-scale"><b>SCALE:</b> 5 - Excellent &nbsp; 4 - Good &nbsp; 3 - Fair &nbsp; 2 - Poor &nbsp; 1 - Very Poor</div>
+
+      <div style="margin-top:12px">
+        <div class="rc-line"><b>Class Teacher's Comment:</b> ${rcEsc(rc.comments.teacher || '')}</div>
+        <div class="rc-line sig"><span>Signature</span><span>Date</span></div>
+        <div class="rc-line"><b>Headmaster's/Headmistress's Comment:</b> ${rcEsc(rc.comments.head || '')}</div>
+        <div class="rc-line sig"><span>Signature</span><span>Date</span></div>
+        <div class="rc-line"><b>Parent's/Guardian's Comment:</b></div>
+        <div class="rc-line sig"><span>Signature</span><span>Date</span></div>
+      </div>
+      ${rc.published ? '' : '<div class="rc-pub">Not yet published to parents</div>'}
+    </div>`
+  }
+
+  function rcPrint(cards) {
+    const w = window.open('', '_blank')
+    if (!w) { alert('Please allow pop-ups to print.'); return }
+    w.document.write('<!doctype html><title>Report cards</title><style>' + RC_CSS_TEXT + '</style>' + cards.map(c => '<div class="rc-page">' + c + '</div>').join('') + '<script>window.onload=function(){window.print()}<\/script>')
+    w.document.close()
+  }
+  const RC_CSS_TEXT = "\n.rc-scroll { overflow-x: auto; }\n.rc { background: #fff; border: 2px solid #1c2440; padding: 18px 20px; max-width: 920px; min-width: 640px; margin: 0 auto; font-size: 12.5px; color: #111; font-family: Arial, Helvetica, sans-serif; line-height: 1.35; }\n.rc-head { text-align: center; border-bottom: 3px double #1c2440; padding-bottom: 10px; margin-bottom: 10px; }\n.rc-head h1 { font-size: 20px; margin: 0; color: #101B3D; letter-spacing: .02em; }\n.rc-head h2 { font-size: 13.5px; margin: 5px 0 0; letter-spacing: .05em; color: #6E1F2B; }\n.rc-info { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 22px; margin: 8px 0 10px; }\n.rc-info div { border-bottom: 1px dotted #777; padding: 2px 0; } .rc-info b { display: inline-block; min-width: 96px; }\n.rc h3 { font-size: 12.5px; margin: 12px 0 4px; background: #eceef6; padding: 4px 8px; color: #101B3D; }\n.rc-t { width: 100%; border-collapse: collapse; font-size: 11.5px; }\n.rc-t th, .rc-t td { border: 1px solid #444; padding: 3px 5px; text-align: center; }\n.rc-t thead th { background: #f3f4f8; font-weight: 700; }\n.rc-t .l { text-align: left; } .rc-t td.subj { text-align: left; white-space: nowrap; } .rc-t td.rem { text-align: left; }\n.rc-t tfoot td { font-weight: 700; background: #f3f4f8; }\n.rc-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }\n.rc-att { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; align-items: start; }\n.rc-dates div { border-bottom: 1px dotted #777; margin-bottom: 8px; padding: 2px 0; }\n.rate td { height: 20px; font-weight: 700; color: #101B3D; }\n.rc-scale { font-size: 11px; margin-top: 4px; color: #333; }\n.rc-sum { display: flex; flex-wrap: wrap; gap: 8px 30px; margin: 10px 0 4px; font-weight: 700; }\n.rc-line { border-bottom: 1px solid #444; min-height: 24px; padding: 3px 0; margin: 0 0 8px; }\n.rc-line.sig { display: flex; justify-content: space-between; gap: 20px; border: none; padding: 0; }\n.rc-line.sig span { flex: 1; border-bottom: 1px solid #444; min-height: 22px; display: block; padding: 2px 0; }\n.rc-line b { font-weight: 700; }\n.rc-pub { text-align: center; font-size: 11px; color: #6E1F2B; margin: 6px 0 0; }\n.rc-page { page-break-after: always; padding: 10px; }\n@page { size: A4; margin: 10mm; }\n@media print { .rc { border-width: 1.5px; min-width: 0; max-width: none; } .rc-page:last-child { page-break-after: auto; } }\n"
+
+  let me = null, classes = [], terms = [], summary = [], rc = null, ratings = { psy: {}, aff: {} }, idx = -1
 
   async function init() {
-    loadSchoolName()
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) { window.location.href = '/login.html'; return }
-    currentUser = session.user
+    if (!session) { goLogin(); return }
+    const { data: membership } = await supabase.from('school_members').select('role').eq('user_id', session.user.id).single()
+    if (!membership) { goLogin(); return }
+    if (membership.role !== 'teacher') { window.location.href = ['school_admin', 'super_admin'].includes(membership.role) ? '/admin/report-cards.html' : '/login.html'; return }
+    const { data: teacher } = await supabase.from('teachers').select('id').eq('user_id', session.user.id).single()
+    if (!teacher) { $('loadingState').textContent = 'No teacher record was found for your account.'; return }
+    me = teacher
 
-    const { data: membership } = await supabase.from('school_members').select('role').eq('user_id', currentUser.id).single()
-    if (!membership || membership.role !== 'teacher') { window.location.href = '/login.html'; return }
+    let cl = await supabase.from('classes').select('id, name, class_teacher_id')
+    if (cl.error) cl = await supabase.from('classes').select('id, name')
+    const asg = await supabase.from('teacher_assignments').select('class_id').eq('teacher_id', me.id)
+    const assigned = new Set((asg.data || []).map(a => a.class_id))
+    classes = (cl.data || []).filter(c => c.class_teacher_id === me.id || (!c.class_teacher_id && assigned.has(c.id))).sort((a, b) => String(a.name).localeCompare(String(b.name), undefined, { numeric: true }))
+    const tr = await supabase.from('terms').select('id, name, start_date, end_date, academic_sessions(name)')
+    terms = (tr.data || []).sort((a, b) => String(b.start_date || '').localeCompare(String(a.start_date || '')))
 
-    const { data: teacher } = await supabase.from('teachers').select('id').eq('user_id', currentUser.id).single()
-    if (!teacher) { document.getElementById('loadingState').textContent = 'No teacher record found for your account.'; return }
-
-    const { data: assignmentData } = await supabase
-      .from('teacher_assignments')
-      .select('class_id, term_id, classes(name), terms(name, start_date, end_date)')
-      .eq('teacher_id', teacher.id)
-
-    const seen = new Set()
-    combos = (assignmentData || []).filter(a => {
-      const key = a.class_id + '|' + a.term_id
-      if (seen.has(key)) return false
-      seen.add(key)
-      return true
-    })
-
-    document.getElementById('loadingState').style.display = 'none'
-    document.getElementById('appWrap').style.display = 'block'
-
-    if (combos.length === 0) {
-      document.getElementById('classSelect').innerHTML = '<option>No assignments yet</option>'
-      document.getElementById('studentList').innerHTML = '<p class="empty-note">No classes assigned yet.</p>'
-      return
-    }
-
-    const select = document.getElementById('classSelect')
-    select.innerHTML = combos.map((c, i) => `<option value="${i}">${c.classes?.name || '—'} · ${c.terms?.name || '—'}</option>`).join('')
-    select.addEventListener('change', () => loadRoster(combos[select.value]))
-    await loadRoster(combos[0])
+    $('loadingState').style.display = 'none'; $('appWrap').style.display = 'block'
+    if (!classes.length) { $('noClass').hidden = false; $('classSel').disabled = true; $('termSel').disabled = true; return }
+    $('classSel').innerHTML = classes.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('')
+    $('termSel').innerHTML = terms.map(t => `<option value="${esc(t.id)}">${esc(t.name)}${t.academic_sessions ? ' · ' + esc(t.academic_sessions.name) : ''}</option>`).join('')
+    const dt = todayTerm(terms); if (dt) $('termSel').value = dt.id
+    await loadList()
   }
 
-  async function loadRoster(combo) {
-    currentCombo = combo
-    const container = document.getElementById('studentList')
-    container.innerHTML = '<p class="empty-note">Loading roster…</p>'
-
-    const { data, error } = await supabase
-      .from('enrollments')
-      .select('student_id, students(id, surname, other_names, photo_url)')
-      .eq('class_id', combo.class_id)
-      .eq('term_id', combo.term_id)
-
-    if (error || !data || data.length === 0) {
-      container.innerHTML = '<p class="empty-note">No students enrolled in this class for this term yet.</p>'
-      roster = []
-      return
-    }
-
-    roster = data.filter(e => e.students).map(e => e.students).sort((a, b) => (a.surname || '').localeCompare(b.surname || ''))
-
-    container.innerHTML = roster.map(s => `
-      <div class="student-pick" data-id="${s.id}">
-        <div class="avatar">${s.photo_url ? `<img src="${s.photo_url}" alt="">` : initials(s)}</div>
-        <div class="name">${studentName(s)}</div>
-      </div>
-    `).join('')
-
-    container.querySelectorAll('.student-pick').forEach(row => {
-      row.addEventListener('click', () => openStudent(row.dataset.id))
-    })
+  async function loadList() {
+    const { data, error } = await supabase.rpc('class_term_summary', { p_class: $('classSel').value, p_term: $('termSel').value })
+    if (error) { showMessage(error.message, 'error'); summary = []; $('plist').innerHTML = ''; return }
+    summary = data || []
+    const done = summary.filter(x => x.r_teacher_comment).length
+    $('plist').innerHTML = summary.length ? summary.map((x, i) => `<div class="prow"><div><h3>${esc(x.r_name)}</h3><small>${esc(x.r_adm || '')}</small>
+      <div class="tags"><span class="tag info">${x.r_subjects} subject${x.r_subjects === 1 ? '' : 's'} scored</span>${x.r_pct !== null ? `<span class="tag info">${num(x.r_pct)}% · position ${x.r_position}</span>` : ''}<span class="tag ${x.r_teacher_comment ? 'ok' : 'no'}">${x.r_teacher_comment ? 'Comment done' : 'No comment yet'}</span>${x.r_published ? '<span class="tag ok">Published</span>' : ''}</div></div>
+      <button type="button" class="btn-small" data-open="${i}">${x.r_teacher_comment ? 'Edit' : 'Fill in'}</button></div>`).join('') +
+      `<div class="prow" style="background:var(--cream)"><small>${done} of ${summary.length} comments done</small></div>` : '<p class="empty-note">No admitted students in this class yet.</p>'
   }
+  $('classSel').addEventListener('change', loadList); $('termSel').addEventListener('change', loadList)
+  $('plist').addEventListener('click', (e) => { const b = e.target.closest('[data-open]'); if (b) openOne(Number(b.dataset.open)) })
 
-  async function openStudent(studentId) {
-    currentStudent = roster.find(r => r.id === studentId)
-    if (!currentStudent) return
-
-    document.getElementById('pickerCard').style.display = 'none'
-    document.getElementById('detailCard').style.display = 'block'
-    document.getElementById('detailName').textContent = studentName(currentStudent)
-    document.getElementById('sumTotal').textContent = '…'
-    document.getElementById('sumAverage').textContent = '…'
-    document.getElementById('sumSubjects').textContent = '…'
-    document.getElementById('attRow').innerHTML = ''
-    document.getElementById('subjectList').innerHTML = ''
-    document.getElementById('teacherComment').value = ''
-
-    const { data: scoreRows } = await supabase
-      .from('scores')
-      .select('score, subjects(name), assessment_types(name, max_score)')
-      .eq('student_id', studentId)
-      .eq('term_id', currentCombo.term_id)
-
-    const bySubject = {}
-    ;(scoreRows || []).forEach(row => {
-      const subj = row.subjects?.name || 'Unknown'
-      if (!bySubject[subj]) bySubject[subj] = 0
-      bySubject[subj] += Number(row.score) || 0
-    })
-    const subjectNames = Object.keys(bySubject)
-    const total = subjectNames.reduce((sum, k) => sum + bySubject[k], 0)
-    const average = subjectNames.length ? (total / subjectNames.length) : 0
-
-    document.getElementById('sumTotal').textContent = total ? total.toFixed(1) : '—'
-    document.getElementById('sumAverage').textContent = subjectNames.length ? average.toFixed(1) : '—'
-    document.getElementById('sumSubjects').textContent = subjectNames.length
-
-    document.getElementById('subjectList').innerHTML = subjectNames.length
-      ? subjectNames.map(name => `<div class="subject-row"><span class="sname">${name}</span><span class="stot">${bySubject[name].toFixed(1)}</span></div>`).join('')
-      : '<p class="empty-note">No scores recorded yet for this term.</p>'
-
-    const start = currentCombo.terms?.start_date
-    const end = currentCombo.terms?.end_date
-    if (start && end) {
-      const { data: attRows } = await supabase
-        .from('attendance')
-        .select('status')
-        .eq('student_id', studentId)
-        .gte('date', start)
-        .lte('date', end)
-
-      const counts = { present: 0, absent: 0, late: 0 }
-      ;(attRows || []).forEach(r => { if (counts[r.status] !== undefined) counts[r.status]++ })
-      document.getElementById('attRow').innerHTML = `
-        <div class="att-pill">Present: ${counts.present}</div>
-        <div class="att-pill">Absent: ${counts.absent}</div>
-        <div class="att-pill">Late: ${counts.late}</div>
-      `
-    } else {
-      document.getElementById('attRow').innerHTML = '<div class="att-pill">Term dates not set</div>'
-    }
-
-    const { data: rc } = await supabase
-      .from('report_cards')
-      .select('id, teacher_comment')
-      .eq('student_id', studentId)
-      .eq('term_id', currentCombo.term_id)
-      .maybeSingle()
-
-    existingReportCard = rc || null
-    document.getElementById('teacherComment').value = rc?.teacher_comment || ''
+  const SUGG = {
+    high: ['An excellent result. Keep up the good work.', 'Outstanding performance this term. Well done.', 'A brilliant pupil who works very hard.'],
+    good: ['A good result. With more effort, even better is possible.', 'Well done. Keep working hard.', 'A steady and pleasing performance.'],
+    fair: ['A fair result. More practice at home will help.', 'Can do better with more focus in class.', 'Shows promise. Needs to revise more regularly.'],
+    low: ['Needs to put in much more effort next term.', 'Please give extra attention to reading and practice at home.', 'Has the ability but must work harder.']
   }
+  function suggFor(p) { return p === null || p === undefined ? SUGG.good : p >= 70 ? SUGG.high : p >= 55 ? SUGG.good : p >= 40 ? SUGG.fair : SUGG.low }
 
-  document.getElementById('backLink').addEventListener('click', () => {
-    document.getElementById('detailCard').style.display = 'none'
-    document.getElementById('pickerCard').style.display = 'block'
+  function renderRatings(boxId, list, key) {
+    $(boxId).innerHTML = list.map(k => `<div class="rate-row"><span>${esc(k)}</span><div class="pills" data-k="${esc(k)}" data-g="${key}">${[5, 4, 3, 2, 1].map(n => `<button type="button" data-n="${n}" class="${Number(ratings[key][k]) === n ? 'on' : ''}">${n}</button>`).join('')}</div></div>`).join('')
+  }
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('.pills button'); if (!b) return
+    const p = b.parentElement, k = p.dataset.k, g = p.dataset.g, n = Number(b.dataset.n)
+    ratings[g][k] = Number(ratings[g][k]) === n ? undefined : n
+    if (ratings[g][k] === undefined) delete ratings[g][k]
+    p.querySelectorAll('button').forEach(x => x.classList.toggle('on', Number(ratings[g][k]) === Number(x.dataset.n)))
   })
 
-  document.getElementById('saveCommentBtn').addEventListener('click', async () => {
-    const btn = document.getElementById('saveCommentBtn')
-    const comment = document.getElementById('teacherComment').value.trim()
-    btn.disabled = true
-    btn.textContent = 'Saving…'
+  async function openOne(i) {
+    idx = i; const s = summary[i]
+    const { data, error } = await supabase.rpc('get_report_card', { p_student: s.r_student, p_term: $('termSel').value })
+    if (error) { showMessage(error.message, 'error'); return }
+    rc = data
+    $('oneName').textContent = rc.student.name
+    $('oneMeta').textContent = [rc.student.class_name, rc.term.name, rc.totals.percentage !== null && rc.totals.percentage !== undefined ? rc.totals.percentage + '% · position ' + rc.totals.position + ' of ' + rc.totals.pupils : 'no scores yet'].filter(Boolean).join(' · ')
+    $('attOpened').value = rc.attendance.opened ?? ''; $('attPresent').value = rc.attendance.present ?? ''; $('attPunctual').value = rc.attendance.punctual ?? ''
+    ratings = { psy: { ...(rc.psychomotor || {}) }, aff: { ...(rc.affective || {}) } }
+    renderRatings('psyBox', RC_PSY, 'psy'); renderRatings('affBox', RC_AFF, 'aff')
+    $('comment').value = rc.comments.teacher || ''
+    $('sugg').innerHTML = suggFor(rc.totals.percentage).map(t => `<button type="button">${esc(t)}</button>`).join('')
+    $('preview').hidden = true
+    $('viewList').hidden = true; $('viewOne').hidden = false; window.scrollTo({ top: 0 })
+  }
+  $('sugg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) $('comment').value = b.textContent })
+  $('backBtn').addEventListener('click', async () => { $('viewOne').hidden = true; $('viewList').hidden = false; await loadList() })
 
-    let error
-    if (existingReportCard) {
-      const res = await supabase.from('report_cards').update({ teacher_comment: comment }).eq('id', existingReportCard.id)
-      error = res.error
-    } else {
-      const res = await supabase.from('report_cards').insert({
-        student_id: currentStudent.id,
-        term_id: currentCombo.term_id,
-        teacher_comment: comment,
-        generated_at: new Date().toISOString()
-      }).select().single()
-      error = res.error
-      if (!error) existingReportCard = res.data
-    }
-
-    btn.disabled = false
-    btn.textContent = 'Save Comment'
-
-    if (error) showMessage('Could not save comment: ' + error.message, 'error')
-    else showMessage('Comment saved.', 'success')
+  async function save() {
+    const attVal = (id) => $(id).value.trim()
+    const payload = { teacher_comment: $('comment').value, psychomotor: ratings.psy, affective: ratings.aff, attendance_opened: attVal('attOpened'), attendance_present: attVal('attPresent'), attendance_punctual: attVal('attPunctual') }
+    const { error } = await supabase.rpc('save_report_card_details', { p_student: summary[idx].r_student, p_term: $('termSel').value, p_data: payload })
+    if (error) { showMessage(error.message, 'error'); return false }
+    showMessage('Saved.', 'success'); return true
+  }
+  $('saveBtn').addEventListener('click', save)
+  $('saveNextBtn').addEventListener('click', async () => {
+    if (!(await save())) return
+    await loadList()
+    if (idx + 1 < summary.length) openOne(idx + 1); else { $('viewOne').hidden = true; $('viewList').hidden = false; showMessage('That was the last pupil.', 'success') }
   })
-
-  document.getElementById('signOutBtn').addEventListener('click', async () => {
-    await supabase.auth.signOut()
-    window.location.href = '/login.html'
-  })
-
-  const navDrawer = document.getElementById('navDrawer')
-  document.getElementById('hamburgerBtn').addEventListener('click', () => navDrawer.classList.add('open'))
-  document.getElementById('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
-  document.getElementById('drawerSignOutBtn').addEventListener('click', async () => {
-    await supabase.auth.signOut()
-    window.location.href = window.location.pathname.startsWith('/admin') ? '/admin/login.html' : '/login.html'
+  $('previewBtn').addEventListener('click', async () => {
+    if (!(await save())) return
+    const { data, error } = await supabase.rpc('get_report_card', { p_student: summary[idx].r_student, p_term: $('termSel').value })
+    if (error) { showMessage(error.message, 'error'); return }
+    $('preview').innerHTML = reportCardHtml(data); $('preview').hidden = false; $('preview').scrollIntoView({ behavior: 'smooth' })
   })
 
   init()
-</script>
 
-<script>
-  // marks the current page in the navigation (display only)
-  (function () {
-    var file = location.pathname.split('/').pop();
-    document.querySelectorAll('.nav-drawer-links a').forEach(function (a) {
-      if (file && a.getAttribute('href').split('/').pop() === file) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
-    });
-  })();
 </script>
-
 </body>
 </html>

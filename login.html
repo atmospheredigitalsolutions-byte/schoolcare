@@ -85,7 +85,7 @@ input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rg
 
   // Phone numbers and admission numbers are turned into a hidden login email.
   // IMPORTANT: this must be the same as LOGIN_DOMAIN in the Netlify environment variables.
-  const LOGIN_DOMAIN = 'alhaqqschools.netlify.app'
+  const LOGIN_DOMAIN = 'logins.yourschool.com'
   function toLoginEmail(value) {
     const v = value.trim()
     if (v.includes('@')) return v

@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Report Card — Parent Portal</title>
+<meta name="theme-color" content="#101B3D" />
+<title>Report Card — Parent</title>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500..700&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -97,20 +98,81 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
 }
 
 
-.wrap { max-width: 760px; }
 
-.summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-.summary-box { background: var(--paper); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
-.summary-box strong { display: block; font-family: var(--serif); font-size: 22px; color: var(--navy); }
-.summary-box span { font-size: 11px; color: var(--muted); }
-.subject-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-.subject-row:last-child { border-bottom: none; }
-.subject-row .sname { font-weight: 600; }
-.subject-row .stot { color: var(--maroon); font-weight: 700; }
-.comment-block { background: var(--cream); border-radius: 10px; padding: 14px 16px; margin-top: 10px; font-size: 13.5px; color: var(--ink); }
-.comment-block strong { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
-.two-col-select { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.wrap { max-width: 980px; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheetUp { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes pop { 0% { transform: scale(.6); opacity: 0; } 70% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(179,38,30,0.45); } 50% { box-shadow: 0 0 0 10px rgba(179,38,30,0); } }
+[hidden] { display: none !important; }
+button { font: inherit; cursor: pointer; }
+button:disabled { opacity: .55; cursor: not-allowed; }
+.btn-primary, .btn-ghost, .btn-small, .btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; border-radius: 8px; border: 1.5px solid transparent; transition: background .15s, border-color .15s, color .15s, transform .1s; }
+.btn-primary { min-height: 48px; padding: 0 22px; background: var(--navy); color: #fff; font-size: 15px; }
+.btn-primary:hover:not(:disabled) { background: var(--maroon); }
+.btn-ghost { min-height: 46px; padding: 0 20px; background: #fff; color: var(--navy); border-color: var(--border); font-size: 14.5px; }
+.btn-ghost:hover:not(:disabled) { border-color: var(--navy); background: var(--navy-tint); }
+.btn-small { min-height: 38px; padding: 0 14px; background: #fff; color: var(--navy); border-color: var(--border); font-size: 13.5px; }
+.btn-small:hover { border-color: var(--navy); background: var(--navy-tint); }
+.btn-danger { min-height: 46px; padding: 0 20px; background: var(--red); color: #fff; }
+.btn-primary:active, .btn-ghost:active, .btn-small:active { transform: scale(.98); }
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin: 18px 0 20px; }
+.tab { position: relative; padding: 12px 16px; font-weight: 600; font-size: 14.5px; color: var(--muted); background: none; border: none; transition: color .15s; }
+.tab::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 3px; border-radius: 3px 3px 0 0; background: var(--maroon); transform: scaleX(0); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+.tab.on { color: var(--navy); } .tab.on::after { transform: scaleX(1); } .tab:hover { color: var(--navy); }
+.modal-overlay { position: fixed; inset: 0; background: rgba(11,19,41,0.6); backdrop-filter: blur(2px); z-index: 2500; display: none; align-items: flex-end; justify-content: center; }
+.modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
+.modal { background: #fff; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; border-radius: 18px 18px 0 0; border-top: 5px solid var(--gold); padding: 24px 24px 28px; }
+.modal-overlay.open .modal { animation: sheetUp .3s cubic-bezier(.22,1,.36,1); }
+.modal h2 { font-size: 21px; color: var(--navy); margin-bottom: 8px; } .modal p, .modal li { font-size: 14.5px; color: var(--muted); }
+.modal ul { padding-left: 18px; margin: 10px 0 16px; display: grid; gap: 6px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-top: 16px; }
+@media (min-width: 640px) { .modal-overlay { align-items: center; padding: 20px; } .modal { border-radius: 16px; } }
+@media (max-width: 639px) { .modal { padding-bottom: 88px; } }
+.badge { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.badge.open { background: var(--green-tint); color: #1d5a21; } .badge.in_progress { background: var(--amber-tint); color: var(--amber-text); }
+.badge.expired, .badge.closed { background: var(--red-tint); color: #8d1d17; } .badge.upcoming { background: var(--navy-tint); color: var(--navy); } .badge.completed { background: var(--green-tint); color: #1d5a21; }
+.ring { --p: 0; --col: var(--green); position: relative; flex-shrink: 0; width: 68px; height: 68px; border-radius: 50%; background: conic-gradient(var(--col) calc(var(--p) * 1%), var(--navy-tint) 0); display: grid; place-items: center; }
+.ring::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: #fff; }
+.ring b { position: relative; font-family: var(--serif); font-size: 15px; color: var(--navy); }
+.ring.mid { --col: #d98a1f; } .ring.low { --col: var(--red); }
 
+
+.wrap { max-width: 980px; }
+.ctl { display: grid; gap: 12px; padding: 16px 20px; margin-bottom: 14px; } @media (min-width: 640px) { .ctl { grid-template-columns: 1fr 1fr auto; align-items: end; } }
+.ctl label { display: block; font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.empty-note { padding: 40px 16px; text-align: center; background: #fff; border: 1px dashed #c3c8d6; border-radius: 14px; }
+.printbtn { min-height: 46px; }
+@media print { .topbar, .nav-drawer, .ctl, .welcome, .msg { display: none !important; } body { padding-left: 0 !important; background: #fff; } .wrap { padding: 0 !important; max-width: none; } }
+
+.rc-scroll { overflow-x: auto; }
+.rc { background: #fff; border: 2px solid #1c2440; padding: 18px 20px; max-width: 920px; min-width: 640px; margin: 0 auto; font-size: 12.5px; color: #111; font-family: Arial, Helvetica, sans-serif; line-height: 1.35; }
+.rc-head { text-align: center; border-bottom: 3px double #1c2440; padding-bottom: 10px; margin-bottom: 10px; }
+.rc-head h1 { font-size: 20px; margin: 0; color: #101B3D; letter-spacing: .02em; }
+.rc-head h2 { font-size: 13.5px; margin: 5px 0 0; letter-spacing: .05em; color: #6E1F2B; }
+.rc-info { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 22px; margin: 8px 0 10px; }
+.rc-info div { border-bottom: 1px dotted #777; padding: 2px 0; } .rc-info b { display: inline-block; min-width: 96px; }
+.rc h3 { font-size: 12.5px; margin: 12px 0 4px; background: #eceef6; padding: 4px 8px; color: #101B3D; }
+.rc-t { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.rc-t th, .rc-t td { border: 1px solid #444; padding: 3px 5px; text-align: center; }
+.rc-t thead th { background: #f3f4f8; font-weight: 700; }
+.rc-t .l { text-align: left; } .rc-t td.subj { text-align: left; white-space: nowrap; } .rc-t td.rem { text-align: left; }
+.rc-t tfoot td { font-weight: 700; background: #f3f4f8; }
+.rc-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+.rc-att { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; align-items: start; }
+.rc-dates div { border-bottom: 1px dotted #777; margin-bottom: 8px; padding: 2px 0; }
+.rate td { height: 20px; font-weight: 700; color: #101B3D; }
+.rc-scale { font-size: 11px; margin-top: 4px; color: #333; }
+.rc-sum { display: flex; flex-wrap: wrap; gap: 8px 30px; margin: 10px 0 4px; font-weight: 700; }
+.rc-line { border-bottom: 1px solid #444; min-height: 24px; padding: 3px 0; margin: 0 0 8px; }
+.rc-line.sig { display: flex; justify-content: space-between; gap: 20px; border: none; padding: 0; }
+.rc-line.sig span { flex: 1; border-bottom: 1px solid #444; min-height: 22px; display: block; padding: 2px 0; }
+.rc-line b { font-weight: 700; }
+.rc-pub { text-align: center; font-size: 11px; color: #6E1F2B; margin: 6px 0 0; }
+.rc-page { page-break-after: always; padding: 10px; }
+@page { size: A4; margin: 10mm; }
+@media print { .rc { border-width: 1.5px; min-width: 0; max-width: none; } .rc-page:last-child { page-break-after: auto; } }
 </style>
 </head>
 <body>
@@ -130,49 +192,17 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
 
 
 <div class="wrap" id="appWrap" style="display:none;">
-  <div class="welcome">
-    <h1>Report Card</h1>
-    <p>View your child's termly academic report.</p>
+  <div class="welcome"><h1>Report card</h1><p>Your child's termly report, once the school has published it.</p></div>
+  <div class="card ctl">
+    <div id="childWrap" ><label for="childSel">Child</label><select id="childSel"></select></div>
+    <div><label for="termSel">Term</label><select id="termSel"></select></div>
+    <button type="button" class="btn-ghost printbtn" id="printBtn">Print / save as PDF</button>
   </div>
-
-  <div class="card">
-    <div class="two-col-select">
-      <div class="field-row" style="margin-bottom:0;">
-        <label for="childSelect">Child</label>
-        <select id="childSelect"></select>
-      </div>
-      <div class="field-row" style="margin-bottom:0;">
-        <label for="termSelect">Term</label>
-        <select id="termSelect"></select>
-      </div>
-    </div>
-  </div>
-
-  <div class="summary-grid">
-    <div class="summary-box"><strong id="sumTotal">—</strong><span>Total Score</span></div>
-    <div class="summary-box"><strong id="sumAverage">—</strong><span>Average</span></div>
-    <div class="summary-box"><strong id="sumPosition">—</strong><span>Position</span></div>
-  </div>
-
-  <div class="card">
-    <h2>Scores by Subject</h2>
-    <div id="subjectList"></div>
-  </div>
-
-  <div class="card">
-    <h2>Comments</h2>
-    <div class="comment-block">
-      <strong>Teacher's Comment</strong>
-      <span id="teacherComment">Not available yet.</span>
-    </div>
-    <div class="comment-block">
-      <strong>Head Teacher's Comment</strong>
-      <span id="headComment">Not available yet.</span>
-    </div>
-  </div>
+  <div class="rc-scroll" id="card"></div>
+  <p class="empty-note" id="noCard" hidden>No report card has been published yet. It will appear here as soon as the school publishes it.</p>
 </div>
-
 <div id="loadingState" class="loading">Loading…</div>
+<div id="msgBox" class="msg"></div>
 
 <div class="nav-drawer" id="navDrawer">
   <div class="nav-drawer-top">
@@ -183,138 +213,139 @@ select { appearance: none; -webkit-appearance: none; padding-right: 36px; backgr
   </div>
   <nav class="nav-drawer-links">
     <a href="/parent-dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>Dashboard</span></a>
-    <a href="/parent-report-card.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Report Card</span></a>
+    <a href="/parent-report-card.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg><span>Report Card</span></a>
     <a href="/parent-fees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span>Fees</span></a>
     <a href="/parent-profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
   </nav>
   <button class="nav-drawer-signout" id="drawerSignOutBtn">Sign Out</button>
 </div>
 
-
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
   const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
 
-  let parentRecord = null
-  let children = []
-  let terms = []
-  let currentChildId = null
-  let currentTermId = null
+  const here = location.pathname.replace(/\.html$/, '').split('/').pop()
+  document.querySelectorAll('.nav-drawer-links a').forEach(a => a.classList.toggle('active', a.getAttribute('href').replace(/\.html$/, '').split('/').pop() === here))
 
-  function studentName(s) { return [s.surname, s.other_names].filter(Boolean).join(' ') || 'Unnamed Student' }
-
-  async function loadSchoolName() {
-    const { data } = await supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
-    if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name })
+  const $ = (id) => document.getElementById(id)
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  const num = (n) => (n === null || n === undefined || n === '') ? '' : String(Math.round(Number(n) * 10) / 10)
+  const nameOf = (s) => [s.surname, s.other_names].filter(Boolean).join(' ') || 'Unnamed student'
+  function showMessage(text, type) {
+    const box = $('msgBox'); box.textContent = text; box.className = 'msg ' + type
+    clearTimeout(showMessage._t); showMessage._t = setTimeout(() => { box.className = 'msg' }, 5000)
+  }
+  supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    .then(({ data }) => { if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name }) })
+  const goLogin = () => { window.location.href = '/login.html' }
+  $('signOutBtn').addEventListener('click', async () => { await supabase.auth.signOut(); goLogin() })
+  const navDrawer = $('navDrawer')
+  $('hamburgerBtn').addEventListener('click', () => navDrawer.classList.add('open'))
+  $('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
+  $('drawerSignOutBtn').addEventListener('click', async () => { await supabase.auth.signOut(); goLogin() })
+  function todayTerm(terms) {
+    const today = new Date().toISOString().slice(0, 10)
+    const run = terms.find(t => t.start_date && t.end_date && t.start_date <= today && today <= t.end_date)
+    if (run) return run
+    return terms.slice().sort((a, b) => String(b.start_date || '').localeCompare(String(a.start_date || '')))[0] || null
   }
 
+  const RC_PSY = ['Hand writing', 'Verbal fluency', 'Games', 'Sports', 'Handling tools', 'Drawing & painting', 'Musical skills']
+  const RC_AFF = ['Punctuality', 'Neatness', 'Politeness', 'Honesty', 'Co-operation with others', 'Leadership', 'Helping others', 'Emotional stability', 'Health', 'Attitude to work', 'Attentiveness', 'Perseverance', 'Speaking/Handwriting']
+  const rcEsc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  const rcNum = (n) => (n === null || n === undefined || n === '') ? '' : String(Math.round(Number(n) * 10) / 10)
+  const rcDate = (d) => d ? new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '...........................'
+  const rcOrd = (n) => { if (n === null || n === undefined || n === '') return ''; n = Number(n); const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]) }
+
+  function rcRatings(title, list, values) {
+    const cols = [5, 4, 3, 2, 1]
+    return `<table class="rc-t rate"><thead><tr><th class="l">${title}</th>${cols.map(n => `<th style="width:28px">${n}</th>`).join('')}</tr></thead><tbody>${list.map(k => `<tr><td class="l">${rcEsc(k)}</td>${cols.map(n => `<td>${Number(values[k]) === n ? '&#10003;' : ''}</td>`).join('')}</tr>`).join('')}</tbody></table>`
+  }
+
+  function reportCardHtml(rc) {
+    const m = rc.maxima, t = rc.totals, a = rc.attendance, subs = rc.subjects || [], st = rc.student, tm = rc.term
+    const n = subs.length
+    const sum = (k) => subs.reduce((s, x) => s + Number(x[k] || 0), 0)
+    const rows = subs.map(s => `<tr><td class="subj">${rcEsc(s.name)}</td><td>${rcNum(m.test)}</td><td>${rcNum(s.test)}</td><td>${rcNum(m.exam)}</td><td>${rcNum(s.exam)}</td><td>${rcNum(m.total)}</td><td><b>${rcNum(s.total)}</b></td><td>${rcNum(s.class_average)}</td><td>${rcOrd(s.position)}</td><td class="rem">${rcEsc(s.remark)}</td></tr>`).join('')
+    return `<div class="rc">
+      <div class="rc-head"><h1>${rcEsc(rc.school)}</h1><h2>CONTINUOUS ASSESSMENT FOR ${rcEsc((tm.name || '').toUpperCase())}${tm.session ? ' &middot; ' + rcEsc(tm.session) + ' SESSION' : ''}</h2></div>
+      <div class="rc-info"><div><b>Name:</b> ${rcEsc(st.name)}</div><div><b>Class:</b> ${rcEsc(st.class_name || '')}</div><div><b>Admission No.:</b> ${rcEsc(st.admission_number || '')}</div><div><b>Pupils in class:</b> ${rcEsc(t.pupils ?? '')}</div></div>
+
+      <h3>1. ATTENDANCE</h3>
+      <div class="rc-att"><table class="rc-t"><tbody>
+        <tr><td class="l">No. of times school opened</td><td style="width:80px">${rcEsc(a.opened ?? '')}</td></tr>
+        <tr><td class="l">No. of times present</td><td>${rcEsc(a.present ?? '')}</td></tr>
+        <tr><td class="l">No. of times punctual</td><td>${rcEsc(a.punctual ?? '')}</td></tr></tbody></table>
+        <div class="rc-dates"><div><b>School closed on:</b> ${rcDate(a.closed_on)}</div><div><b>Next term begins on:</b> ${rcDate(a.next_term_begins)}</div></div></div>
+
+      <h3>2. COGNITIVE ABILITY</h3>
+      <div class="rc-scroll"><table class="rc-t"><thead>
+        <tr><th rowspan="2" class="l">Subject</th><th colspan="2">1st Half</th><th colspan="2">2nd Half</th><th colspan="2">Final Result</th><th rowspan="2">Class<br>Average</th><th rowspan="2">Position</th><th rowspan="2" class="l">Teacher's<br>Remarks</th></tr>
+        <tr><th>Marks<br>Obtainable</th><th>Marks<br>Obtained</th><th>Marks<br>Obtainable</th><th>Marks<br>Obtained</th><th>Marks<br>Obtainable</th><th>Marks<br>Obtained</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="10">No scores have been entered yet.</td></tr>'}</tbody>
+        <tfoot><tr><td class="l">TOTAL</td><td>${rcNum(n * m.test)}</td><td>${rcNum(sum('test'))}</td><td>${rcNum(n * m.exam)}</td><td>${rcNum(sum('exam'))}</td><td>${rcNum(n * m.total)}</td><td>${rcNum(t.obtained)}</td><td></td><td></td><td></td></tr></tfoot></table></div>
+      <div class="rc-sum"><span>Percentage: ${t.percentage === null || t.percentage === undefined ? '' : rcNum(t.percentage) + '%'}</span><span>Position in class: ${rcOrd(t.position)} of ${rcEsc(t.pupils ?? '')}</span></div>
+
+      <div class="rc-two"><div><h3>3. PSYCHOMOTOR SKILLS</h3>${rcRatings('Skill', RC_PSY, rc.psychomotor || {})}</div><div><h3>4. AFFECTIVE AREAS</h3>${rcRatings('Area', RC_AFF, rc.affective || {})}</div></div>
+      <div class="rc-scale"><b>SCALE:</b> 5 - Excellent &nbsp; 4 - Good &nbsp; 3 - Fair &nbsp; 2 - Poor &nbsp; 1 - Very Poor</div>
+
+      <div style="margin-top:12px">
+        <div class="rc-line"><b>Class Teacher's Comment:</b> ${rcEsc(rc.comments.teacher || '')}</div>
+        <div class="rc-line sig"><span>Signature</span><span>Date</span></div>
+        <div class="rc-line"><b>Headmaster's/Headmistress's Comment:</b> ${rcEsc(rc.comments.head || '')}</div>
+        <div class="rc-line sig"><span>Signature</span><span>Date</span></div>
+        <div class="rc-line"><b>Parent's/Guardian's Comment:</b></div>
+        <div class="rc-line sig"><span>Signature</span><span>Date</span></div>
+      </div>
+      ${rc.published ? '' : '<div class="rc-pub">Not yet published to parents</div>'}
+    </div>`
+  }
+
+  function rcPrint(cards) {
+    const w = window.open('', '_blank')
+    if (!w) { alert('Please allow pop-ups to print.'); return }
+    w.document.write('<!doctype html><title>Report cards</title><style>' + RC_CSS_TEXT + '</style>' + cards.map(c => '<div class="rc-page">' + c + '</div>').join('') + '<script>window.onload=function(){window.print()}<\/script>')
+    w.document.close()
+  }
+  const RC_CSS_TEXT = "\n.rc-scroll { overflow-x: auto; }\n.rc { background: #fff; border: 2px solid #1c2440; padding: 18px 20px; max-width: 920px; min-width: 640px; margin: 0 auto; font-size: 12.5px; color: #111; font-family: Arial, Helvetica, sans-serif; line-height: 1.35; }\n.rc-head { text-align: center; border-bottom: 3px double #1c2440; padding-bottom: 10px; margin-bottom: 10px; }\n.rc-head h1 { font-size: 20px; margin: 0; color: #101B3D; letter-spacing: .02em; }\n.rc-head h2 { font-size: 13.5px; margin: 5px 0 0; letter-spacing: .05em; color: #6E1F2B; }\n.rc-info { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 22px; margin: 8px 0 10px; }\n.rc-info div { border-bottom: 1px dotted #777; padding: 2px 0; } .rc-info b { display: inline-block; min-width: 96px; }\n.rc h3 { font-size: 12.5px; margin: 12px 0 4px; background: #eceef6; padding: 4px 8px; color: #101B3D; }\n.rc-t { width: 100%; border-collapse: collapse; font-size: 11.5px; }\n.rc-t th, .rc-t td { border: 1px solid #444; padding: 3px 5px; text-align: center; }\n.rc-t thead th { background: #f3f4f8; font-weight: 700; }\n.rc-t .l { text-align: left; } .rc-t td.subj { text-align: left; white-space: nowrap; } .rc-t td.rem { text-align: left; }\n.rc-t tfoot td { font-weight: 700; background: #f3f4f8; }\n.rc-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }\n.rc-att { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; align-items: start; }\n.rc-dates div { border-bottom: 1px dotted #777; margin-bottom: 8px; padding: 2px 0; }\n.rate td { height: 20px; font-weight: 700; color: #101B3D; }\n.rc-scale { font-size: 11px; margin-top: 4px; color: #333; }\n.rc-sum { display: flex; flex-wrap: wrap; gap: 8px 30px; margin: 10px 0 4px; font-weight: 700; }\n.rc-line { border-bottom: 1px solid #444; min-height: 24px; padding: 3px 0; margin: 0 0 8px; }\n.rc-line.sig { display: flex; justify-content: space-between; gap: 20px; border: none; padding: 0; }\n.rc-line.sig span { flex: 1; border-bottom: 1px solid #444; min-height: 22px; display: block; padding: 2px 0; }\n.rc-line b { font-weight: 700; }\n.rc-pub { text-align: center; font-size: 11px; color: #6E1F2B; margin: 6px 0 0; }\n.rc-page { page-break-after: always; padding: 10px; }\n@page { size: A4; margin: 10mm; }\n@media print { .rc { border-width: 1.5px; min-width: 0; max-width: none; } .rc-page:last-child { page-break-after: auto; } }\n"
+
+  let studentId = null, shown = null
+  async function loadTerms() {
+    $('card').innerHTML = ''; $('noCard').hidden = true
+    const { data, error } = await supabase.rpc('list_report_card_terms', { p_student: studentId })
+    if (error) { showMessage(error.message, 'error'); return }
+    const list = data || []
+    $('termSel').innerHTML = list.map(t => `<option value="${esc(t.r_term)}">${esc(t.r_name)}${t.r_session ? ' · ' + esc(t.r_session) : ''}</option>`).join('')
+    $('termSel').disabled = !list.length; $('printBtn').disabled = !list.length
+    if (!list.length) { $('noCard').hidden = false; return }
+    await showCard()
+  }
+  async function showCard() {
+    const { data, error } = await supabase.rpc('get_report_card', { p_student: studentId, p_term: $('termSel').value })
+    if (error) { showMessage(error.message, 'error'); return }
+    shown = data; $('card').innerHTML = reportCardHtml(data)
+  }
+  $('termSel').addEventListener('change', showCard)
+  $('printBtn').addEventListener('click', () => { if (shown) rcPrint([reportCardHtml(shown)]) })
+
+  $('childSel').addEventListener('change', async () => { studentId = $('childSel').value; await loadTerms() })
   async function init() {
-    loadSchoolName()
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) { window.location.href = '/login.html'; return }
-
-    const { data: membership } = await supabase.from('school_members').select('role').eq('user_id', session.user.id).single()
-    if (!membership || membership.role !== 'parent') { window.location.href = '/login.html'; return }
-
-    const { data: parent } = await supabase.from('parents').select('id').eq('user_id', session.user.id).single()
-    if (!parent) { document.getElementById('loadingState').textContent = 'No parent record found for your account.'; return }
-    parentRecord = parent
-
-    const { data: links } = await supabase
-      .from('student_parents')
-      .select('student_id, students(id, surname, other_names)')
-      .eq('parent_id', parentRecord.id)
-    children = (links || []).filter(l => l.students).map(l => l.students)
-
-    const { data: termData } = await supabase.from('terms').select('id, name').order('start_date', { ascending: false })
-    terms = termData || []
-
-    document.getElementById('loadingState').style.display = 'none'
-    document.getElementById('appWrap').style.display = 'block'
-
-    if (children.length === 0) {
-      document.getElementById('childSelect').innerHTML = '<option>No linked children yet</option>'
-      return
-    }
-
-    const childSelect = document.getElementById('childSelect')
-    childSelect.innerHTML = children.map(c => `<option value="${c.id}">${studentName(c)}</option>`).join('')
-    const termSelect = document.getElementById('termSelect')
-    termSelect.innerHTML = terms.length ? terms.map(t => `<option value="${t.id}">${t.name}</option>`).join('') : '<option value="">No terms yet</option>'
-
-    currentChildId = children[0].id
-    currentTermId = terms[0]?.id || null
-
-    childSelect.addEventListener('change', () => { currentChildId = childSelect.value; loadReportCard() })
-    termSelect.addEventListener('change', () => { currentTermId = termSelect.value; loadReportCard() })
-
-    if (currentTermId) await loadReportCard()
+    if (!session) { goLogin(); return }
+    const { data: m } = await supabase.from('school_members').select('role').eq('user_id', session.user.id).single()
+    if (!m || m.role !== 'parent') { goLogin(); return }
+    const { data: parent } = await supabase.from('parents').select('id').eq('user_id', session.user.id).maybeSingle()
+    if (!parent) { $('loadingState').textContent = 'Your account is not linked to a parent record yet. Please contact the school office.'; return }
+    const { data: links, error } = await supabase.from('student_parents').select('student_id, students(id, surname, other_names)').eq('parent_id', parent.id)
+    if (error || !links || !links.length) { $('loadingState').textContent = 'No children are linked to your account yet. Please contact the school office.'; return }
+    $('childSel').innerHTML = links.map(l => `<option value="${esc(l.student_id)}">${esc(l.students ? nameOf(l.students) : 'Child')}</option>`).join('')
+    $('childWrap').hidden = links.length < 2
+    studentId = links[0].student_id
+    $('loadingState').style.display = 'none'; $('appWrap').style.display = 'block'
+    await loadTerms()
   }
-
-  async function loadReportCard() {
-    if (!currentChildId || !currentTermId) return
-
-    const { data: scoreRows } = await supabase
-      .from('scores')
-      .select('score, subjects(name)')
-      .eq('student_id', currentChildId)
-      .eq('term_id', currentTermId)
-
-    const bySubject = {}
-    ;(scoreRows || []).forEach(row => {
-      const subj = row.subjects?.name || 'Unknown'
-      if (!bySubject[subj]) bySubject[subj] = 0
-      bySubject[subj] += Number(row.score) || 0
-    })
-    const subjectNames = Object.keys(bySubject)
-    const total = subjectNames.reduce((sum, k) => sum + bySubject[k], 0)
-    const average = subjectNames.length ? (total / subjectNames.length) : 0
-
-    document.getElementById('sumTotal').textContent = subjectNames.length ? total.toFixed(1) : '—'
-    document.getElementById('sumAverage').textContent = subjectNames.length ? average.toFixed(1) : '—'
-
-    document.getElementById('subjectList').innerHTML = subjectNames.length
-      ? subjectNames.map(name => `<div class="subject-row"><span class="sname">${name}</span><span class="stot">${bySubject[name].toFixed(1)}</span></div>`).join('')
-      : '<p class="empty-note">No scores recorded yet for this term.</p>'
-
-    const { data: rc } = await supabase
-      .from('report_cards')
-      .select('total_score, average, position, teacher_comment, headteacher_comment')
-      .eq('student_id', currentChildId)
-      .eq('term_id', currentTermId)
-      .maybeSingle()
-
-    document.getElementById('sumPosition').textContent = rc?.position ?? '—'
-    if (rc?.total_score != null) document.getElementById('sumTotal').textContent = rc.total_score
-    if (rc?.average != null) document.getElementById('sumAverage').textContent = rc.average
-    document.getElementById('teacherComment').textContent = rc?.teacher_comment || 'Not available yet.'
-    document.getElementById('headComment').textContent = rc?.headteacher_comment || 'Not available yet.'
-  }
-
-  const navDrawer = document.getElementById('navDrawer')
-  document.getElementById('hamburgerBtn').addEventListener('click', () => navDrawer.classList.add('open'))
-  document.getElementById('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
-  document.getElementById('drawerSignOutBtn').addEventListener('click', async () => {
-    await supabase.auth.signOut()
-    window.location.href = '/login.html'
-  })
-  document.getElementById('signOutBtn').addEventListener('click', async () => {
-    await supabase.auth.signOut()
-    window.location.href = '/login.html'
-  })
-
   init()
-</script>
 
-<script>
-  // marks the current page in the navigation (display only)
-  (function () {
-    var file = location.pathname.split('/').pop();
-    document.querySelectorAll('.nav-drawer-links a').forEach(function (a) {
-      if (file && a.getAttribute('href').split('/').pop() === file) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
-    });
-  })();
 </script>
-
 </body>
 </html>

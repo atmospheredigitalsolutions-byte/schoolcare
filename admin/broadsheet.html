@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#101B3D" />
+<title>Broadsheet — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500..700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F1F2F6; --paper: #FFFFFF; --gold: #B98B2A; --gold-soft: #E2BE6A; --ink: #161A27;
+  --muted: #5B6275; --border: #DDE0E8; --green: #2E7D32; --red: #B3261E; --error: #B3261E;
+  --navy-tint: #E8EBF5; --maroon-tint: #F6E9EB; --green-tint: #E7F3E8; --red-tint: #FBEAE8; --amber-tint: #FBF1DC; --amber-text: #7A5A12;
+  --sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --serif: 'Literata', Georgia, 'Times New Roman', serif;
+  --side: 264px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); font-size: 15px; color: var(--ink); background: var(--cream); line-height: 1.55; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.01em; line-height: 1.22; }
+a { color: inherit; text-decoration: none; }
+button, select, input { font: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid rgba(185,139,42,0.65); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* ---------- top bar (mobile) ---------- */
+.topbar { background: var(--paper); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+.topbar::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 6px; background: linear-gradient(var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); pointer-events: none; }
+.topbar .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.topbar .brand img { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; }
+.topbar .brand strong { font-family: var(--serif); color: var(--navy); font-size: 14.5px; font-weight: 600; line-height: 1.25; display: block; }
+.topbar .brand span { display: block; font-size: 11.5px; color: var(--muted); }
+.signout { font-size: 13px; font-weight: 600; color: var(--maroon); border: 1.5px solid var(--border); border-radius: 999px; padding: 7px 15px; background: var(--paper); transition: background .15s, border-color .15s; }
+.signout:hover { background: var(--maroon-tint); border-color: var(--maroon); }
+.hamburger-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--navy-tint); border: 1px solid transparent; display: flex; align-items: center; justify-content: center; color: var(--navy); flex-shrink: 0; transition: background .15s; }
+.hamburger-btn:hover { background: #d9deef; }
+.hamburger-btn svg { width: 18px; height: 18px; }
+
+/* ---------- navigation drawer / sidebar ---------- */
+.nav-drawer { position: fixed; inset: 0; background: var(--navy-deep); z-index: 2000; display: flex; flex-direction: column; padding: 22px 26px 32px; transform: translateX(100%); visibility: hidden; transition: transform .4s cubic-bezier(.22,1,.36,1), visibility 0s .4s; overflow-y: auto; }
+.nav-drawer.open { transform: translateX(0); visibility: visible; transition: transform .4s cubic-bezier(.22,1,.36,1), visibility 0s 0s; }
+.nav-drawer-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 34px; gap: 12px; }
+.nav-drawer-top strong { font-family: var(--serif); font-weight: 600; color: #fff; font-size: 15.5px; line-height: 1.25; display: flex; align-items: center; gap: 12px; }
+.nav-drawer-top strong::before { content: ""; width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; background: #fff url(/assets/images/logo.png) center / cover no-repeat; }
+.nav-drawer-close { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-drawer-close:hover { background: rgba(255,255,255,0.18); }
+.nav-drawer-links { display: flex; flex-direction: column; gap: 2px; }
+.nav-drawer-links a { display: flex; align-items: center; gap: 14px; font-family: var(--serif); font-size: 22px; font-weight: 600; color: #fff; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.1); transition: color .15s; }
+.nav-drawer-links a svg { width: 22px; height: 22px; color: var(--gold-soft); flex-shrink: 0; }
+.nav-drawer-links a:hover, .nav-drawer-links a.active { color: var(--gold-soft); }
+.nav-drawer-signout { margin-top: auto; padding: 15px; border-radius: 10px; background: rgba(255,255,255,0.1); color: #fff; font-weight: 600; font-size: 14.5px; text-align: center; border: none; transition: background .15s; }
+.nav-drawer-signout:hover { background: rgba(255,255,255,0.18); }
+
+/* ---------- shared content ---------- */
+.wrap { margin: 0 auto; padding: 34px 16px 56px; }
+.welcome { margin-bottom: 22px; }
+.welcome h1 { font-size: 27px; color: var(--navy); font-weight: 700; margin-bottom: 6px; }
+.welcome p { color: var(--muted); font-size: 15px; max-width: 60ch; }
+.card { background: var(--paper); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 20px; }
+.card h2 { font-size: 17px; color: var(--navy); margin-bottom: 16px; font-weight: 600; }
+select, input { padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; color: var(--ink); width: 100%; font-size: 14.5px; min-height: 44px; transition: border-color .15s, box-shadow .15s; }
+select:hover, input:hover { border-color: #c3c8d6; }
+select:focus, input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,27,61,0.14); }
+select { appearance: none; -webkit-appearance: none; padding-right: 36px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235B6275' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+.empty-note { color: var(--muted); font-size: 15px; text-align: center; padding: 28px 16px; }
+.loading { color: var(--muted); font-size: 14.5px; text-align: center; padding: 72px 0; }
+.loading::before { content: ""; display: block; width: 26px; height: 26px; margin: 0 auto 14px; border-radius: 50%; border: 3px solid var(--navy-tint); border-top-color: var(--maroon); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* status message, shown as a toast */
+.msg { position: fixed; z-index: 3000; left: 16px; right: 16px; bottom: 20px; max-width: 460px; margin: 0 auto; padding: 13px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; display: none; box-shadow: 0 12px 32px rgba(11,19,41,0.22); border-left: 4px solid; }
+.msg.success { background: var(--green-tint); color: #1d5a21; border-color: var(--green); display: block; animation: toastIn .28s cubic-bezier(.22,1,.36,1); }
+.msg.error { background: var(--red-tint); color: #8d1d17; border-color: var(--red); display: block; animation: toastIn .28s cubic-bezier(.22,1,.36,1); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ---------- desktop: persistent sidebar ---------- */
+@media (min-width: 1000px) {
+  body { padding-left: var(--side); }
+  .topbar { display: none; }
+  .hamburger-btn, .nav-drawer-close { display: none; }
+  .nav-drawer, .nav-drawer.open { inset: 0 auto 0 0; width: var(--side); transform: none; visibility: visible; transition: none; padding: 26px 18px 24px; z-index: 20; }
+  .nav-drawer::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 6px; background: linear-gradient(to right, var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); }
+  .nav-drawer-top { padding: 0 8px; margin-bottom: 30px; }
+  .nav-drawer-links { gap: 4px; }
+  .nav-drawer-links a { font-family: var(--sans); font-size: 15px; font-weight: 500; padding: 11px 12px; border: none; border-radius: 8px; color: rgba(255,255,255,0.76); }
+  .nav-drawer-links a svg { width: 19px; height: 19px; color: rgba(255,255,255,0.55); }
+  .nav-drawer-links a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .nav-drawer-links a:hover svg { color: var(--gold-soft); }
+  .nav-drawer-links a.active { background: rgba(255,255,255,0.1); color: #fff; box-shadow: inset 3px 0 0 var(--gold-soft); }
+  .nav-drawer-links a.active svg { color: var(--gold-soft); }
+  .nav-drawer-signout { margin-right: 6px; }
+  .wrap { padding: 52px 44px 72px; }
+  .welcome h1 { font-size: 32px; }
+  .msg { left: calc(var(--side) + 24px); right: 24px; bottom: 28px; margin: 0 auto; }
+}
+
+.btn-primary, .btn-ghost, .btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 8px; font-weight: 600; font-size: 14.5px; border: 1.5px solid transparent; transition: background .15s, border-color .15s, color .15s, transform .1s; }
+.btn-primary { background: var(--navy); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--maroon); }
+.btn-ghost { background: #fff; color: var(--navy); border-color: var(--border); }
+.btn-ghost:hover { border-color: var(--navy); background: var(--navy-tint); }
+.btn-danger { background: var(--red); color: #fff; }
+.btn-danger:hover:not(:disabled) { background: #8f1d17; }
+.btn-primary:active, .btn-ghost:active, .btn-danger:active { transform: scale(.98); }
+button:disabled { opacity: .55; cursor: not-allowed; }
+.field { margin-bottom: 18px; }
+.field label { display: block; font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.hint { font-size: 12.5px; color: var(--muted); margin-top: 6px; display: block; }
+input:disabled { background: var(--cream); color: var(--muted); cursor: not-allowed; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(11,19,41,0.55); backdrop-filter: blur(2px); z-index: 2500; display: none; align-items: flex-end; justify-content: center; padding: 0; }
+.modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
+.modal { background: #fff; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; border-radius: 18px 18px 0 0; border-top: 5px solid var(--gold); padding: 24px 24px 26px; }
+.modal-overlay.open .modal { animation: sheetUp .3s cubic-bezier(.22,1,.36,1); }
+.modal h2 { font-size: 21px; color: var(--navy); margin-bottom: 4px; }
+.modal .sub { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheetUp { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (min-width: 640px) { .modal-overlay { align-items: center; padding: 20px; } .modal { border-radius: 16px; } }
+
+.wrap { max-width: 1280px; }
+.ctl { display: grid; gap: 12px; padding: 16px 20px; margin-bottom: 14px; } @media (min-width: 760px) { .ctl { grid-template-columns: 1fr 1fr auto; align-items: end; } }
+.ctl label { display: block; font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.btns .btn-ghost, .btns .btn-primary { min-height: 44px; padding: 0 18px; }
+.empty-note { padding: 36px 16px; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.modal.xl { max-width: 980px; } .modal .field { margin-bottom: 14px; }
+.modal textarea { width: 100%; min-height: 80px; padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 8px; font: inherit; font-size: 14.5px; resize: vertical; }
+
+.acts { display: grid; gap: 10px; margin-bottom: 14px; } @media (min-width: 900px) { .acts { grid-template-columns: repeat(3, 1fr); } }
+.act { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; font-size: 13.5px; }
+.act b { color: var(--navy); } .act small { display: block; color: var(--muted); margin-top: 2px; }
+.bar2 { height: 6px; border-radius: 6px; background: var(--navy-tint); margin-top: 8px; overflow: hidden; } .bar2 i { display: block; height: 100%; background: linear-gradient(90deg, var(--maroon), var(--gold)); }
+.act.done .bar2 i { background: var(--green); } .act.none { border-color: #e0b3af; background: #fdf3f2; }
+.matrix-wrap { background: #fff; border: 1px solid var(--border); border-radius: 14px; overflow: auto; max-height: 72vh; }
+table.mx { border-collapse: separate; border-spacing: 0; font-size: 12.5px; }
+.mx th, .mx td { border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); padding: 4px 6px; text-align: center; white-space: nowrap; background: #fff; }
+.mx thead th { position: sticky; z-index: 2; background: var(--navy); color: #fff; font-weight: 600; }
+.mx thead tr.r1 th { top: 0; height: 52px; } .mx thead tr.r2 th { top: 52px; background: #1d2a55; font-weight: 500; }
+.mx th small { display: block; font-weight: 400; color: #c4cce0; font-size: 10.5px; }
+.mx .s1 { position: sticky; left: 0; z-index: 3; min-width: 34px; text-align: right; color: var(--muted); } .mx .s2 { position: sticky; left: 34px; z-index: 3; min-width: 180px; text-align: left; font-weight: 600; box-shadow: 2px 0 0 var(--border); }
+.mx thead .s1, .mx thead .s2 { z-index: 4; background: var(--navy); color: #fff; }
+.mx td.st { font-weight: 700; color: var(--navy); background: #f6f7fb; } .mx td.ov { font-weight: 700; background: #fbf5ea; } .mx td.ov.pos { color: var(--maroon); }
+.mx input { width: 50px; min-height: 30px; padding: 2px 4px; text-align: center; font-size: 12.5px; border-radius: 6px; } .mx input.bad { border-color: var(--red); background: var(--red-tint); }
+.mx tbody tr:hover td { background: var(--navy-tint); } .mx tbody tr:hover td.st, .mx tbody tr:hover td.ov { background: #dfe4f3; }
+@media print {
+  @page { size: A3 landscape; margin: 8mm; }
+  .topbar, .nav-drawer, .ctl, .acts, .btns, .msg, .welcome { display: none !important; } body { padding-left: 0 !important; background: #fff; } .wrap { padding: 0 !important; max-width: none; }
+  .matrix-wrap { max-height: none; overflow: visible; border: none; } .mx input { border: none; background: none; padding: 0; width: 40px; } .mx thead th { position: static; background: #eee !important; color: #000 !important; } .mx .s1, .mx .s2 { position: static; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <img src="/assets/images/logo.png" alt="logo">
+    <div><strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong><span>Admin Portal</span></div>
+  </div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+    <button class="signout" id="signOutBtn">Sign Out</button>
+  </div>
+</div>
+
+<div class="wrap" id="appWrap" style="display:none;">
+  <div class="welcome"><h1>Broadsheet</h1><p>Every score the teachers have entered, by class and term. Corrections you make here are saved straight away.</p></div>
+  <div class="card ctl">
+    <div><label for="classSel">Class</label><select id="classSel"></select></div>
+    <div><label for="termSel">Term</label><select id="termSel"></select></div>
+    <div class="btns"><button type="button" class="btn-ghost" id="maxBtn">Marks: <span id="maxLabel">40 + 60</span></button><button type="button" class="btn-ghost" id="csvBtn">Export CSV</button><button type="button" class="btn-ghost" id="printBtn">Print</button><a class="btn-primary" id="rcLink" href="/admin/report-cards.html">Report cards</a></div>
+  </div>
+  <div class="acts" id="acts"></div>
+  <div class="matrix-wrap"><table class="mx" id="mx"></table></div>
+  <p class="empty-note" id="emptyNote" hidden>There are no admitted students in this class yet.</p>
+</div>
+<div id="loadingState" class="loading">Loading the broadsheet…</div>
+<div id="msgBox" class="msg"></div>
+
+<div class="modal-overlay" id="maxModal" role="dialog" aria-modal="true" aria-labelledby="maxTitle">
+  <div class="modal">
+    <h2 id="maxTitle">Marks for Test and Exam</h2><p class="sub">The most a pupil can score in each. Teachers cannot enter more than this.</p>
+    <div class="field"><label for="maxTest">Test (out of)</label><input type="number" id="maxTest" min="1" step="1"></div>
+    <div class="field"><label for="maxExam">Exam (out of)</label><input type="number" id="maxExam" min="1" step="1"></div>
+    <p class="sub" id="maxTotal"></p>
+    <div class="modal-actions"><button type="button" class="btn-ghost" id="maxCancel">Cancel</button><button type="button" class="btn-primary" id="maxSave">Save</button></div>
+  </div>
+</div>
+
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-top">
+    <strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong>
+    <button class="nav-drawer-close" id="drawerClose" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+  <nav class="nav-drawer-links">
+    <a href="/admin/dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>Dashboard</span></a>
+    <a href="/admin/enrollments.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg><span>Enrollments</span></a>
+    <a href="/admin/staff.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span>Staff</span></a>
+    <a href="/admin/students.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
+    <a href="/admin/accounts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 9.8-9.8M16 7l3 3M14 9l2 2"/></svg><span>Logins</span></a>
+    <a href="/admin/academics.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>Academics</span></a>
+    <a href="/admin/broadsheet.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg><span>Broadsheet</span></a>
+    <a href="/admin/report-cards.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg><span>Report cards</span></a>
+    <a href="/admin/fees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span>Fees</span></a>
+    <a href="/admin/profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
+  </nav>
+  <button class="nav-drawer-signout" id="drawerSignOutBtn">Sign Out</button>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
+
+  const $ = (id) => document.getElementById(id)
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  const num = (n) => (n === null || n === undefined || n === '') ? '' : String(Math.round(Number(n) * 10) / 10)
+  const nameOf = (s) => [s.surname, s.other_names].filter(Boolean).join(' ') || 'Unnamed student'
+  function showMessage(text, type) {
+    const box = $('msgBox'); box.textContent = text; box.className = 'msg ' + type
+    clearTimeout(showMessage._t); showMessage._t = setTimeout(() => { box.className = 'msg' }, 5000)
+  }
+  supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    .then(({ data }) => { if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name }) })
+  async function fetchAll(make) {
+    const out = []
+    for (let from = 0; ; from += 1000) {
+      const { data, error } = await make().range(from, from + 999)
+      if (error) throw error
+      out.push(...(data || [])); if (!data || data.length < 1000) break
+    }
+    return out
+  }
+  function todayTerm(terms) {
+    const today = new Date().toISOString().slice(0, 10)
+    return terms.find(t => t.start_date && t.end_date && t.start_date <= today && today <= t.end_date) || terms.slice().sort((a, b) => String(b.start_date || '').localeCompare(String(a.start_date || '')))[0] || null
+  }
+  async function adminGuard() {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/admin/login.html?next=' + encodeURIComponent(window.location.pathname); return null }
+    const { data: m } = await supabase.from('school_members').select('role, school_id').eq('user_id', session.user.id).single()
+    if (!m || !['school_admin', 'super_admin'].includes(m.role)) { window.location.href = '/admin/login.html?next=' + encodeURIComponent(window.location.pathname); return null }
+    return m
+  }
+  $('signOutBtn').addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href = '/admin/login.html' })
+  const navDrawer = $('navDrawer')
+  $('hamburgerBtn').addEventListener('click', () => navDrawer.classList.add('open'))
+  $('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
+  $('drawerSignOutBtn').addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href = '/admin/login.html' })
+
+  let schoolId = null, terms = [], classes = [], students = [], subjects = [], teacherNames = {}, scores = {}, maxima = { test: 40, exam: 60 }, meta = {}
+  const key = (st, su) => st + '|' + su
+
+  async function loadMaxima() {
+    const { data } = await supabase.from('schools').select('test_max, exam_max').order('created_at', { ascending: true }).limit(1).single()
+    if (data) maxima = { test: Number(data.test_max ?? 40), exam: Number(data.exam_max ?? 60) }
+    $('maxLabel').textContent = maxima.test + ' + ' + maxima.exam
+  }
+
+  async function load() {
+    const classId = $('classSel').value, termId = $('termSel').value
+    $('rcLink').href = '/admin/report-cards.html?class=' + classId + '&term=' + termId
+    try {
+      const [stu, asg, sc] = await Promise.all([
+        supabase.from('students').select('id, surname, other_names, admission_number').eq('class_id', classId).eq('admission_status', 'admitted'),
+        supabase.from('teacher_assignments').select('subject_id, teacher_id').eq('class_id', classId).eq('term_id', termId),
+        fetchAll(() => supabase.from('broadsheet_scores').select('student_id, subject_id, test_score, exam_score, remark, entered_by, updated_at').eq('class_id', classId).eq('term_id', termId))
+      ])
+      if (stu.error) throw stu.error
+      students = (stu.data || []).sort((a, b) => nameOf(a).localeCompare(nameOf(b)))
+      scores = {}; meta = {}
+      sc.forEach(r => { scores[key(r.student_id, r.subject_id)] = { test: r.test_score, exam: r.exam_score }; const m = meta[r.subject_id] || (meta[r.subject_id] = { last: null, by: new Set(), n: 0 }); m.n++; if (!m.last || r.updated_at > m.last) m.last = r.updated_at; if (r.entered_by) m.by.add(r.entered_by) })
+
+      const assigned = asg.data || []
+      const tIds = [...new Set(assigned.map(a => a.teacher_id).concat(sc.map(r => r.entered_by)).filter(Boolean))]
+      teacherNames = {}
+      if (tIds.length) {
+        const t = await supabase.from('teachers').select('id, user_id').in('id', tIds)
+        const uIds = (t.data || []).map(x => x.user_id).filter(Boolean)
+        const u = uIds.length ? await supabase.from('users').select('id, full_name, email').in('id', uIds) : { data: [] }
+        ;(t.data || []).forEach(x => { const uu = (u.data || []).find(y => y.id === x.user_id); teacherNames[x.id] = (uu && (uu.full_name || uu.email)) || 'Teacher' })
+      }
+      const sIds = [...new Set(assigned.map(a => a.subject_id).concat(sc.map(r => r.subject_id)))]
+      let sub = { data: [] }
+      if (sIds.length) { sub = await supabase.from('subjects').select('id, name, sort_order').in('id', sIds); if (sub.error) sub = await supabase.from('subjects').select('id, name').in('id', sIds) }
+      subjects = (sub.data || []).map(s => ({ ...s, teachers: assigned.filter(a => a.subject_id === s.id).map(a => teacherNames[a.teacher_id] || 'Teacher') }))
+        .sort((a, b) => (a.sort_order ?? 9999) - (b.sort_order ?? 9999) || String(a.name).localeCompare(String(b.name)))
+    } catch (err) { showMessage('Could not load the broadsheet: ' + (err.message || err), 'error'); return }
+    render()
+  }
+
+  function render() {
+    $('emptyNote').hidden = students.length > 0
+    // who is entering what
+    $('acts').innerHTML = subjects.map(s => {
+      const m = meta[s.id] || { n: 0, last: null }, pct = students.length ? Math.round(m.n / students.length * 100) : 0
+      const by = s.teachers.length ? s.teachers.join(', ') : ([...(m.by || [])].map(i => teacherNames[i]).filter(Boolean).join(', ') || 'No teacher assigned')
+      return `<div class="act ${pct >= 100 ? 'done' : m.n === 0 ? 'none' : ''}"><b>${esc(s.name)}</b><small>${esc(by)}</small><small>${m.n} of ${students.length} entered${m.last ? ' · last change ' + esc(new Date(m.last).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })) : ''}</small><div class="bar2"><i style="width:${pct}%"></i></div></div>`
+    }).join('')
+
+    const head1 = '<tr class="r1"><th class="s1" rowspan="2">#</th><th class="s2" rowspan="2">Student</th>' +
+      subjects.map(s => `<th colspan="3">${esc(s.name)}<small>${esc(s.teachers[0] || '')}</small></th>`).join('') + '<th colspan="3">Overall</th></tr>'
+    const head2 = '<tr class="r2">' + subjects.map(() => `<th>Test<br><small>/${maxima.test}</small></th><th>Exam<br><small>/${maxima.exam}</small></th><th>Total</th>`).join('') + '<th>Total</th><th>%</th><th>Pos.</th></tr>'
+    const body = students.map((st, i) => `<tr data-r="${esc(st.id)}"><td class="s1">${i + 1}</td><td class="s2">${esc(nameOf(st))}</td>` +
+      subjects.map(s => { const v = scores[key(st.id, s.id)] || {}; return `<td><input data-s="${esc(s.id)}" data-f="test" type="number" min="0" max="${maxima.test}" step="0.5" value="${num(v.test)}"></td><td><input data-s="${esc(s.id)}" data-f="exam" type="number" min="0" max="${maxima.exam}" step="0.5" value="${num(v.exam)}"></td><td class="st" data-t="${esc(s.id)}"></td>` }).join('') +
+      '<td class="ov" data-o="total"></td><td class="ov" data-o="pct"></td><td class="ov pos" data-o="pos"></td></tr>').join('')
+    $('mx').innerHTML = '<thead>' + head1 + head2 + '</thead><tbody>' + body + '</tbody>'
+    recompute()
+  }
+
+  function recompute() {
+    const per = {}
+    students.forEach(st => {
+      let obtained = 0, n = 0
+      subjects.forEach(s => { const v = scores[key(st.id, s.id)]; if (v && (v.test !== null && v.test !== undefined || v.exam !== null && v.exam !== undefined)) { obtained += (Number(v.test) || 0) + (Number(v.exam) || 0); n++ } })
+      per[st.id] = { obtained, n }
+    })
+    const ranked = students.filter(s => per[s.id].n > 0).sort((a, b) => per[b.id].obtained - per[a.id].obtained)
+    const pos = {}; ranked.forEach((s, i) => { pos[s.id] = i > 0 && per[ranked[i - 1].id].obtained === per[s.id].obtained ? pos[ranked[i - 1].id] : i + 1 })
+    document.querySelectorAll('#mx tbody tr').forEach(tr => {
+      const id = tr.dataset.r, p = per[id]
+      tr.querySelectorAll('td.st').forEach(td => { const v = scores[key(id, td.dataset.t)]; td.textContent = v && (v.test !== null && v.test !== undefined || v.exam !== null && v.exam !== undefined) ? num((Number(v.test) || 0) + (Number(v.exam) || 0)) : '' })
+      tr.querySelector('[data-o="total"]').textContent = p.n ? num(p.obtained) : ''
+      tr.querySelector('[data-o="pct"]').textContent = p.n ? num(p.obtained / (p.n * (maxima.test + maxima.exam)) * 100) : ''
+      tr.querySelector('[data-o="pos"]').textContent = p.n ? pos[id] : ''
+    })
+  }
+
+  $('mx').addEventListener('change', async (e) => {
+    const inp = e.target; if (!inp.dataset.f) return
+    const tr = inp.closest('tr'), st = tr.dataset.r, su = inp.dataset.s, f = inp.dataset.f, max = f === 'test' ? maxima.test : maxima.exam
+    const raw = inp.value.trim(), v = raw === '' ? null : Number(raw)
+    if (v !== null && (!Number.isFinite(v) || v < 0 || v > max)) { inp.classList.add('bad'); showMessage('A ' + f + ' score must be between 0 and ' + max + '.', 'error'); return }
+    inp.classList.remove('bad')
+    const prev = scores[key(st, su)] || { test: null, exam: null }
+    const next = { ...prev, [f]: v }
+    const { error } = await supabase.rpc('save_broadsheet_scores', { p_term: $('termSel').value, p_class: $('classSel').value, p_subject: su, p_rows: [{ student_id: st, test: next.test === null ? '' : next.test, exam: next.exam === null ? '' : next.exam, remark: '' }] })
+    if (error) { inp.classList.add('bad'); showMessage(error.message, 'error'); return }
+    scores[key(st, su)] = next; recompute()
+    showMessage('Saved.', 'success')
+  })
+
+  $('csvBtn').addEventListener('click', () => {
+    const cell = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"'
+    const head = ['No.', 'Student'].concat(...subjects.map(s => [s.name + ' Test', s.name + ' Exam', s.name + ' Total']), ['Overall total', '%', 'Position'])
+    const trs = [...document.querySelectorAll('#mx tbody tr')].map((tr, i) => {
+      const id = tr.dataset.r, st = students.find(s => s.id === id)
+      return [i + 1, nameOf(st)].concat(...subjects.map(s => { const v = scores[key(id, s.id)] || {}; const has = v.test !== null && v.test !== undefined || v.exam !== null && v.exam !== undefined; return [num(v.test), num(v.exam), has ? num((Number(v.test) || 0) + (Number(v.exam) || 0)) : ''] }), [tr.querySelector('[data-o="total"]').textContent, tr.querySelector('[data-o="pct"]').textContent, tr.querySelector('[data-o="pos"]').textContent])
+    })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(new Blob(['\ufeff' + [head].concat(trs).map(r => r.map(cell).join(',')).join('\n')], { type: 'text/csv;charset=utf-8' }))
+    a.download = 'broadsheet-' + ($('classSel').selectedOptions[0]?.textContent || 'class').replace(/\W+/g, '-') + '.csv'
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000)
+  })
+  $('printBtn').addEventListener('click', () => window.print())
+
+  $('maxBtn').addEventListener('click', () => { $('maxTest').value = maxima.test; $('maxExam').value = maxima.exam; $('maxTotal').textContent = 'Total: ' + (maxima.test + maxima.exam); $('maxModal').classList.add('open') })
+  ;['maxTest', 'maxExam'].forEach(id => $(id).addEventListener('input', () => { $('maxTotal').textContent = 'Total: ' + ((Number($('maxTest').value) || 0) + (Number($('maxExam').value) || 0)) }))
+  $('maxCancel').addEventListener('click', () => $('maxModal').classList.remove('open'))
+  $('maxSave').addEventListener('click', async () => {
+    const { error } = await supabase.rpc('set_assessment_maxima', { p_test: Number($('maxTest').value), p_exam: Number($('maxExam').value) })
+    if (error) { showMessage(error.message, 'error'); return }
+    $('maxModal').classList.remove('open'); await loadMaxima(); await load(); showMessage('Marks updated.', 'success')
+  })
+
+  $('classSel').addEventListener('change', load); $('termSel').addEventListener('change', load)
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('maxModal').classList.remove('open') })
+
+  async function init() {
+    const m = await adminGuard(); if (!m) return
+    schoolId = m.school_id
+    await loadMaxima()
+    const [cl, tr] = await Promise.all([supabase.from('classes').select('id, name').eq('school_id', schoolId), supabase.from('terms').select('id, name, start_date, end_date, academic_sessions(name)')])
+    classes = (cl.data || []).sort((a, b) => String(a.name).localeCompare(String(b.name), undefined, { numeric: true }))
+    terms = (tr.data || []).sort((a, b) => String(b.start_date || '').localeCompare(String(a.start_date || '')))
+    $('classSel').innerHTML = classes.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('')
+    $('termSel').innerHTML = terms.map(t => `<option value="${esc(t.id)}">${esc(t.name)}${t.academic_sessions ? ' · ' + esc(t.academic_sessions.name) : ''}</option>`).join('')
+    const q = new URLSearchParams(location.search)
+    if (q.get('class') && classes.some(c => c.id === q.get('class'))) $('classSel').value = q.get('class')
+    const dt = q.get('term') && terms.find(t => t.id === q.get('term')) || todayTerm(terms); if (dt) $('termSel').value = dt.id
+    $('loadingState').style.display = 'none'; $('appWrap').style.display = 'block'
+    if (!classes.length || !terms.length) { $('emptyNote').hidden = false; $('emptyNote').textContent = 'Add classes and a term on the Academics page first.'; return }
+    await load()
+  }
+  init()
+
+</script>
+<script>
+  // marks the current page in the navigation (display only)
+  (function () {
+    var file = location.pathname.split('/').pop();
+    document.querySelectorAll('.nav-drawer-links a').forEach(function (a) {
+      if (file && a.getAttribute('href').split('/').pop() === file) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
+    });
+  })();
+</script>
+
+</body>
+</html>

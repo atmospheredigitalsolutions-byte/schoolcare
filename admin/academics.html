@@ -266,6 +266,8 @@ input:disabled { background: var(--cream); color: var(--muted); cursor: not-allo
     <a href="/admin/students.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
     <a href="/admin/accounts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 9.8-9.8M16 7l3 3M14 9l2 2"/></svg><span>Logins</span></a>
     <a href="/admin/academics.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>Academics</span></a>
+    <a href="/admin/broadsheet.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg><span>Broadsheet</span></a>
+    <a href="/admin/report-cards.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg><span>Report cards</span></a>
     <a href="/admin/fees.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span>Fees</span></a>
     <a href="/admin/profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
   </nav>
@@ -317,11 +319,12 @@ input:disabled { background: var(--cream); color: var(--muted); cursor: not-allo
 
   async function loadAll() {
     const [c, s, t, ss] = await Promise.all([
-      supabase.from('classes').select('id, name').eq('school_id', schoolId),
+      supabase.from('classes').select('id, name, class_teacher_id').eq('school_id', schoolId),
       supabase.from('subjects').select('id, name').eq('school_id', schoolId),
       supabase.from('teachers').select('id, user_id').eq('school_id', schoolId),
       supabase.from('academic_sessions').select('id, name, is_current').eq('school_id', schoolId)
     ])
+    if (c.error) { const c2 = await supabase.from('classes').select('id, name').eq('school_id', schoolId); c.data = c2.data; c.error = c2.error }
     const firstError = [c, s, t, ss].find(r => r.error)
     if (firstError) showMessage('Could not load everything: ' + firstError.error.message, 'error')
 
@@ -456,12 +459,16 @@ input:disabled { background: var(--cream); color: var(--muted); cursor: not-allo
   }
   function editNamed(kind, id) {
     const k = KINDS[kind]; const item = k.list().find(x => x.id === id); if (!item) return
+    const fields = [{ id: 'name', label: k.label[0].toUpperCase() + k.label.slice(1) + ' name', required: true, value: item.name }]
+    if (kind === 'class') fields.push({ id: 'teacher', label: 'Class teacher (writes the report card comments)', type: 'select', options: [{ value: '', label: 'None' }].concat(optionsOf(teachers)), value: item.class_teacher_id || '' })
     openForm({
-      title: 'Rename ' + k.label, submitLabel: 'Save',
-      fields: [{ id: 'name', label: k.label[0].toUpperCase() + k.label.slice(1) + ' name', required: true, value: item.name }],
+      title: (kind === 'class' ? 'Edit ' : 'Rename ') + k.label, submitLabel: 'Save',
+      fields,
       onSubmit: async (v) => {
         if (dup(k.list(), v.name, id)) return 'Another ' + k.label + ' already has that name.'
-        const { error } = await supabase.from(k.table).update({ name: v.name }).eq('id', id)
+        const payload = { name: v.name }
+        if (kind === 'class') payload.class_teacher_id = v.teacher || null
+        const { error } = await supabase.from(k.table).update(payload).eq('id', id)
         if (error) return friendlyError(error)
         await refresh('Saved.'); return null
       }
@@ -481,7 +488,7 @@ input:disabled { background: var(--cream); color: var(--muted); cursor: not-allo
     const panel = document.getElementById('panel-' + k.plural)
     const missing = k.suggestions.filter(n => !dup(list, n))
     const usage = (x) => kind === 'class'
-      ? assignments.filter(a => a.class_id === x.id).length + ' teaching assignment' + (assignments.filter(a => a.class_id === x.id).length === 1 ? '' : 's')
+      ? (x.class_teacher_id ? 'Class teacher: ' + nameOf(teachers, x.class_teacher_id) + ' · ' : 'No class teacher · ') + assignments.filter(a => a.class_id === x.id).length + ' teaching assignment' + (assignments.filter(a => a.class_id === x.id).length === 1 ? '' : 's')
       : 'Taught in ' + new Set(assignments.filter(a => a.subject_id === x.id).map(a => a.class_id)).size + ' class(es)'
     panel.innerHTML = `
       <div class="panel-head"><div><h2>${kind === 'class' ? 'Classes' : 'Subjects'}</h2><p>${kind === 'class' ? 'The classes your school runs. They are used when admitting students and for fees.' : 'The subjects taught at your school.'}</p></div>
