@@ -347,6 +347,74 @@ footer h3 { font-weight: 600; }
 .reveal-stagger > * { transform: translateY(10px); transition: opacity .45s ease, transform .45s ease; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .reveal, .reveal-stagger > *, .hero-eyebrow, .hero h1, .hero-rule, .hero p, .hero-buttons, .hero-stats { opacity: 1 !important; transform: none !important; } }
 </style>
+<style id="admin-modern">
+/* ==========================================================================
+   Public pages — Modern design layer (design only; markup & logic unchanged)
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+:root {
+  --navy: #0F1B45; --navy-deep: #0A1330; --navy-2: #1B2B63;
+  --maroon: #7A2233; --maroon-dark: #5A1624;
+  --gold: #C99A2E; --gold-soft: #F0CC7A;
+  --cream: #F4F6FB; --border: #E5E9F3; --navy-tint: #EDF0FA;
+  --sans: 'Plus Jakarta Sans','Figtree',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --serif: 'Plus Jakarta Sans','Figtree',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --radius: 16px; --radius-sm: 10px;
+  --shadow-sm: 0 1px 2px rgba(15,27,69,.05), 0 1px 3px rgba(15,27,69,.05);
+  --shadow-md: 0 6px 20px -4px rgba(15,27,69,.10), 0 2px 6px rgba(15,27,69,.05);
+  --shadow-lg: 0 24px 60px -12px rgba(15,27,69,.28);
+  --ring: 0 0 0 4px rgba(27,43,99,.14);
+}
+body { font-family: var(--sans); letter-spacing: -0.005em; }
+h1, h2, h3, h4, .display { font-family: var(--sans); letter-spacing: -0.025em; font-weight: 800; }
+::selection { background: rgba(201,154,46,.3); }
+:focus-visible { outline: 3px solid rgba(201,154,46,.7); outline-offset: 2px; }
+
+/* forms */
+select, input, textarea { border-radius: var(--radius-sm); transition: border-color .15s, box-shadow .15s, background-color .15s; }
+select:focus, input:focus, textarea:focus { border-color: var(--navy-2); box-shadow: var(--ring); outline: none; }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--maroon); }
+
+/* buttons (shared names across the three pages) */
+.btn, .btn-primary, .btn-submit, .btn-outline, .btn-ghost, .btn-outline-light { border-radius: 12px; font-family: var(--sans); font-weight: 700; letter-spacing: -0.005em; transition: background .18s, border-color .18s, color .18s, transform .12s, box-shadow .18s; }
+.btn-primary, .btn-submit { background: linear-gradient(180deg, var(--navy-2), var(--navy)); color: #fff; border: 1px solid var(--navy); box-shadow: 0 1px 2px rgba(15,27,69,.25), inset 0 1px 0 rgba(255,255,255,.12); }
+.btn-primary:hover:not(:disabled), .btn-submit:hover:not(:disabled) { background: linear-gradient(180deg, var(--maroon), var(--maroon-dark)); border-color: var(--maroon-dark); box-shadow: 0 8px 18px -4px rgba(122,34,51,.45); transform: translateY(-1px); }
+.btn-primary:active:not(:disabled), .btn-submit:active:not(:disabled) { transform: translateY(1px) scale(.99); }
+
+/* ===== learner-data.html (login-style card) ===== */
+body:has(#lform) { background-color: var(--navy-deep); background-image: radial-gradient(700px 500px at 15% 10%, rgba(201,154,46,.25), transparent 60%), radial-gradient(800px 600px at 90% 90%, rgba(122,34,51,.45), transparent 60%), linear-gradient(135deg, var(--navy-2), var(--navy-deep)); background-attachment: fixed; }
+body:has(#lform) .card { border-radius: 24px; box-shadow: 0 40px 80px -20px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08); }
+body:has(#lform) .card::before { height: 5px; background: linear-gradient(90deg, var(--maroon), var(--gold)); }
+body:has(#lform) .brand img { box-shadow: 0 0 0 3px #fff, 0 0 0 4px var(--border); }
+body:has(#lform) .btn-submit { min-height: 52px; }
+body:has(#lform) .refbox { border-radius: 14px; background: var(--navy-tint); border: 1px dashed #9AA6CC; }
+body:has(#lform) .message { border-radius: 12px; }
+body:has(#lform) .steps li.on { color: var(--maroon); }
+
+/* ===== enroll.html ===== */
+.card { border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.card-head h2 { font-weight: 800; }
+.step-badge { background: linear-gradient(135deg, var(--navy-2), var(--maroon)); box-shadow: 0 6px 14px -4px rgba(15,27,69,.45); }
+.radio-option, .pickup-row, .photo-upload, .aside-card, .confirm-card { border-radius: 14px; }
+.radio-option:hover, .photo-upload:hover { border-color: var(--navy-2); }
+.aside-card { box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+.form-progress { box-shadow: var(--shadow-sm); }
+.success-screen h1, .success-screen h2 { font-weight: 800; }
+
+/* ===== index.html ===== */
+.navbar { background: rgba(255,255,255,.85); -webkit-backdrop-filter: saturate(180%) blur(14px); backdrop-filter: saturate(180%) blur(14px); box-shadow: var(--shadow-sm); }
+.hero h1 { font-weight: 800; letter-spacing: -0.035em; }
+.hero-stats strong, .stat-row strong { font-weight: 800; letter-spacing: -0.03em; }
+.section-head h2 { font-weight: 800; letter-spacing: -0.03em; }
+.vm-card, .age-card, .req-item, .faq-item, .programme-row, .event-row, .step, .gallery-item, .fees-table-wrap, .report-card-preview { border-radius: var(--radius); }
+.vm-card, .req-item, .faq-item, .fees-table-wrap { box-shadow: var(--shadow-sm); }
+.fees-table th { letter-spacing: .02em; }
+.gallery-item { overflow: hidden; }
+.step-num, .programme-num { font-family: var(--sans); font-weight: 800; }
+.footer-links a:hover { color: var(--gold-soft); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+body:has(#lform)::before { left: 0; right: 0; width: auto; top: 0; bottom: 0; border: none; background-image: radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px); background-size: 26px 26px; }
+</style>
 </head>
 <body>
 
@@ -391,6 +459,7 @@ footer h3 { font-weight: 600; }
     <a href="#why">Why Us</a>
     <a href="#facilities">Facilities</a>
     <a href="/fees.html">Fees</a>
+    <a href="/learner-data.html">Current Pupils</a>
     <a href="#faq">FAQ</a>
   </nav>
   <div class="nav-drawer-buttons">
@@ -725,6 +794,7 @@ footer h3 { font-weight: 600; }
       <div class="footer-links">
         <a href="/login.html">School Portal</a>
         <a href="/enroll.html">Enroll a Child</a>
+        <a href="/learner-data.html">Current pupils: send details</a>
         <a href="/admin/login.html">Admin Login</a>
       </div>
     </div>

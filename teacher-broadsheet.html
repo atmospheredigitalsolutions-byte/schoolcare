@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#101B3D" />
+<title>Broadsheet — Teacher</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500..700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #101B3D; --navy-deep: #0B1329; --maroon: #6E1F2B; --maroon-dark: #551620;
+  --cream: #F1F2F6; --paper: #FFFFFF; --gold: #B98B2A; --gold-soft: #E2BE6A; --ink: #161A27;
+  --muted: #5B6275; --border: #DDE0E8; --green: #2E7D32; --red: #B3261E; --error: #B3261E;
+  --navy-tint: #E8EBF5; --maroon-tint: #F6E9EB; --green-tint: #E7F3E8; --red-tint: #FBEAE8; --amber-tint: #FBF1DC; --amber-text: #7A5A12;
+  --sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --serif: 'Literata', Georgia, 'Times New Roman', serif;
+  --side: 264px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); font-size: 15px; color: var(--ink); background: var(--cream); line-height: 1.55; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.01em; line-height: 1.22; }
+a { color: inherit; text-decoration: none; }
+button, select, input { font: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid rgba(185,139,42,0.65); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* ---------- top bar (mobile) ---------- */
+.topbar { background: var(--paper); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+.topbar::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 6px; background: linear-gradient(var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); pointer-events: none; }
+.topbar .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.topbar .brand img { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; }
+.topbar .brand strong { font-family: var(--serif); color: var(--navy); font-size: 14.5px; font-weight: 600; line-height: 1.25; display: block; }
+.topbar .brand span { display: block; font-size: 11.5px; color: var(--muted); }
+.signout { font-size: 13px; font-weight: 600; color: var(--maroon); border: 1.5px solid var(--border); border-radius: 999px; padding: 7px 15px; background: var(--paper); transition: background .15s, border-color .15s; }
+.signout:hover { background: var(--maroon-tint); border-color: var(--maroon); }
+.hamburger-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--navy-tint); border: 1px solid transparent; display: flex; align-items: center; justify-content: center; color: var(--navy); flex-shrink: 0; transition: background .15s; }
+.hamburger-btn:hover { background: #d9deef; }
+.hamburger-btn svg { width: 18px; height: 18px; }
+
+/* ---------- navigation drawer / sidebar ---------- */
+.nav-drawer { position: fixed; inset: 0; background: var(--navy-deep); z-index: 2000; display: flex; flex-direction: column; padding: 22px 26px 32px; transform: translateX(100%); visibility: hidden; transition: transform .4s cubic-bezier(.22,1,.36,1), visibility 0s .4s; overflow-y: auto; }
+.nav-drawer.open { transform: translateX(0); visibility: visible; transition: transform .4s cubic-bezier(.22,1,.36,1), visibility 0s 0s; }
+.nav-drawer-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 34px; gap: 12px; }
+.nav-drawer-top strong { font-family: var(--serif); font-weight: 600; color: #fff; font-size: 15.5px; line-height: 1.25; display: flex; align-items: center; gap: 12px; }
+.nav-drawer-top strong::before { content: ""; width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; background: #fff url(/assets/images/logo.png) center / cover no-repeat; }
+.nav-drawer-close { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-drawer-close:hover { background: rgba(255,255,255,0.18); }
+.nav-drawer-links { display: flex; flex-direction: column; gap: 2px; }
+.nav-drawer-links a { display: flex; align-items: center; gap: 14px; font-family: var(--serif); font-size: 22px; font-weight: 600; color: #fff; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.1); transition: color .15s; }
+.nav-drawer-links a svg { width: 22px; height: 22px; color: var(--gold-soft); flex-shrink: 0; }
+.nav-drawer-links a:hover, .nav-drawer-links a.active { color: var(--gold-soft); }
+.nav-drawer-signout { margin-top: auto; padding: 15px; border-radius: 10px; background: rgba(255,255,255,0.1); color: #fff; font-weight: 600; font-size: 14.5px; text-align: center; border: none; transition: background .15s; }
+.nav-drawer-signout:hover { background: rgba(255,255,255,0.18); }
+
+/* ---------- shared content ---------- */
+.wrap { margin: 0 auto; padding: 34px 16px 56px; }
+.welcome { margin-bottom: 22px; }
+.welcome h1 { font-size: 27px; color: var(--navy); font-weight: 700; margin-bottom: 6px; }
+.welcome p { color: var(--muted); font-size: 15px; max-width: 60ch; }
+.card { background: var(--paper); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 20px; }
+.card h2 { font-size: 17px; color: var(--navy); margin-bottom: 16px; font-weight: 600; }
+select, input { padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; color: var(--ink); width: 100%; font-size: 14.5px; min-height: 44px; transition: border-color .15s, box-shadow .15s; }
+select:hover, input:hover { border-color: #c3c8d6; }
+select:focus, input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,27,61,0.14); }
+select { appearance: none; -webkit-appearance: none; padding-right: 36px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235B6275' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+.empty-note { color: var(--muted); font-size: 15px; text-align: center; padding: 28px 16px; }
+.loading { color: var(--muted); font-size: 14.5px; text-align: center; padding: 72px 0; }
+.loading::before { content: ""; display: block; width: 26px; height: 26px; margin: 0 auto 14px; border-radius: 50%; border: 3px solid var(--navy-tint); border-top-color: var(--maroon); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* status message, shown as a toast */
+.msg { position: fixed; z-index: 3000; left: 16px; right: 16px; bottom: 20px; max-width: 460px; margin: 0 auto; padding: 13px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; display: none; box-shadow: 0 12px 32px rgba(11,19,41,0.22); border-left: 4px solid; }
+.msg.success { background: var(--green-tint); color: #1d5a21; border-color: var(--green); display: block; animation: toastIn .28s cubic-bezier(.22,1,.36,1); }
+.msg.error { background: var(--red-tint); color: #8d1d17; border-color: var(--red); display: block; animation: toastIn .28s cubic-bezier(.22,1,.36,1); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ---------- desktop: persistent sidebar ---------- */
+@media (min-width: 1000px) {
+  body { padding-left: var(--side); }
+  .topbar { display: none; }
+  .hamburger-btn, .nav-drawer-close { display: none; }
+  .nav-drawer, .nav-drawer.open { inset: 0 auto 0 0; width: var(--side); transform: none; visibility: visible; transition: none; padding: 26px 18px 24px; z-index: 20; }
+  .nav-drawer::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 6px; background: linear-gradient(to right, var(--maroon) 0 2px, transparent 2px 4px, var(--gold) 4px 6px); }
+  .nav-drawer-top { padding: 0 8px; margin-bottom: 30px; }
+  .nav-drawer-links { gap: 4px; }
+  .nav-drawer-links a { font-family: var(--sans); font-size: 15px; font-weight: 500; padding: 11px 12px; border: none; border-radius: 8px; color: rgba(255,255,255,0.76); }
+  .nav-drawer-links a svg { width: 19px; height: 19px; color: rgba(255,255,255,0.55); }
+  .nav-drawer-links a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .nav-drawer-links a:hover svg { color: var(--gold-soft); }
+  .nav-drawer-links a.active { background: rgba(255,255,255,0.1); color: #fff; box-shadow: inset 3px 0 0 var(--gold-soft); }
+  .nav-drawer-links a.active svg { color: var(--gold-soft); }
+  .nav-drawer-signout { margin-right: 6px; }
+  .wrap { padding: 52px 44px 72px; }
+  .welcome h1 { font-size: 32px; }
+  .msg { left: calc(var(--side) + 24px); right: 24px; bottom: 28px; margin: 0 auto; }
+}
+
+
+
+.wrap { max-width: 980px; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheetUp { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes pop { 0% { transform: scale(.6); opacity: 0; } 70% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(179,38,30,0.45); } 50% { box-shadow: 0 0 0 10px rgba(179,38,30,0); } }
+[hidden] { display: none !important; }
+button { font: inherit; cursor: pointer; }
+button:disabled { opacity: .55; cursor: not-allowed; }
+.btn-primary, .btn-ghost, .btn-small, .btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; border-radius: 8px; border: 1.5px solid transparent; transition: background .15s, border-color .15s, color .15s, transform .1s; }
+.btn-primary { min-height: 48px; padding: 0 22px; background: var(--navy); color: #fff; font-size: 15px; }
+.btn-primary:hover:not(:disabled) { background: var(--maroon); }
+.btn-ghost { min-height: 46px; padding: 0 20px; background: #fff; color: var(--navy); border-color: var(--border); font-size: 14.5px; }
+.btn-ghost:hover:not(:disabled) { border-color: var(--navy); background: var(--navy-tint); }
+.btn-small { min-height: 38px; padding: 0 14px; background: #fff; color: var(--navy); border-color: var(--border); font-size: 13.5px; }
+.btn-small:hover { border-color: var(--navy); background: var(--navy-tint); }
+.btn-danger { min-height: 46px; padding: 0 20px; background: var(--red); color: #fff; }
+.btn-primary:active, .btn-ghost:active, .btn-small:active { transform: scale(.98); }
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin: 18px 0 20px; }
+.tab { position: relative; padding: 12px 16px; font-weight: 600; font-size: 14.5px; color: var(--muted); background: none; border: none; transition: color .15s; }
+.tab::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 3px; border-radius: 3px 3px 0 0; background: var(--maroon); transform: scaleX(0); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+.tab.on { color: var(--navy); } .tab.on::after { transform: scaleX(1); } .tab:hover { color: var(--navy); }
+.modal-overlay { position: fixed; inset: 0; background: rgba(11,19,41,0.6); backdrop-filter: blur(2px); z-index: 2500; display: none; align-items: flex-end; justify-content: center; }
+.modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
+.modal { background: #fff; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; border-radius: 18px 18px 0 0; border-top: 5px solid var(--gold); padding: 24px 24px 28px; }
+.modal-overlay.open .modal { animation: sheetUp .3s cubic-bezier(.22,1,.36,1); }
+.modal h2 { font-size: 21px; color: var(--navy); margin-bottom: 8px; } .modal p, .modal li { font-size: 14.5px; color: var(--muted); }
+.modal ul { padding-left: 18px; margin: 10px 0 16px; display: grid; gap: 6px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-top: 16px; }
+@media (min-width: 640px) { .modal-overlay { align-items: center; padding: 20px; } .modal { border-radius: 16px; } }
+@media (max-width: 639px) { .modal { padding-bottom: 88px; } }
+.badge { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.badge.open { background: var(--green-tint); color: #1d5a21; } .badge.in_progress { background: var(--amber-tint); color: var(--amber-text); }
+.badge.expired, .badge.closed { background: var(--red-tint); color: #8d1d17; } .badge.upcoming { background: var(--navy-tint); color: var(--navy); } .badge.completed { background: var(--green-tint); color: #1d5a21; }
+.ring { --p: 0; --col: var(--green); position: relative; flex-shrink: 0; width: 68px; height: 68px; border-radius: 50%; background: conic-gradient(var(--col) calc(var(--p) * 1%), var(--navy-tint) 0); display: grid; place-items: center; }
+.ring::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: #fff; }
+.ring b { position: relative; font-family: var(--serif); font-size: 15px; color: var(--navy); }
+.ring.mid { --col: #d98a1f; } .ring.low { --col: var(--red); }
+
+
+.wrap { max-width: 1000px; }
+.ctl { padding: 18px 20px; margin-bottom: 14px; } .ctl label { display: block; font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.chipst { background: var(--navy-tint); border-radius: 10px; padding: 8px 14px; font-size: 13px; color: var(--muted); } .chipst b { display: block; font-family: var(--serif); font-size: 19px; color: var(--navy); }
+.bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; }
+.state { font-size: 13.5px; font-weight: 600; color: var(--muted); } .state.ok { color: var(--green); } .state.bad { color: var(--red); } .state.work { color: var(--amber-text); }
+.sheet-wrap { background: #fff; border: 1px solid var(--border); border-radius: 14px; overflow-x: auto; }
+table.sheet { width: 100%; border-collapse: collapse; min-width: 640px; }
+.sheet th { position: sticky; top: 0; background: var(--navy); color: #fff; font-size: 13px; font-weight: 600; padding: 11px 10px; text-align: left; white-space: nowrap; }
+.sheet th small { display: block; font-weight: 400; color: #c4cce0; font-size: 11.5px; }
+.sheet td { padding: 7px 10px; border-bottom: 1px solid var(--border); font-size: 14.5px; }
+.sheet tbody tr:hover td { background: var(--navy-tint); }
+.sheet td.n { color: var(--muted); width: 36px; } .sheet td.nm { font-weight: 600; min-width: 160px; }
+.sheet td.tot { font-family: var(--serif); font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; width: 70px; } .sheet td.pos { color: var(--maroon); font-weight: 700; width: 64px; }
+.sheet input.sc { width: 82px; min-height: 40px; padding: 6px 8px; text-align: center; font-variant-numeric: tabular-nums; }
+.sheet input.rm { width: 100%; min-width: 130px; min-height: 40px; padding: 6px 10px; }
+.sheet input.bad { border-color: var(--red); background: var(--red-tint); }
+.sheet td.ok { width: 28px; color: var(--green); font-weight: 700; }
+.empty-note { padding: 36px 16px; }
+.modal select { width: 100%; }
+.field-row { margin-bottom: 14px; } .field-row label { display: block; font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+@media print {
+  .topbar, .nav-drawer, .bar, .ctl .chips, .msg, .welcome { display: none !important; } body { padding-left: 0 !important; background: #fff; } .wrap { padding: 0 !important; max-width: none; }
+  .ctl { border: none; padding: 0 0 8px; } .sheet th { background: #eee !important; color: #000 !important; } .sheet input { border: none; background: none; padding: 0; text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <img src="/assets/images/logo.png" alt="logo">
+    <div><strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong><span>Teacher Portal</span></div>
+  </div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+    <button class="signout" id="signOutBtn">Sign Out</button>
+  </div>
+</div>
+
+
+<div class="wrap" id="appWrap" style="display:none;">
+  <div class="welcome"><h1>Broadsheet</h1><p>Enter your students' Test and Exam scores. Their report cards fill in by themselves.</p></div>
+
+  <div class="card ctl">
+    <label for="asgSelect">Class, subject and term</label>
+    <select id="asgSelect"></select>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="bar">
+    <span class="state" id="saveState">&nbsp;</span>
+    <span style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button type="button" class="btn-small" id="cbtBtn">Fill from a CBT exam</button>
+      <button type="button" class="btn-small" id="csvBtn">Export CSV</button>
+      <button type="button" class="btn-small" id="printBtn">Print</button>
+    </span>
+  </div>
+
+  <div class="sheet-wrap">
+    <table class="sheet">
+      <thead><tr><th>#</th><th>Student</th><th>Test<small id="hTest"></small></th><th>Exam<small id="hExam"></small></th><th>Total<small id="hTotal"></small></th><th>Pos.</th><th>Remark (optional)</th><th></th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <p class="empty-note" id="emptyNote" hidden>There are no admitted students in this class yet.</p>
+  <p class="empty-note" id="noAsg" hidden>You have no subjects assigned yet. Ask the school office to assign you to a class and subject for this term.</p>
+</div>
+
+<div id="loadingState" class="loading">Loading your broadsheet…</div>
+<div id="msgBox" class="msg"></div>
+
+<div class="modal-overlay" id="cbtModal" role="dialog" aria-modal="true" aria-labelledby="cbtTitle">
+  <div class="modal">
+    <h2 id="cbtTitle">Fill from a CBT exam</h2>
+    <p class="sub">Scores are scaled to the marks for the column you choose. You can still change any score afterwards.</p>
+    <div class="field-row"><label for="cbtExam">CBT exam</label><select id="cbtExam"></select></div>
+    <div class="field-row"><label for="cbtTarget">Put the scores in</label><select id="cbtTarget"><option value="test">Test</option><option value="exam">Exam</option></select></div>
+    <p class="sub" id="cbtNote"></p>
+    <div class="modal-actions"><button type="button" class="btn-ghost" id="cbtCancel">Cancel</button><button type="button" class="btn-primary" id="cbtGo">Fill scores</button></div>
+  </div>
+</div>
+
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-top">
+    <strong class="js-school-name">Al-Haqq Nur &amp; Pry School</strong>
+    <button class="nav-drawer-close" id="drawerClose" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+  <nav class="nav-drawer-links">
+    <a href="/teacher-dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>Dashboard</span></a>
+    <a href="/teacher-students.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
+    <a href="/teacher-broadsheet.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg><span>Broadsheet</span></a>
+    <a href="/teacher-report-cards.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg><span>Report Cards</span></a>
+    <a href="/teacher-cbt.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>CBT Exams</span></a>
+    <a href="/teacher-profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span>Profile</span></a>
+  </nav>
+  <button class="nav-drawer-signout" id="drawerSignOutBtn">Sign Out</button>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient('https://txsmxpcnbbjubfpxtdrb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c214cGNuYmJqdWJmcHh0ZHJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDEwMjksImV4cCI6MjEwNTg3NzAyOX0.1hKfqjPMeqsMz_MG7fRLttcJapz_FOMTxNDHfp2DJso')
+
+  const here = location.pathname.replace(/\.html$/, '').split('/').pop()
+  document.querySelectorAll('.nav-drawer-links a').forEach(a => a.classList.toggle('active', a.getAttribute('href').replace(/\.html$/, '').split('/').pop() === here))
+
+  const $ = (id) => document.getElementById(id)
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  const num = (n) => (n === null || n === undefined || n === '') ? '' : String(Math.round(Number(n) * 10) / 10)
+  const nameOf = (s) => [s.surname, s.other_names].filter(Boolean).join(' ') || 'Unnamed student'
+  function showMessage(text, type) {
+    const box = $('msgBox'); box.textContent = text; box.className = 'msg ' + type
+    clearTimeout(showMessage._t); showMessage._t = setTimeout(() => { box.className = 'msg' }, 5000)
+  }
+  supabase.from('schools').select('name').order('created_at', { ascending: true }).limit(1).single()
+    .then(({ data }) => { if (data) document.querySelectorAll('.js-school-name').forEach(el => { el.textContent = data.name }) })
+  const goLogin = () => { window.location.href = '/login.html' }
+  $('signOutBtn').addEventListener('click', async () => { await supabase.auth.signOut(); goLogin() })
+  const navDrawer = $('navDrawer')
+  $('hamburgerBtn').addEventListener('click', () => navDrawer.classList.add('open'))
+  $('drawerClose').addEventListener('click', () => navDrawer.classList.remove('open'))
+  $('drawerSignOutBtn').addEventListener('click', async () => { await supabase.auth.signOut(); goLogin() })
+  function todayTerm(terms) {
+    const today = new Date().toISOString().slice(0, 10)
+    const run = terms.find(t => t.start_date && t.end_date && t.start_date <= today && today <= t.end_date)
+    if (run) return run
+    return terms.slice().sort((a, b) => String(b.start_date || '').localeCompare(String(a.start_date || '')))[0] || null
+  }
+
+  let me = null, asgs = [], cur = null, students = [], scores = {}, maxima = { test: 40, exam: 60 }
+  const dirty = new Set()
+  let saveTimer = null, saving = false
+
+  function setState(text, kind) { const el = $('saveState'); el.textContent = text || '\u00a0'; el.className = 'state' + (kind ? ' ' + kind : '') }
+  const blank = () => ({ test: null, exam: null, remark: '' })
+
+  async function init() {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { goLogin(); return }
+    const { data: membership } = await supabase.from('school_members').select('role').eq('user_id', session.user.id).single()
+    if (!membership) { goLogin(); return }
+    if (membership.role !== 'teacher') { window.location.href = ['school_admin', 'super_admin'].includes(membership.role) ? '/admin/broadsheet.html' : '/login.html'; return }
+    const { data: teacher } = await supabase.from('teachers').select('id, school_id').eq('user_id', session.user.id).single()
+    if (!teacher) { $('loadingState').textContent = 'No teacher record was found for your account.'; return }
+    me = teacher
+
+    const { data: sch } = await supabase.from('schools').select('test_max, exam_max').order('created_at', { ascending: true }).limit(1).single()
+    if (sch) maxima = { test: Number(sch.test_max ?? 40), exam: Number(sch.exam_max ?? 60) }
+
+    const { data, error } = await supabase.from('teacher_assignments').select('id, class_id, subject_id, term_id, classes(name), subjects(name), terms(name, start_date, end_date)').eq('teacher_id', me.id)
+    if (error) { showMessage('Could not load your subjects: ' + error.message, 'error'); return }
+    asgs = (data || []).sort((a, b) => String(b.terms?.start_date || '').localeCompare(String(a.terms?.start_date || '')) || String(a.classes?.name).localeCompare(String(b.classes?.name), undefined, { numeric: true }) || String(a.subjects?.name).localeCompare(String(b.subjects?.name)))
+    $('loadingState').style.display = 'none'; $('appWrap').style.display = 'block'
+    if (!asgs.length) { $('noAsg').hidden = false; $('asgSelect').disabled = true; return }
+
+    $('asgSelect').innerHTML = asgs.map(a => `<option value="${esc(a.id)}">${esc(a.classes?.name || '—')} · ${esc(a.subjects?.name || '—')} · ${esc(a.terms?.name || '—')}</option>`).join('')
+    const dt = todayTerm(asgs.map(a => ({ ...a.terms, id: a.term_id })))
+    const first = (dt && asgs.find(a => a.term_id === dt.id)) || asgs[0]
+    $('asgSelect').value = first.id
+    await loadSheet(first.id)
+  }
+
+  async function loadSheet(asgId) {
+    cur = asgs.find(a => a.id === asgId)
+    $('hTest').textContent = 'out of ' + maxima.test; $('hExam').textContent = 'out of ' + maxima.exam; $('hTotal').textContent = 'out of ' + (maxima.test + maxima.exam)
+    const [stu, sc] = await Promise.all([
+      supabase.from('students').select('id, surname, other_names, admission_number').eq('class_id', cur.class_id).eq('admission_status', 'admitted'),
+      supabase.from('broadsheet_scores').select('student_id, test_score, exam_score, remark').eq('term_id', cur.term_id).eq('subject_id', cur.subject_id).eq('class_id', cur.class_id)
+    ])
+    if (stu.error) { showMessage('Could not load students: ' + stu.error.message, 'error'); return }
+    if (sc.error) showMessage('Could not load saved scores: ' + sc.error.message, 'error')
+    students = (stu.data || []).sort((a, b) => nameOf(a).localeCompare(nameOf(b)))
+    scores = {}; dirty.clear()
+    students.forEach(s => { scores[s.id] = blank() })
+    ;(sc.data || []).forEach(r => { scores[r.student_id] = { test: r.test_score, exam: r.exam_score, remark: r.remark || '' } })
+    renderRows(); setState('')
+  }
+
+  function renderRows() {
+    $('emptyNote').hidden = students.length > 0
+    $('rows').innerHTML = students.map((s, i) => {
+      const v = scores[s.id]
+      return `<tr data-id="${esc(s.id)}"><td class="n">${i + 1}</td><td class="nm">${esc(nameOf(s))}</td>
+        <td><input class="sc" data-f="test" type="number" inputmode="decimal" min="0" max="${maxima.test}" step="0.5" value="${num(v.test)}" aria-label="Test score"></td>
+        <td><input class="sc" data-f="exam" type="number" inputmode="decimal" min="0" max="${maxima.exam}" step="0.5" value="${num(v.exam)}" aria-label="Exam score"></td>
+        <td class="tot"></td><td class="pos"></td>
+        <td><input class="rm" data-f="remark" type="text" maxlength="60" placeholder="Optional" value="${esc(v.remark)}"></td><td class="ok"></td></tr>`
+    }).join('')
+    recompute()
+  }
+
+  function recompute() {
+    const entered = students.filter(s => scores[s.id].test !== null || scores[s.id].exam !== null)
+    const totals = entered.map(s => ({ id: s.id, t: (scores[s.id].test || 0) + (scores[s.id].exam || 0) })).sort((a, b) => b.t - a.t)
+    const pos = {}; totals.forEach((x, i) => { pos[x.id] = i > 0 && totals[i - 1].t === x.t ? pos[totals[i - 1].id] : i + 1 })
+    document.querySelectorAll('#rows tr').forEach(tr => {
+      const id = tr.dataset.id, has = pos[id] !== undefined
+      tr.querySelector('.tot').textContent = has ? num((scores[id].test || 0) + (scores[id].exam || 0)) : '—'
+      tr.querySelector('.pos').textContent = has ? pos[id] : ''
+    })
+    const vals = totals.map(x => x.t), max = maxima.test + maxima.exam
+    $('chips').innerHTML = `<div class="chipst"><b>${entered.length} / ${students.length}</b>entered</div>` +
+      `<div class="chipst"><b>${vals.length ? num(vals.reduce((a, b) => a + b, 0) / vals.length) : '—'}</b>class average (of ${max})</div>` +
+      `<div class="chipst"><b>${vals.length ? num(Math.max(...vals)) : '—'}</b>highest</div><div class="chipst"><b>${vals.length ? num(Math.min(...vals)) : '—'}</b>lowest</div>`
+  }
+
+  function scheduleSave() { setState('Saving…', 'work'); clearTimeout(saveTimer); saveTimer = setTimeout(flush, 1000) }
+  async function flush() {
+    if (saving || !dirty.size || !cur) return
+    saving = true
+    const ids = [...dirty]; dirty.clear()
+    const rows = ids.map(id => ({ student_id: id, test: scores[id].test === null ? '' : scores[id].test, exam: scores[id].exam === null ? '' : scores[id].exam, remark: scores[id].remark || '' }))
+    const { error } = await supabase.rpc('save_broadsheet_scores', { p_term: cur.term_id, p_class: cur.class_id, p_subject: cur.subject_id, p_rows: rows })
+    saving = false
+    if (error) { ids.forEach(i => dirty.add(i)); setState('Not saved: ' + error.message, 'bad'); clearTimeout(saveTimer); saveTimer = setTimeout(flush, 6000); return }
+    ids.forEach(id => { const tr = document.querySelector('#rows tr[data-id="' + id + '"] .ok'); if (tr) { tr.textContent = '\u2713'; setTimeout(() => { tr.textContent = '' }, 2500) } })
+    setState('All changes saved ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }), 'ok')
+    if (dirty.size) flush()
+  }
+
+  $('rows').addEventListener('input', (e) => {
+    const inp = e.target, tr = inp.closest('tr'); if (!tr) return
+    const id = tr.dataset.id, f = inp.dataset.f
+    if (f === 'remark') scores[id].remark = inp.value
+    else {
+      const raw = inp.value.trim(), max = f === 'test' ? maxima.test : maxima.exam
+      if (raw === '') { scores[id][f] = null; inp.classList.remove('bad') }
+      else {
+        const v = Number(raw)
+        if (!Number.isFinite(v) || v < 0 || v > max) { inp.classList.add('bad'); setState('A ' + f + ' score must be between 0 and ' + max + '.', 'bad'); return }
+        inp.classList.remove('bad'); scores[id][f] = v
+      }
+    }
+    dirty.add(id); recompute(); scheduleSave()
+  })
+  // Enter moves down to the next student's box in the same column
+  $('rows').addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' || !e.target.dataset.f) return
+    e.preventDefault()
+    const next = e.target.closest('tr').nextElementSibling
+    const box = next && next.querySelector('[data-f="' + e.target.dataset.f + '"]')
+    if (box) { box.focus(); box.select && box.select() }
+  })
+
+  $('asgSelect').addEventListener('change', async (e) => {
+    clearTimeout(saveTimer); await flush()
+    if (dirty.size && !confirm('Some changes are not saved yet. Leave anyway?')) { e.target.value = cur.id; return }
+    await loadSheet(e.target.value)
+  })
+  window.addEventListener('beforeunload', (e) => { if (dirty.size) { e.preventDefault(); e.returnValue = '' } })
+
+  // ---- fill from CBT
+  $('cbtBtn').addEventListener('click', async () => {
+    $('cbtNote').textContent = ''
+    const { data, error } = await supabase.from('cbt_exams').select('id, title').eq('created_by', me.id).eq('class_id', cur.class_id).eq('subject_id', cur.subject_id)
+    if (error || !data || !data.length) { showMessage('You have no CBT exams for this class and subject yet.', 'error'); return }
+    $('cbtExam').innerHTML = data.map(x => `<option value="${esc(x.id)}">${esc(x.title)}</option>`).join('')
+    $('cbtModal').classList.add('open')
+  })
+  $('cbtCancel').addEventListener('click', () => $('cbtModal').classList.remove('open'))
+  $('cbtGo').addEventListener('click', async () => {
+    const btn = $('cbtGo'); btn.disabled = true; btn.textContent = 'Working…'
+    const examId = $('cbtExam').value, target = $('cbtTarget').value, max = maxima[target]
+    const [att, qs] = await Promise.all([
+      supabase.from('cbt_attempts').select('student_id, score, submitted_at, marking_status').eq('exam_id', examId),
+      supabase.from('cbt_questions').select('marks').eq('exam_id', examId)
+    ])
+    btn.disabled = false; btn.textContent = 'Fill scores'
+    if (att.error || qs.error) { showMessage('Could not read the exam results.', 'error'); return }
+    const total = (qs.data || []).reduce((s, q) => s + Number(q.marks || 0), 0)
+    if (!total) { showMessage('That exam has no marks yet.', 'error'); return }
+    let filled = 0, waiting = 0
+    const done = new Set()
+    ;(att.data || []).filter(a => a.submitted_at).forEach(a => {
+      if (!scores[a.student_id]) return
+      if (a.marking_status === 'pending') { waiting++; return }
+      scores[a.student_id][target] = Math.min(max, Math.round(Number(a.score || 0) / total * max * 10) / 10)
+      dirty.add(a.student_id); done.add(a.student_id); filled++
+    })
+    $('cbtModal').classList.remove('open')
+    renderRows()
+    showMessage('Filled ' + filled + ' score' + (filled === 1 ? '' : 's') + ' in the ' + target + ' column.' + (waiting ? ' ' + waiting + ' still waiting to be marked (skipped).' : '') + ' ' + (students.length - filled - waiting) + ' not taken.', 'success')
+    if (dirty.size) scheduleSave()
+  })
+
+  $('csvBtn').addEventListener('click', () => {
+    const cell = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"'
+    const rows = [['No.', 'Student', 'Test', 'Exam', 'Total', 'Remark']].concat(students.map((s, i) => { const v = scores[s.id]; return [i + 1, nameOf(s), num(v.test), num(v.exam), (v.test !== null || v.exam !== null) ? num((v.test || 0) + (v.exam || 0)) : '', v.remark] }))
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(new Blob(['\ufeff' + rows.map(r => r.map(cell).join(',')).join('\n')], { type: 'text/csv;charset=utf-8' }))
+    a.download = ((cur.classes?.name || 'class') + '-' + (cur.subjects?.name || 'subject') + '-' + (cur.terms?.name || 'term')).replace(/[^\w\- ]+/g, '').replace(/\s+/g, '-') + '.csv'
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000)
+  })
+  $('printBtn').addEventListener('click', () => window.print())
+
+  init()
+
+</script>
+</body>
+</html>
